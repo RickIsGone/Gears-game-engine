@@ -8,10 +8,10 @@
 
 namespace engine{
 
-    struct PipelineConfigInfo{
+    struct PipelineConfigInfo {
         PipelineConfigInfo() = default;
         PipelineConfigInfo(const PipelineConfigInfo&) = delete;
-        PipelineConfigInfo operator=(const PipelineConfigInfo&) = delete;
+        PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
         VkViewport viewport;
         VkRect2D scissor;
@@ -34,6 +34,8 @@ namespace engine{
 
         EnginePipeline(const EnginePipeline&) = delete;
         void operator=(const EnginePipeline&) = delete;
+
+        void bind(VkCommandBuffer VkCommandBuffer);
 
         static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height);
 

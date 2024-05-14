@@ -27,6 +27,8 @@ find_package(VulkanUtilityLibraries REQUIRED)
 #target_link_libraries(main PRIVATE Vulkan::LayerSettings Vulkan::UtilityHeaders Vulkan::CompilerConfiguration)
 target_link_libraries(engine PRIVATE Vulkan::Vulkan glfw Vulkan::UtilityHeaders)
 
+file(COPY shaders DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

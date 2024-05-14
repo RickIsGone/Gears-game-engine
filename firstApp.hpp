@@ -12,8 +12,8 @@ namespace engine{
 
     class FirstApp{
     public:
-        static constexpr int WIDTH = 1920;
-        static constexpr int HEIGHT = 1080;
+        static constexpr int WIDTH = 1080;
+        static constexpr int HEIGHT = 720;
 
         FirstApp();
         ~FirstApp();
@@ -26,7 +26,7 @@ namespace engine{
 
         void createPipelineLayout();
         void createPipeline();
-        void createCommandBuffer();
+        void createCommandBuffers();
         void drawFrame();
 
         EngineWindow engineWindow{WIDTH, HEIGHT, "Engine goes brrrrrrrrrrrr"};
@@ -34,6 +34,7 @@ namespace engine{
         EngineSwapChain engineSwapChain{engineDevice, engineWindow.getExtent()};
         std::unique_ptr<EnginePipeline> enginePipeline;
         VkPipelineLayout pipelineLayout;
-        std::vector<VkCommandBuffer> comandBuffer;
+        std::vector<VkCommandBuffer> commandBuffers;
+
     };
 }
