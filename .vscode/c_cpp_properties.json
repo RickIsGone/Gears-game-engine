@@ -6,6 +6,7 @@
                 "${workspaceFolder}/**",
                 "C:/vcpkg/vcpkg/installed/x64-windows/include",
                 "C:/vcpkg/vcpkg/installed/x64-windows/include/Vulkan",
+                "C:/vcpkg/vcpkg/installed/x64-windows/include/vulkan/utility",
                 "C:/vcpkg/vcpkg/installed/x64-windows/include/GLFW"
             ],
             "defines": [

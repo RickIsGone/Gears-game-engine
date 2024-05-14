@@ -3,6 +3,10 @@
 #include "engineWindow.hpp"
 #include "enginePipeline.hpp"
 #include "engineDevice.hpp"
+#include "engineSwapChain.hpp"
+
+#include <memory>
+#include <vector>
 
 namespace engine{
 
@@ -11,10 +15,25 @@ namespace engine{
         static constexpr int WIDTH = 1920;
         static constexpr int HEIGHT = 1080;
 
+        FirstApp();
+        ~FirstApp();
+
+        FirstApp(const FirstApp &)= delete;
+        FirstApp &operator=(const FirstApp &)= delete;
+
         void run();
     private:
+
+        void createPipelineLayout();
+        void createPipeline();
+        void createCommandBuffer();
+        void drawFrame();
+
         EngineWindow engineWindow{WIDTH, HEIGHT, "Engine goes brrrrrrrrrrrr"};
         EngineDevice engineDevice{engineWindow};
-        EnginePipeline enginePipeline{engineDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", EnginePipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
+        EngineSwapChain engineSwapChain{engineDevice, engineWindow.getExtent()};
+        std::unique_ptr<EnginePipeline> enginePipeline;
+        VkPipelineLayout pipelineLayout;
+        std::vector<VkCommandBuffer> comandBuffer;
     };
 }

@@ -9,6 +9,10 @@
 namespace engine{
 
     struct PipelineConfigInfo{
+        PipelineConfigInfo() = default;
+        PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+        PipelineConfigInfo operator=(const PipelineConfigInfo&) = delete;
+
         VkViewport viewport;
         VkRect2D scissor;
         VkPipelineViewportStateCreateInfo viewportInfo;
@@ -25,13 +29,13 @@ namespace engine{
 
     class EnginePipeline{
     public:
-        EnginePipeline(EngineDevice &device, const std::string &vertFilePath, const std::string &fragFilePath, const PipelineConfigInfo& configInfo);  //&vertFilePath
+        EnginePipeline(EngineDevice &device, const std::string &vertFilePath, const std::string &fragFilePath, const PipelineConfigInfo& configInfo);  
         ~EnginePipeline();
 
         EnginePipeline(const EnginePipeline&) = delete;
         void operator=(const EnginePipeline&) = delete;
 
-        static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);
+        static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height);
 
     private:
         static std::vector<char> readFile(const std::string& filePath);
