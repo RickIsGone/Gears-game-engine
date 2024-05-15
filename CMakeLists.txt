@@ -7,7 +7,7 @@ enable_testing()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/release)
 
-file(GLOB SOURCES "*.cpp")
+file(GLOB SOURCES "engine/*.cpp")
 add_executable(engine ${SOURCES} ) 
 
 
