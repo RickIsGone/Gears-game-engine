@@ -6,6 +6,7 @@
 namespace engine{
 
     FirstApp::FirstApp(){
+        loadModels();
         createPipelineLayout();
         createPipeline();
         createCommandBuffers();
@@ -66,6 +67,7 @@ namespace engine{
             renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
             renderPassInfo.renderPass = engineSwapChain.getRenderPass();
             renderPassInfo.framebuffer = engineSwapChain.getFrameBuffer(i);
+
             renderPassInfo.renderArea.offset = {0,0};
             renderPassInfo.renderArea.extent = engineSwapChain.getSwapChainExtent();
 
@@ -79,7 +81,8 @@ namespace engine{
             vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             enginePipeline->bind(commandBuffers[i]);
-            vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+            engineModel->bind(commandBuffers[i]);
+            engineModel->draw(commandBuffers[i]);
 
             vkCmdEndRenderPass(commandBuffers[i]);
             if(vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) throw std::runtime_error("failed to record command buffer");
@@ -96,4 +99,31 @@ namespace engine{
 
         if(result != VK_SUCCESS) throw std::runtime_error("failed to present swap chain image");
     }
+
+    void sierpinski(
+        std::vector<EngineModel::Vertex> &vertices,
+        int depth,
+        glm::vec2 left,
+        glm::vec2 right,
+        glm::vec2 top) {
+        if (depth <= 0) {
+            vertices.push_back({top});
+            vertices.push_back({right});
+            vertices.push_back({left});
+        }else {
+            auto leftTop = 0.5f * (left + top);
+            auto rightTop = 0.5f * (right + top);
+            auto leftRight = 0.5f * (left + right);
+            sierpinski(vertices, depth - 1, left, leftRight, leftTop);
+            sierpinski(vertices, depth - 1, leftRight, right, rightTop);
+            sierpinski(vertices, depth - 1, leftTop, rightTop, top);
+        }
+    }
+    void FirstApp::loadModels(){
+        // std::vector<EngineModel::Vertex> verticies{{{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
+        std::vector<EngineModel::Vertex> verticies{};
+        sierpinski(verticies, 5, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});
+        engineModel = std::make_unique<EngineModel>(engineDevice, verticies);
+    }   
+
 }
