@@ -100,12 +100,7 @@ namespace engine{
         if(result != VK_SUCCESS) throw std::runtime_error("failed to present swap chain image");
     }
 
-    void sierpinski(
-        std::vector<EngineModel::Vertex> &vertices,
-        int depth,
-        glm::vec2 left,
-        glm::vec2 right,
-        glm::vec2 top) {
+    void sierpinski(std::vector<EngineModel::Vertex> &vertices, int depth, glm::vec2 left, glm::vec2 right, glm::vec2 top) {
         if (depth <= 0) {
             vertices.push_back({top});
             vertices.push_back({right});

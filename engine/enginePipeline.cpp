@@ -105,8 +105,7 @@ namespace engine{
         if(vkCreateShaderModule(engineDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) throw std::runtime_error("failed to create shader moudule");
     }
 
-    void EnginePipeline::defaultPipelineConfigInfo(
-        PipelineConfigInfo& configInfo, uint32_t width, uint32_t height) {
+    void EnginePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height) {
         configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
