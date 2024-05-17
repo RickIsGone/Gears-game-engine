@@ -5,14 +5,14 @@
 #ifndef NDEBUG
 
     #ifdef _WIN32
-        #define ENGINE_DEBUG_WAIT system("pause")
+        #define GEARS_DEBUG_WAIT system("pause")
     #else
-        #define ENGINE_DEBUG_WAIT system("xterm -e 'read -p \"Press Enter to continue...\"'")
+        #define GEARS_DEBUG_WAIT system("xterm -e 'read -p \"Press Enter to continue...\"'")
     #endif
 
 #else
 
-    #define ENGINE_DEBUG_WAIT //
+    #define GEARS_DEBUG_WAIT //
 
     #ifdef WIN32
         #include <Windows.h>

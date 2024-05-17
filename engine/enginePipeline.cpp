@@ -6,7 +6,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace engine{
+namespace gears{
 
     std::vector<char> EnginePipeline::readFile(const std::string& filePath){
 

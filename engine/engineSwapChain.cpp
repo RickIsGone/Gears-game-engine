@@ -9,7 +9,7 @@
 #include <set>
 #include <stdexcept>
 
-namespace engine {
+namespace gears {
 
 EngineSwapChain::EngineSwapChain(EngineDevice &deviceRef, VkExtent2D extent)
     : device{deviceRef}, windowExtent{extent} {

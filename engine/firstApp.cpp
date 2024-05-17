@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <array>
 
-namespace engine{
+namespace gears{
 
     FirstApp::FirstApp(){
         loadModels();

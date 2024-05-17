@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace engine{
+namespace gears{
 
     class EngineWindow{
     public:

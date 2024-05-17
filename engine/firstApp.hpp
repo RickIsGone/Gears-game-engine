@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-namespace engine{
+namespace gears{
 
     class FirstApp{
     public:
@@ -31,7 +31,7 @@ namespace engine{
         void createCommandBuffers();
         void drawFrame();
 
-        EngineWindow engineWindow{WIDTH, HEIGHT, "Engine goes brrrrrrrrrrrr"};
+        EngineWindow engineWindow{WIDTH, HEIGHT, "Gears engine goes brrrrrrrrrrrr"};
         EngineDevice engineDevice{engineWindow};
         EngineSwapChain engineSwapChain{engineDevice, engineWindow.getExtent()};
         std::unique_ptr<EnginePipeline> enginePipeline;

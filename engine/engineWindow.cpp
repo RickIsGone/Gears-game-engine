@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace engine{
+namespace gears{
     
     EngineWindow::EngineWindow(int w, int h, std::string name) : width{w}, height{h}, windowName{name} {
         initWindow();

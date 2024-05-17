@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace engine {
+namespace gears {
 
 class EngineSwapChain {
  public:

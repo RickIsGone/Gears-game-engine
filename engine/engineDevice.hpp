@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace engine {
+namespace gears {
 
 struct SwapChainSupportDetails {
   VkSurfaceCapabilitiesKHR capabilities;

@@ -3,7 +3,7 @@
 #include <cassert>
 #include <cstring>
 
-namespace engine{
+namespace gears{
 
     EngineModel::EngineModel(EngineDevice &device, const std::vector<Vertex> &vertecies) : engineDevice(device){
         createVertexBuffers(vertecies);
