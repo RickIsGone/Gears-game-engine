@@ -11,16 +11,16 @@
 
 namespace gears{
 
-    class FirstApp{
+    class Application{
     public:
         static constexpr int WIDTH = 1080;
         static constexpr int HEIGHT = 720;
 
-        FirstApp();
-        ~FirstApp();
+        Application();
+        ~Application();
 
-        FirstApp(const FirstApp &)= delete;
-        FirstApp &operator=(const FirstApp &)= delete;
+        Application(const Application &)= delete;
+        Application &operator=(const Application &)= delete;
 
         void run();
     private:

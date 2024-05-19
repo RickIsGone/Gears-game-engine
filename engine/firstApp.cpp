@@ -5,18 +5,18 @@
 
 namespace gears{
 
-    FirstApp::FirstApp(){
+    Application::Application(){
         loadModels();
         createPipelineLayout();
         createPipeline();
         createCommandBuffers();
     }
 
-    FirstApp::~FirstApp(){
+    Application::~Application(){
         vkDestroyPipelineLayout(engineDevice.device(), pipelineLayout, nullptr);
     }
 
-    void FirstApp::run(){
+    void Application::run(){
         while(!engineWindow.shouldClose()){
             glfwPollEvents();
             drawFrame();
@@ -27,7 +27,7 @@ namespace gears{
         engineWindow.~EngineWindow();           // da tenere per ora 
     }
     
-    void FirstApp::createPipelineLayout(){
+    void Application::createPipelineLayout(){
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 0;
@@ -37,7 +37,7 @@ namespace gears{
         if(vkCreatePipelineLayout(engineDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) throw std::runtime_error("failed to create a pipeline layout");
     }
 
-    void FirstApp::createPipeline(){
+    void Application::createPipeline(){
         PipelineConfigInfo pipelineConfig{};
         EnginePipeline::defaultPipelineConfigInfo(pipelineConfig, engineSwapChain.width(), engineSwapChain.height());
         pipelineConfig.renderPass = engineSwapChain.getRenderPass();                                                                                                
@@ -46,7 +46,7 @@ namespace gears{
     }   
     
 
-    void FirstApp::createCommandBuffers(){
+    void Application::createCommandBuffers(){
         commandBuffers.resize(engineSwapChain.imageCount());
 
         VkCommandBufferAllocateInfo allocInfo{};
@@ -89,7 +89,7 @@ namespace gears{
         }        
     }
 
-    void FirstApp::drawFrame(){
+    void Application::drawFrame(){
         uint32_t imageIndex;
         auto result = engineSwapChain.acquireNextImage(&imageIndex);
 
@@ -114,7 +114,7 @@ namespace gears{
             sierpinski(vertices, depth - 1, leftTop, rightTop, top);
         }
     }
-    void FirstApp::loadModels(){
+    void Application::loadModels(){
         // std::vector<EngineModel::Vertex> verticies{{{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
         std::vector<EngineModel::Vertex> verticies{};
         sierpinski(verticies, 5, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});

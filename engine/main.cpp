@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[]){
 	
-	gears::FirstApp app{};
+	gears::Application app{};
 
 	try{
 		app.run();
