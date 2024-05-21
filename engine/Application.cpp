@@ -115,9 +115,9 @@ namespace gears{
         }
     }
     void Application::loadModels(){
-        // std::vector<EngineModel::Vertex> verticies{{{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
-        std::vector<EngineModel::Vertex> verticies{};
-        sierpinski(verticies, 5, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});
+        std::vector<EngineModel::Vertex> verticies{{{0.0f, -0.5f}, {1.0, 0.0, 0.0}}, {{0.5f, 0.5f}, {0.0, 1.0, 0.0}}, {{-0.5f, 0.5f}, {0.0, 0.0, 1.0}}};
+        // std::vector<EngineModel::Vertex> verticies{};
+        // sierpinski(verticies, 5, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});
         engineModel = std::make_unique<EngineModel>(engineDevice, verticies);
     }   
 
