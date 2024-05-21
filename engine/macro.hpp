@@ -10,6 +10,8 @@
         #define GEARS_DEBUG_WAIT system("xterm -e 'read -p \"Press Enter to continue...\"'")
     #endif
 
+    #define GEARS_DEBUG_ASSERT assert
+
 #else
 
     #define GEARS_DEBUG_WAIT //

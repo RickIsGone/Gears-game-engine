@@ -21,7 +21,7 @@ if(NOT GLSL_EXECUTABLE)
     message(FATAL_ERROR "glslc not found. Please install the Vulkan SDK.")
 endif()
 
-#message("${SHADERS}")  #debug shaders
+#message("${SHADERS}")
 foreach(shader IN LISTS SHADERS)
     execute_process(
         COMMAND ${GLSL_EXECUTABLE} ${shader} -o ${shader}.spv
@@ -51,6 +51,7 @@ else()
     endforeach(shader)
 endif()
 
+# adding extern libs 
 find_package(glfw3 REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(glm REQUIRED)
