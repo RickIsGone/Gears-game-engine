@@ -33,7 +33,7 @@ foreach(shader IN LISTS SHADERS)
 endforeach(shader)
 
 
-#coping compiled shaders and removing the console if the application is in release mode
+# copying compiled shaders and removing the console if the application is in release mode
 if(CMAKE_BUILD_TYPE MATCHES Release)
     file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/shaders)
     foreach(shader IN LISTS SHADERS) 
