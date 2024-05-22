@@ -29,11 +29,14 @@ namespace gears{
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
+        void freeCommandBuffers();
         void drawFrame();
+        void recreateSwapChain();
+        void recordCommandBuffer(int imageIndex);
 
         EngineWindow engineWindow{WIDTH, HEIGHT, "Gears engine goes brrrrrrrrrrrr"};
         EngineDevice engineDevice{engineWindow};
-        EngineSwapChain engineSwapChain{engineDevice, engineWindow.getExtent()};
+        std::unique_ptr<EngineSwapChain> engineSwapChain; 
         std::unique_ptr<EnginePipeline> enginePipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;

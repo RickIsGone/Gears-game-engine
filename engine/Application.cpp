@@ -8,7 +8,7 @@ namespace gears{
     Application::Application(){
         loadModels();
         createPipelineLayout();
-        createPipeline();
+        recreateSwapChain();
         createCommandBuffers();
     }
 
@@ -22,9 +22,7 @@ namespace gears{
             drawFrame();
         }
 
-        vkDeviceWaitIdle(engineDevice.device());
-
-        engineWindow.~EngineWindow();           // da tenere per ora 
+        vkDeviceWaitIdle(engineDevice.device()); 
     }
     
     void Application::createPipelineLayout(){
@@ -38,16 +36,40 @@ namespace gears{
     }
 
     void Application::createPipeline(){
+        assert(engineSwapChain != nullptr && "cannot create pipeline before swap chain");
+        assert(pipelineLayout != nullptr && "cannot create pipeline before pipeline layout");
+
         PipelineConfigInfo pipelineConfig{};
-        EnginePipeline::defaultPipelineConfigInfo(pipelineConfig, engineSwapChain.width(), engineSwapChain.height());
-        pipelineConfig.renderPass = engineSwapChain.getRenderPass();                                                                                                
+        EnginePipeline::defaultPipelineConfigInfo(pipelineConfig);
+        pipelineConfig.renderPass = engineSwapChain->getRenderPass();                                                                                                
         pipelineConfig.pipelineLayout = pipelineLayout;
-        enginePipeline = std::make_unique<EnginePipeline>(engineDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);   // fa crashare programma 
+        enginePipeline = std::make_unique<EnginePipeline>(engineDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig); 
     }   
     
+    void Application::recreateSwapChain(){
+        auto extent = engineWindow.getExtent();
+        while(extent.width == 0 || extent.height == 0){
+            extent = engineWindow.getExtent();
+            glfwWaitEvents();
+        }
+
+        vkDeviceWaitIdle(engineDevice.device());
+
+        if(engineSwapChain == nullptr) engineSwapChain = std::make_unique<EngineSwapChain>(engineDevice, extent);
+        else{
+            engineSwapChain = std::make_unique<EngineSwapChain>(engineDevice, extent, std::move(engineSwapChain));
+            if(engineSwapChain->imageCount() != commandBuffers.size()){
+                freeCommandBuffers();
+                createCommandBuffers();
+            }
+        }
+
+        // se renderpass compatibile non fare nulla
+        createPipeline();
+    }
 
     void Application::createCommandBuffers(){
-        commandBuffers.resize(engineSwapChain.imageCount());
+        commandBuffers.resize(engineSwapChain->imageCount());
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -55,47 +77,75 @@ namespace gears{
         allocInfo.commandPool = engineDevice.getCommandPool();
         allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
         
-        if(vkAllocateCommandBuffers(engineDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) throw std::runtime_error("failed to allocate command buffers");
+        if(vkAllocateCommandBuffers(engineDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) throw std::runtime_error("failed to allocate command buffers");     
+    }
 
-        for(int i = 0; i<commandBuffers.size(); ++i){
-            VkCommandBufferBeginInfo beginInfo{};
-            beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    void Application::freeCommandBuffers(){
+        vkFreeCommandBuffers(engineDevice.device(), engineDevice.getCommandPool(), static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+        commandBuffers.clear();
+    }
 
-            if(vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) throw std::runtime_error("failed to begin recording");
 
-            VkRenderPassBeginInfo renderPassInfo{};
-            renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-            renderPassInfo.renderPass = engineSwapChain.getRenderPass();
-            renderPassInfo.framebuffer = engineSwapChain.getFrameBuffer(i);
+    void Application::recordCommandBuffer(int imageIndex){
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-            renderPassInfo.renderArea.offset = {0,0};
-            renderPassInfo.renderArea.extent = engineSwapChain.getSwapChainExtent();
+        if(vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS) throw std::runtime_error("failed to begin recording");
 
-            std::array<VkClearValue, 2> clearValues{};
-            clearValues[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
-            clearValues[1].depthStencil = {1.0f, 0};
+        VkRenderPassBeginInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = engineSwapChain->getRenderPass();
+        renderPassInfo.framebuffer = engineSwapChain->getFrameBuffer(imageIndex);
 
-            renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-            renderPassInfo.pClearValues = clearValues.data();
+        renderPassInfo.renderArea.offset = {0,0};
+        renderPassInfo.renderArea.extent = engineSwapChain->getSwapChainExtent();
 
-            vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+        std::array<VkClearValue, 2> clearValues{};
+        clearValues[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
+        clearValues[1].depthStencil = {1.0f, 0};
 
-            enginePipeline->bind(commandBuffers[i]);
-            engineModel->bind(commandBuffers[i]);
-            engineModel->draw(commandBuffers[i]);
+        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+        renderPassInfo.pClearValues = clearValues.data();
 
-            vkCmdEndRenderPass(commandBuffers[i]);
-            if(vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) throw std::runtime_error("failed to record command buffer");
-        }        
+        vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = static_cast<float>(engineSwapChain->getSwapChainExtent().width);
+        viewport.height = static_cast<float>(engineSwapChain->getSwapChainExtent().height);
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        VkRect2D scissor{{0, 0}, engineSwapChain->getSwapChainExtent()};
+        vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
+        vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
+
+        enginePipeline->bind(commandBuffers[imageIndex]);
+        engineModel->bind(commandBuffers[imageIndex]);
+        engineModel->draw(commandBuffers[imageIndex]);
+
+        vkCmdEndRenderPass(commandBuffers[imageIndex]);
+        if(vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) throw std::runtime_error("failed to record command buffer");
     }
 
     void Application::drawFrame(){
         uint32_t imageIndex;
-        auto result = engineSwapChain.acquireNextImage(&imageIndex);
+        auto result = engineSwapChain->acquireNextImage(&imageIndex);
+
+        if(result == VK_ERROR_OUT_OF_DATE_KHR){
+            recreateSwapChain();
+            return;
+        }
 
         if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) throw std::runtime_error("failed to acquire next swap chain image");
 
-        result = engineSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+        recordCommandBuffer(imageIndex);
+        result = engineSwapChain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+        if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || engineWindow.wasWindowResized()){
+            engineWindow.resetWindowResizeFlag();
+            recreateSwapChain();
+            return;
+        }
 
         if(result != VK_SUCCESS) throw std::runtime_error("failed to present swap chain image");
     }
