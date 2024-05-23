@@ -4,12 +4,11 @@ project(Gears VERSION 0.1.0 LANGUAGES C CXX)
 include(CTest)
 enable_testing()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/release)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/relWithDebInfo)
 
 file(GLOB SOURCES "engine/*.cpp")
-                                                                            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi")    #debug
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi")    #debug
 add_executable(Gears ${SOURCES} ) 
 
 
@@ -45,17 +44,13 @@ if(CMAKE_BUILD_TYPE MATCHES Release)
     else()
         set_target_properties(Gears PROPERTIES LINK_FLAGS "-mwindows")
     endif()
-elseif(CMAKE_BUILD_TYPE MATCHES Debug)
-    file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/shaders)
-    foreach(shader IN LISTS SHADERS)
-        file(COPY ${shader}.spv DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/shaders)
-    endforeach(shader)
 else()
     file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO}/shaders)
     foreach(shader IN LISTS SHADERS)
         file(COPY ${shader}.spv DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO}/shaders)
     endforeach(shader)
 endif()
+
 
 # adding extern libs 
 find_package(glfw3 REQUIRED)
