@@ -7,11 +7,13 @@
 
 #ifndef NDEBUG
 
-    #ifdef _WIN32
-        #define GEARS_DEBUG_WAIT system("pause")
-    #else
-        #define GEARS_DEBUG_WAIT system("xterm -e 'read -p \"Press Enter to continue...\"'")
-    #endif
+    // #ifdef _WIN32
+        
+
+    // #else
+        
+        
+    // #endif
 
 #else
 

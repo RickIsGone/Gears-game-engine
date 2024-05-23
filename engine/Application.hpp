@@ -4,7 +4,7 @@
 #include "enginePipeline.hpp"
 #include "engineDevice.hpp"
 #include "engineSwapChain.hpp"
-#include "engineModel.hpp"
+#include "engineGameObject.hpp"
 
 #include <memory>
 #include <vector>
@@ -25,7 +25,7 @@ namespace gears{
         void run();
     private:
 
-        void loadModels();
+        void loadGameObjects();
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
@@ -33,6 +33,7 @@ namespace gears{
         void drawFrame();
         void recreateSwapChain();
         void recordCommandBuffer(int imageIndex);
+        void renderGameObjects(VkCommandBuffer commandBuffer);
 
         EngineWindow engineWindow{WIDTH, HEIGHT, "Gears engine goes brrrrrrrrrrrr"};
         EngineDevice engineDevice{engineWindow};
@@ -40,7 +41,7 @@ namespace gears{
         std::unique_ptr<EnginePipeline> enginePipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
-        std::unique_ptr<EngineModel> engineModel;
+        std::vector<EngineGameObject> gameObjects;
 
     };
 }
