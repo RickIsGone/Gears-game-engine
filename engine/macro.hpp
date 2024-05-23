@@ -2,6 +2,9 @@
 
 
 
+#define GEARS_ASSERT assert
+
+
 #ifndef NDEBUG
 
     #ifdef _WIN32
@@ -10,12 +13,9 @@
         #define GEARS_DEBUG_WAIT system("xterm -e 'read -p \"Press Enter to continue...\"'")
     #endif
 
-    #define GEARS_ASSERT(expression) (void)( (!!(expression)) || (_wassert(_CRT_WIDE(#expression), _CRT_WIDE(__FILE__), (unsigned)(__LINE__)), 0) )
-
 #else
 
     #define GEARS_DEBUG_WAIT //
-    #define GEARS_ASSERT //
 
     #ifdef WIN32
         #include <Windows.h>

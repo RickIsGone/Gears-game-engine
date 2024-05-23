@@ -28,7 +28,7 @@ namespace gears{
     }
 
     void EngineWindow::frameBufferResizedCallback(GLFWwindow *window, int width, int height){
-        auto engineWindow = reinterpret_cast<EngineWindow *>(glfwGetWindowUserPointer(window));
+        auto engineWindow = reinterpret_cast<EngineWindow*>(glfwGetWindowUserPointer(window));
         engineWindow->frameBufferResized = true;
         engineWindow->width = width;
         engineWindow->height = height;

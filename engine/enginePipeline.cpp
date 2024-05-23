@@ -92,7 +92,7 @@ namespace gears{
 
     EnginePipeline::~EnginePipeline(){
         vkDestroyShaderModule(engineDevice.device(), vertShaderModule, nullptr);
-        vkDestroyShaderModule(engineDevice.device(), vertShaderModule, nullptr);
+        vkDestroyShaderModule(engineDevice.device(), fragShaderModule, nullptr);
         vkDestroyPipeline(engineDevice.device(), graphicsPipeline, nullptr);
     }
 

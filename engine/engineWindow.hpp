@@ -13,7 +13,7 @@ namespace gears{
         ~EngineWindow();
         
         EngineWindow(const EngineWindow &) = delete;
-        EngineWindow &operator = (const EngineWindow) = delete;
+        EngineWindow &operator = (const EngineWindow &) = delete;
 
         
         bool shouldClose() { return glfwWindowShouldClose(window); };
