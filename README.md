@@ -1,4 +1,11 @@
-# GEARS
+<img align="left" src="media/gears.svg" alt="Gears Logo" width="100px"/>
 
-**GEARS** is a multiplatform game engine made with GLFW, glm and Vulkan in C++  
-<img src = media/gears.svg width=20%>  
+<h1>Gears Engine</h1>
+
+## WINDOWS  
+
+**WORK IN PROGRESS**  
+
+## LINUX  
+
+**NOT AVAILABLE YET**  
