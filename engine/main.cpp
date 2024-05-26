@@ -15,9 +15,9 @@ int main(int argc, char *argv[]){
 		app.run();
 	} catch(const std::exception &e){
 		std::cerr << e.what() << '\n';
-		
+		GEARS_DEBUG_WAIT;
 		return EXIT_FAILURE;
 	}
-		
+	
 	return EXIT_SUCCESS;
 }

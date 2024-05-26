@@ -7,6 +7,12 @@ enable_testing()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/release)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/relWithDebInfo)
 
+
+if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    add_definitions(-D RELWITHDEBINFO)
+endif()
+
+
 file(GLOB SOURCES "engine/*.cpp")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi")    #debug
 add_executable(Gears ${SOURCES} ) 

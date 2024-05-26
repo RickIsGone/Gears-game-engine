@@ -5,15 +5,13 @@
 #define GEARS_ASSERT assert
 
 
-#ifndef NDEBUG
+#ifdef RELWITHDEBINFO
 
-    // #ifdef _WIN32
-        
-
-    // #else
-        
-        
-    // #endif
+    #ifdef _WIN32
+        #define GEARS_DEBUG_WAIT system("pause")
+    #else
+        #define GEARS_DEBUG_WAIT std::cout<<"press enter to continue..."; std::cin.get()
+    #endif
 
 #else
 

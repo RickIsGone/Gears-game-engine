@@ -1,10 +1,9 @@
 #pragma once
 
 #include "engineWindow.hpp"
-#include "enginePipeline.hpp"
 #include "engineDevice.hpp"
-#include "engineSwapChain.hpp"
 #include "engineGameObject.hpp"
+#include "engineRenderer.hpp"
 
 #include <memory>
 #include <vector>
@@ -13,8 +12,8 @@ namespace gears{
 
     class Application{
     public:
-        static constexpr int WIDTH = 1080;
-        static constexpr int HEIGHT = 720;
+        static constexpr int WIDTH = 800;
+        static constexpr int HEIGHT = 600;
 
         Application();
         ~Application();
@@ -26,21 +25,10 @@ namespace gears{
     private:
 
         void loadGameObjects();
-        void createPipelineLayout();
-        void createPipeline();
-        void createCommandBuffers();
-        void freeCommandBuffers();
-        void drawFrame();
-        void recreateSwapChain();
-        void recordCommandBuffer(int imageIndex);
-        void renderGameObjects(VkCommandBuffer commandBuffer);
 
         EngineWindow engineWindow{WIDTH, HEIGHT, "Gears engine goes brrrrrrrrrrrr"};
         EngineDevice engineDevice{engineWindow};
-        std::unique_ptr<EngineSwapChain> engineSwapChain; 
-        std::unique_ptr<EnginePipeline> enginePipeline;
-        VkPipelineLayout pipelineLayout;
-        std::vector<VkCommandBuffer> commandBuffers;
+        EngineRenderer engineRenderer{engineWindow, engineDevice};
         std::vector<EngineGameObject> gameObjects;
 
     };
