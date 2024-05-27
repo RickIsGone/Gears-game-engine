@@ -67,6 +67,14 @@
         "list": "cpp",
         "ratio": "cpp",
         "unordered_set": "cpp",
-        "xhash": "cpp"
+        "xhash": "cpp",
+        "condition_variable": "cpp",
+        "cstdarg": "cpp",
+        "functional": "cpp",
+        "mutex": "cpp",
+        "shared_mutex": "cpp",
+        "source_location": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     }
 }

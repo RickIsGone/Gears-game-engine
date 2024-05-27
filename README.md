@@ -8,4 +8,4 @@
 
 ## LINUX  
 
-**NOT AVAILABLE YET**  
+**WORK IN PROGRESS**  

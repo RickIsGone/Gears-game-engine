@@ -10,8 +10,7 @@
 
 namespace gears{
     struct SimplePushConstantData{  
-        glm::mat2 transform{1.0f};
-        glm::vec2 offset;
+        glm::mat4 transform{1.0f};
         alignas(16) glm::vec3 color;
     };
 
@@ -54,16 +53,16 @@ namespace gears{
         int i = 0;
         for (auto& obj : gameObjects) {
             ++i;
-            obj.transform2d.rotation = glm::mod<float>(obj.transform2d.rotation + 0.001f * i, 2.0f * glm::pi<float>());
+            obj.transform.rotation.y = glm::mod<float>(obj.transform.rotation.y + 0.01f * i, 2.0f * glm::pi<float>());
+            obj.transform.rotation.x = glm::mod<float>(obj.transform.rotation.y + 0.001f * i, 2.0f * glm::pi<float>());
         }
 
         
         enginePipeline->bind(commandBuffer);
         for (auto& obj : gameObjects) {
             SimplePushConstantData push{};
-            push.offset = obj.transform2d.translation;
             push.color = obj.color;
-            push.transform = obj.transform2d.mat2();
+            push.transform = obj.transform.mat4();
 
             vkCmdPushConstants(
                 commandBuffer,
