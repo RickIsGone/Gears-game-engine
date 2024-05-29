@@ -10,14 +10,14 @@
     #ifdef _WIN32
         #define GEARS_DEBUG_WAIT system("pause")
     #else
-        #define GEARS_DEBUG_WAIT std::cout<<"press enter to continue..."; std::cin.get()
+        #define GEARS_DEBUG_WAIT std::cout << "press enter to continue..."; std::cin.get()
     #endif
 
 #else
 
-    #define GEARS_DEBUG_WAIT //
+    #define GEARS_DEBUG_WAIT
 
-    #ifdef WIN32
+    #ifdef _WIN32
         #include <Windows.h>
         int main(int, char**);
         int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd){

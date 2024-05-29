@@ -16,10 +16,10 @@ namespace gears{
         EngineWindow &operator = (const EngineWindow &) = delete;
 
         
-        bool shouldClose() { return glfwWindowShouldClose(window); };
-        VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; };
-        bool wasWindowResized() { return frameBufferResized; };
-        void resetWindowResizeFlag() { frameBufferResized = false; };
+        bool shouldClose() { return glfwWindowShouldClose(window); }
+        VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
+        bool wasWindowResized() { return frameBufferResized; }
+        void resetWindowResizeFlag() { frameBufferResized = false; }
 
         void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
         
