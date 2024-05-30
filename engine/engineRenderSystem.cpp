@@ -50,6 +50,8 @@ namespace gears{
 
     void EngineRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera) {
         
+        auto projectionView = camera.getProjection() * camera.getView();
+
         int i = 0;
         for (auto& obj : gameObjects) {
             ++i;
@@ -62,7 +64,7 @@ namespace gears{
         for (auto& obj : gameObjects) {
             SimplePushConstantData push{};
             push.color = obj.color;
-            push.transform = camera.getProjection() * obj.transform.mat4();
+            push.transform = projectionView * obj.transform.mat4();
 
             vkCmdPushConstants(
                 commandBuffer,
