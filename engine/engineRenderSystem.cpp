@@ -49,18 +49,10 @@ namespace gears{
     }   
 
     void EngineRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera) {
+        enginePipeline->bind(commandBuffer);
         
         auto projectionView = camera.getProjection() * camera.getView();
-
-        int i = 0;
-        for (auto& obj : gameObjects) {
-            ++i;
-            obj.transform.rotation.y = glm::mod<float>(obj.transform.rotation.y + 0.01f * i, 2.0f * glm::pi<float>());
-            obj.transform.rotation.x = glm::mod<float>(obj.transform.rotation.y + 0.001f * i, 2.0f * glm::pi<float>());
-        }
-
         
-        enginePipeline->bind(commandBuffer);
         for (auto& obj : gameObjects) {
             SimplePushConstantData push{};
             push.color = obj.color;

@@ -1,9 +1,11 @@
 #include "Application.hpp"
 #include "engineRenderSystem.hpp"
 #include "engineCamera.hpp"
+#include "keyboardMovementController.hpp"
 
 #include <stdexcept>
 #include <array>
+#include <chrono>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -21,14 +23,24 @@ namespace gears{
     void Application::run(){
         EngineRenderSystem engineRenderSystem{engineDevice, engineRenderer.getSwapChainRenderPass()};
         EngineCamera camera{};
-        // camera.setViewDirection(glm::vec3{0.0f}, glm::vec3{0.5f, 0.0f, 1.0f});
         camera.setViewTarget(glm::vec3{-1.0f, -2.0f, 2.0f}, glm::vec3{0.0f, 0.0f, 2.0f});
+
+        auto viewerObject = EngineGameObject::createGameObject();
+        KeyboardMovementController cameraController{};
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
 
         while(!engineWindow.shouldClose()){
             glfwPollEvents();
 
+            auto newTime = std::chrono::high_resolution_clock::now();
+            float deltaTime = std::chrono::duration<float,std::chrono::seconds::period>(newTime - currentTime).count();
+            currentTime = newTime;
+
+            cameraController.moveInPlaneXZ(engineWindow.getWindow(), deltaTime, viewerObject);
+            camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+
             float aspect = engineRenderer.getAspectRatio();
-            // camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
             camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
 
 
