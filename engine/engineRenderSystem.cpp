@@ -54,6 +54,9 @@ namespace gears{
         auto projectionView = camera.getProjection() * camera.getView();
         
         for (auto& obj : gameObjects) {
+            // obj.transform.rotation.y = glm::mod<float>(obj.transform.rotation.y + 0.01f, 2.0f * glm::pi<float>());
+            // obj.transform.rotation.x = glm::mod<float>(obj.transform.rotation.y + 0.001f, 2.0f * glm::pi<float>());
+
             SimplePushConstantData push{};
             push.color = obj.color;
             push.transform = projectionView * obj.transform.mat4();

@@ -21,7 +21,12 @@ namespace gears{
             static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
         };
 
-        EngineModel(EngineDevice &device, const std::vector<Vertex> &vertecies);
+        struct Data{
+            std::vector<Vertex> vertices{};
+            std::vector<uint32_t> indices{};
+        };
+
+        EngineModel(EngineDevice &device, const EngineModel::Data &data);
         ~EngineModel();
 
         EngineModel(const EngineModel &) = delete;
@@ -32,11 +37,17 @@ namespace gears{
         
     private:    
         EngineDevice &engineDevice;
+
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
         uint32_t vertexCount;
+        void createVertexBuffers(const std::vector<Vertex> &vertices);
 
-        void createVertexBuffers(const std::vector<Vertex> &vertecies);
+        bool hasIndexBuffer = false;
+        VkBuffer indexBuffer;
+        VkDeviceMemory indexBufferMemory;
+        uint32_t indexCount;
+        void createIndexBuffer(const std::vector<uint32_t> &indices);
     };
 
 }

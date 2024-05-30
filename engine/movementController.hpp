@@ -5,7 +5,7 @@
 
 namespace gears{
 
-    class KeyboardMovementController{
+    class MovementController{
     public:
         struct KeyMappings{
             int moveLeft = GLFW_KEY_A;
@@ -20,10 +20,14 @@ namespace gears{
             int lookDown = GLFW_KEY_DOWN;
         };
 
-        void moveInPlaneXZ(GLFWwindow* window, float dt, EngineGameObject & gameObject);
+        void moveInPlaneYXZ(GLFWwindow* window, GLFWcursor* cursor, float dt, EngineGameObject & gameObject);
 
         KeyMappings keys{};
+        
         float moveSpeed{3.0f};
-        float lookSpeed{1.5f};
+        float lookSpeed{3.0f};
+
+        double prevPosX;
+        double prevPosY;
     };
 }
