@@ -3,6 +3,7 @@
 #include "enginePipeline.hpp"
 #include "engineDevice.hpp"
 #include "engineGameObject.hpp"
+#include "engineCamera.hpp"
 
 #include <memory>
 #include <vector>
@@ -18,7 +19,7 @@ namespace gears{
         EngineRenderSystem(const EngineRenderSystem &)= delete;
         EngineRenderSystem &operator=(const EngineRenderSystem &)= delete;
 
-        void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects);
+        void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera);
 
     private:
 

@@ -48,7 +48,7 @@ namespace gears{
         enginePipeline = std::make_unique<EnginePipeline>(engineDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig); 
     }   
 
-    void EngineRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects) {
+    void EngineRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera) {
         
         int i = 0;
         for (auto& obj : gameObjects) {
@@ -62,7 +62,7 @@ namespace gears{
         for (auto& obj : gameObjects) {
             SimplePushConstantData push{};
             push.color = obj.color;
-            push.transform = obj.transform.mat4();
+            push.transform = camera.getProjection() * obj.transform.mat4();
 
             vkCmdPushConstants(
                 commandBuffer,

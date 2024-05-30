@@ -1,5 +1,6 @@
 #include "Application.hpp"
 #include "engineRenderSystem.hpp"
+#include "engineCamera.hpp"
 
 #include <stdexcept>
 #include <array>
@@ -19,13 +20,19 @@ namespace gears{
 
     void Application::run(){
         EngineRenderSystem engineRenderSystem{engineDevice, engineRenderer.getSwapChainRenderPass()};
-        
+        EngineCamera camera{};
+
         while(!engineWindow.shouldClose()){
             glfwPollEvents();
 
+            float aspect = engineRenderer.getAspectRatio();
+            // camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
+            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
+
+
             if(auto commandBuffer = engineRenderer.beginFrame()){
                 engineRenderer.beginSwapChainRenderPass(commandBuffer);
-                engineRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+                engineRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
                 engineRenderer.endSwapChainRenderPass(commandBuffer);
                 engineRenderer.endFrame();
             }
@@ -97,7 +104,7 @@ namespace gears{
 
         auto cube = EngineGameObject::createGameObject();
         cube.model = engineModel;
-        cube.transform.translation = {0.0f, 0.0f, 0.5f};
+        cube.transform.translation = {0.0f, 0.0f, 2.0f};
         cube.transform.scale = {0.5f, 0.5f, 0.5f};
 
         gameObjects.push_back(std::move(cube));

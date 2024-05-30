@@ -19,6 +19,8 @@ namespace gears{
         EngineRenderer &operator=(const EngineRenderer &)= delete;
 
         bool isFrameInProgress() const{ return isFrameStarted; }
+        
+        float getAspectRatio() const{ return engineSwapChain->extentAspectRatio(); }
 
         VkRenderPass getSwapChainRenderPass() const{ return engineSwapChain->getRenderPass(); }
         VkCommandBuffer getCurrentCommandBuffer() const{ 
