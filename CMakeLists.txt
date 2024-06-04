@@ -5,18 +5,21 @@ set(CMAKE_CXX_STANDARD 20)
 include(CTest)
 enable_testing()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/Release)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/RelWithDebInfo)
-
-
-if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-    add_definitions(-D RELWITHDEBINFO)
+if(CMAKE_BUILD_TYPE MATCHES Release)
+    set(BUILD_TYPE "Release")
+elseif(CMAKE_BUILD_TYPE MATCHES Debug)
+    add_definitions(-D DEBINFO)
+    set(BUILD_TYPE "Debug")
+elseif(CMAKE_BUILD_TYPE MATCHES MinSizeRel)
+    set(BUILD_TYPE "MinSizeRel")
+else()
+    set(BUILD_TYPE "RelWithDebInfo")
+    add_definitions(-D DEBINFO)
 endif()
 
 
 file(GLOB SOURCES "engine/*.cpp")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi")    #debug
-add_executable(Gears ${SOURCES} ) 
 
 
 # compiling shaders
@@ -41,21 +44,18 @@ endforeach(shader)
 
 
 # copying compiled shaders and removing the console if the application is in release mode
-if(CMAKE_BUILD_TYPE MATCHES Release)
-    file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/shaders)
-    foreach(shader IN LISTS SHADERS) 
-        file(COPY ${shader}.spv DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/shaders)
-    endforeach(shader)
-    if(MSVC)
-        set_target_properties(Gears PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/shaders)
+foreach(shader IN LISTS SHADERS) 
+    file(COPY ${shader}.spv DESTINATION ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/shaders)
+endforeach(shader)
+if(${CMAKE_SYSTEM} MATCHES Windows)
+    if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+        add_executable(Gears WIN32 ${SOURCES}) 
     else()
-        set_target_properties(Gears PROPERTIES LINK_FLAGS "-mwindows")
+        add_executable(Gears ${SOURCES})
     endif()
 else()
-    file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO}/shaders)
-    foreach(shader IN LISTS SHADERS)
-        file(COPY ${shader}.spv DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO}/shaders)
-    endforeach(shader)
+    add_executable(Gears ${SOURCES})
 endif()
 
 

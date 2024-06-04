@@ -67,8 +67,8 @@ namespace gears{
                 engineRenderer.endSwapChainRenderPass(commandBuffer);
                 engineRenderer.endFrame();
             }
-            
         }
+
         glfwDestroyCursor(cursor);
         vkDeviceWaitIdle(engineDevice.device()); 
     }

@@ -5,7 +5,7 @@
 #define GEARS_ASSERT assert
 
 
-#ifdef RELWITHDEBINFO
+#ifdef DEBINFO
 
     #ifdef _WIN32
         #define GEARS_DEBUG_WAIT system("pause")
