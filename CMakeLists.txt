@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.28.0)
+cmake_minimum_required(VERSION 3.23.0)
 project(Gears VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
-
+set(CMAKE_TOOLCHAIN_FILE D:/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake)
 include(CTest)
 enable_testing()
 
@@ -49,7 +49,7 @@ foreach(shader IN LISTS SHADERS)
     file(COPY ${shader}.spv DESTINATION ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/shaders)
 endforeach(shader)
 if(${CMAKE_SYSTEM} MATCHES Windows)
-    if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+    if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES MinSizeRel)
         add_executable(Gears WIN32 ${SOURCES}) 
     else()
         add_executable(Gears ${SOURCES})
