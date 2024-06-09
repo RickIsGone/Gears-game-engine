@@ -1,22 +1,9 @@
 cmake_minimum_required(VERSION 3.23.0)
 project(Gears VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_TOOLCHAIN_FILE D:/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake)
 include(CTest)
 enable_testing()
-
-if(CMAKE_BUILD_TYPE MATCHES Release)
-    set(BUILD_TYPE "Release")
-elseif(CMAKE_BUILD_TYPE MATCHES Debug)
-    add_definitions(-D DEBINFO)
-    set(BUILD_TYPE "Debug")
-elseif(CMAKE_BUILD_TYPE MATCHES MinSizeRel)
-    set(BUILD_TYPE "MinSizeRel")
-else()
-    set(BUILD_TYPE "RelWithDebInfo")
-    add_definitions(-D DEBINFO)
-endif()
-
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE})
 
 file(GLOB SOURCES "engine/*.cpp")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi")    #debug
@@ -44,9 +31,10 @@ endforeach(shader)
 
 
 # copying compiled shaders and removing the console if the application is in release mode
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/shaders)
+message("copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders")
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders)
 foreach(shader IN LISTS SHADERS) 
-    file(COPY ${shader}.spv DESTINATION ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/shaders)
+    file(COPY ${shader}.spv DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders)
 endforeach(shader)
 if(${CMAKE_SYSTEM} MATCHES Windows)
     if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES MinSizeRel)
