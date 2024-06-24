@@ -1,139 +1,137 @@
-#include "engineRenderer.hpp"
-
 #include <stdexcept>
 #include <array>
 
+#include "engineRenderer.hpp"
 
-namespace gears{
+namespace gears {
 
-    EngineRenderer::EngineRenderer(EngineWindow& window, EngineDevice& device) : engineWindow{window}, engineDevice{device}{
-        recreateSwapChain();
-        createCommandBuffers();
-    }
+   EngineRenderer::EngineRenderer(EngineWindow &window, EngineDevice &device) : engineWindow{window}, engineDevice{device} {
+      recreateSwapChain();
+      createCommandBuffers();
+   }
 
-    EngineRenderer::~EngineRenderer(){ freeCommandBuffers(); }  
-    
-    void EngineRenderer::recreateSwapChain(){
-        auto extent = engineWindow.getExtent();
-        while(extent.width == 0 || extent.height == 0){
-            extent = engineWindow.getExtent();
-            glfwWaitEvents();
-        }
+   EngineRenderer::~EngineRenderer() { freeCommandBuffers(); }
 
-        vkDeviceWaitIdle(engineDevice.device());
+   void EngineRenderer::recreateSwapChain() {
+      auto extent = engineWindow.getExtent();
+      while (extent.width == 0 || extent.height == 0) {
+         extent = engineWindow.getExtent();
+         glfwWaitEvents();
+      }
 
-        if(engineSwapChain == nullptr) engineSwapChain = std::make_unique<EngineSwapChain>(engineDevice, extent);
-        else{
-            std::shared_ptr<EngineSwapChain> oldSwapChain = std::move(engineSwapChain);
-            engineSwapChain = std::make_unique<EngineSwapChain>(engineDevice, extent, oldSwapChain);
-            if(!oldSwapChain->compareSwapFormats(*engineSwapChain.get())) throw std::runtime_error("swapChain image format has changed");
-            
-        }
+      vkDeviceWaitIdle(engineDevice.device());
 
-        // se renderpass compatibile non fare nulla
-        // createPipeline();
-    }
+      if (engineSwapChain == nullptr) engineSwapChain = std::make_unique<EngineSwapChain>(engineDevice, extent);
+      else {
+         std::shared_ptr<EngineSwapChain> oldSwapChain = std::move(engineSwapChain);
+         engineSwapChain = std::make_unique<EngineSwapChain>(engineDevice, extent, oldSwapChain);
+         if (!oldSwapChain->compareSwapFormats(*engineSwapChain.get())) throw std::runtime_error("swapChain image format has changed");
+      }
 
-    void EngineRenderer::createCommandBuffers(){
-        commandBuffers.resize(EngineSwapChain::MAX_FRAMES_IN_FLIGHT);
+      // se renderpass compatibile non fare nulla
+      // createPipeline();
+   }
 
-        VkCommandBufferAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandPool = engineDevice.getCommandPool();
-        allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
-        
-        if(vkAllocateCommandBuffers(engineDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) throw std::runtime_error("failed to allocate command buffers");     
-    }
+   void EngineRenderer::createCommandBuffers() {
+      commandBuffers.resize(EngineSwapChain::MAX_FRAMES_IN_FLIGHT);
 
-    void EngineRenderer::freeCommandBuffers(){
-        vkFreeCommandBuffers(engineDevice.device(), engineDevice.getCommandPool(), static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
-        commandBuffers.clear();
-    }
+      VkCommandBufferAllocateInfo allocInfo{};
+      allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+      allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+      allocInfo.commandPool = engineDevice.getCommandPool();
+      allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
-    VkCommandBuffer EngineRenderer::beginFrame(){
-        assert(!isFrameStarted && "can't call beginFrame while already in progress");
+      if (vkAllocateCommandBuffers(engineDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) throw std::runtime_error("failed to allocate command buffers");
+   }
 
-        auto result = engineSwapChain->acquireNextImage(&currentImageIndex);
+   void EngineRenderer::freeCommandBuffers() {
+      vkFreeCommandBuffers(engineDevice.device(), engineDevice.getCommandPool(), static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+      commandBuffers.clear();
+   }
 
-        if(result == VK_ERROR_OUT_OF_DATE_KHR){
-            recreateSwapChain();
-            return nullptr;
-        }
+   VkCommandBuffer EngineRenderer::beginFrame() {
+      assert(!isFrameStarted && "can't call beginFrame while already in progress");
 
-        if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) throw std::runtime_error("failed to acquire next swap chain image");
+      auto result = engineSwapChain->acquireNextImage(&currentImageIndex);
 
-        isFrameStarted = true;
+      if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+         recreateSwapChain();
+         return nullptr;
+      }
 
-        auto commandBuffer = getCurrentCommandBuffer();
+      if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) throw std::runtime_error("failed to acquire next swap chain image");
 
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+      isFrameStarted = true;
 
-        if(vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) throw std::runtime_error("failed to begin recording command buffer");
+      auto commandBuffer = getCurrentCommandBuffer();
 
-        return commandBuffer;
-    }
+      VkCommandBufferBeginInfo beginInfo{};
+      beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    void EngineRenderer::endFrame(){
-        assert(isFrameStarted && "can't call endFrame while frame not in progress");
+      if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) throw std::runtime_error("failed to begin recording command buffer");
 
-        auto commandBuffer = getCurrentCommandBuffer();
+      return commandBuffer;
+   }
 
-        if(vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) throw std::runtime_error("failed to record command buffer");
+   void EngineRenderer::endFrame() {
+      assert(isFrameStarted && "can't call endFrame while frame not in progress");
 
-        auto result = engineSwapChain->submitCommandBuffers(&commandBuffer, &currentImageIndex);
-        if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || engineWindow.wasWindowResized()){
-            engineWindow.resetWindowResizeFlag();
-            recreateSwapChain();
-        }
-        else if(result != VK_SUCCESS) throw std::runtime_error("failed to present swap chain image");
+      auto commandBuffer = getCurrentCommandBuffer();
 
-        isFrameStarted = false;
-        currentFrameIndex = (currentFrameIndex + 1) % EngineSwapChain::MAX_FRAMES_IN_FLIGHT;
-    }
+      if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) throw std::runtime_error("failed to record command buffer");
 
-    void EngineRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer){
-        assert(isFrameStarted && "can't call beginFrame while frame not in progress");
-        assert(commandBuffer == getCurrentCommandBuffer() && "can't begin renderPass on command buffer from diffrent frame");
+      auto result = engineSwapChain->submitCommandBuffers(&commandBuffer, &currentImageIndex);
+      if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || engineWindow.wasWindowResized()) {
+         engineWindow.resetWindowResizeFlag();
+         recreateSwapChain();
+      } else if (result != VK_SUCCESS)
+         throw std::runtime_error("failed to present swap chain image");
 
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+      isFrameStarted = false;
+      currentFrameIndex = (currentFrameIndex + 1) % EngineSwapChain::MAX_FRAMES_IN_FLIGHT;
+   }
 
-        VkRenderPassBeginInfo renderPassInfo{};
-        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = engineSwapChain->getRenderPass();
-        renderPassInfo.framebuffer = engineSwapChain->getFrameBuffer(currentImageIndex);
+   void EngineRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
+      assert(isFrameStarted && "can't call beginFrame while frame not in progress");
+      assert(commandBuffer == getCurrentCommandBuffer() && "can't begin renderPass on command buffer from diffrent frame");
 
-        renderPassInfo.renderArea.offset = {0,0};
-        renderPassInfo.renderArea.extent = engineSwapChain->getSwapChainExtent();
+      VkCommandBufferBeginInfo beginInfo{};
+      beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-        std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = {0.01f, 0.01f, 0.01f, 1.0f};
-        clearValues[1].depthStencil = {1.0f, 0};
+      VkRenderPassBeginInfo renderPassInfo{};
+      renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+      renderPassInfo.renderPass = engineSwapChain->getRenderPass();
+      renderPassInfo.framebuffer = engineSwapChain->getFrameBuffer(currentImageIndex);
 
-        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-        renderPassInfo.pClearValues = clearValues.data();
+      renderPassInfo.renderArea.offset = {0, 0};
+      renderPassInfo.renderArea.extent = engineSwapChain->getSwapChainExtent();
 
-        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+      std::array<VkClearValue, 2> clearValues{};
+      clearValues[0].color = {0.01f, 0.01f, 0.01f, 1.0f};
+      clearValues[1].depthStencil = {1.0f, 0};
 
-        VkViewport viewport{};
-        viewport.x = 0.0f;
-        viewport.y = 0.0f;
-        viewport.width = static_cast<float>(engineSwapChain->getSwapChainExtent().width);
-        viewport.height = static_cast<float>(engineSwapChain->getSwapChainExtent().height);
-        viewport.minDepth = 0.0f;
-        viewport.maxDepth = 1.0f;
-        VkRect2D scissor{{0, 0}, engineSwapChain->getSwapChainExtent()};
-        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-        vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-    }
+      renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+      renderPassInfo.pClearValues = clearValues.data();
 
-    void EngineRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer){
-        assert(isFrameStarted && "can't call endSwapChainRenderPass while frame not in progress");
-        assert(commandBuffer == getCurrentCommandBuffer() && "can't end renderPass on command buffer from diffrent frame");
+      vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdEndRenderPass(commandBuffer);
-    }
+      VkViewport viewport{};
+      viewport.x = 0.0f;
+      viewport.y = 0.0f;
+      viewport.width = static_cast<float>(engineSwapChain->getSwapChainExtent().width);
+      viewport.height = static_cast<float>(engineSwapChain->getSwapChainExtent().height);
+      viewport.minDepth = 0.0f;
+      viewport.maxDepth = 1.0f;
+      VkRect2D scissor{{0, 0}, engineSwapChain->getSwapChainExtent()};
+      vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+      vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+   }
 
-}
+   void EngineRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
+      assert(isFrameStarted && "can't call endSwapChainRenderPass while frame not in progress");
+      assert(commandBuffer == getCurrentCommandBuffer() && "can't end renderPass on command buffer from diffrent frame");
+
+      vkCmdEndRenderPass(commandBuffer);
+   }
+
+} // namespace gears

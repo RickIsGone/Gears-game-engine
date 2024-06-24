@@ -1,35 +1,34 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "engineWindow.hpp"
 #include "engineDevice.hpp"
 #include "engineGameObject.hpp"
 #include "engineRenderer.hpp"
 
-#include <memory>
-#include <vector>
+namespace gears {
 
-namespace gears{
+   class Application {
+   public:
+      static constexpr int WIDTH = 1280;
+      static constexpr int HEIGHT = 720;
 
-    class Application{
-    public:
-        static constexpr int WIDTH = 800;
-        static constexpr int HEIGHT = 600;
+      Application();
+      ~Application();
 
-        Application();
-        ~Application();
+      Application(const Application&) = delete;
+      Application& operator=(const Application&) = delete;
 
-        Application(const Application &)= delete;
-        Application &operator=(const Application &)= delete;
+      void run();
 
-        void run();
-    private:
+   private:
+      void loadGameObjects();
 
-        void loadGameObjects();
-
-        EngineWindow engineWindow{WIDTH, HEIGHT, "Gears engine goes brrrrrrrrrrrr"};
-        EngineDevice engineDevice{engineWindow};
-        EngineRenderer engineRenderer{engineWindow, engineDevice};
-        std::vector<EngineGameObject> gameObjects;
-
-    };
-}
+      EngineWindow engineWindow{WIDTH, HEIGHT, "Gears engine goes brrrrrrrrrrrr"};
+      EngineDevice engineDevice{engineWindow};
+      EngineRenderer engineRenderer{engineWindow, engineDevice};
+      std::vector<EngineGameObject> gameObjects;
+   };
+} // namespace gears

@@ -1,53 +1,52 @@
 #pragma once
 
-#include "engineDevice.hpp"
-
-
 #include <string>
 #include <vector>
 
-namespace gears{
+#include "engineDevice.hpp"
 
-    struct PipelineConfigInfo {
-        PipelineConfigInfo() = default;
-        PipelineConfigInfo(const PipelineConfigInfo&) = delete;
-        PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+namespace gears {
 
-        VkPipelineViewportStateCreateInfo viewportInfo;
-        VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
-        VkPipelineRasterizationStateCreateInfo rasterizationInfo;
-        VkPipelineMultisampleStateCreateInfo multisampleInfo;
-        VkPipelineColorBlendAttachmentState colorBlendAttachment;
-        VkPipelineColorBlendStateCreateInfo colorBlendInfo;
-        VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-        std::vector<VkDynamicState> dynamicStateEnables;
-        VkPipelineDynamicStateCreateInfo dynamicStateInfo;
-        VkPipelineLayout pipelineLayout = nullptr;
-        VkRenderPass renderPass = nullptr;
-        uint32_t subpass = 0;
-    };
+   struct PipelineConfigInfo {
+      PipelineConfigInfo() = default;
+      PipelineConfigInfo(const PipelineConfigInfo &) = delete;
+      PipelineConfigInfo &operator=(const PipelineConfigInfo &) = delete;
 
-    class EnginePipeline{
-    public:
-        EnginePipeline(EngineDevice &device, const std::string &vertFilePath, const std::string &fragFilePath, const PipelineConfigInfo& configInfo);  
-        ~EnginePipeline();
+      VkPipelineViewportStateCreateInfo viewportInfo;
+      VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+      VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+      VkPipelineMultisampleStateCreateInfo multisampleInfo;
+      VkPipelineColorBlendAttachmentState colorBlendAttachment;
+      VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+      VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+      std::vector<VkDynamicState> dynamicStateEnables;
+      VkPipelineDynamicStateCreateInfo dynamicStateInfo;
+      VkPipelineLayout pipelineLayout = nullptr;
+      VkRenderPass renderPass = nullptr;
+      uint32_t subpass = 0;
+   };
 
-        EnginePipeline(const EnginePipeline&) = delete;
-        EnginePipeline& operator=(const EnginePipeline&) = delete;
+   class EnginePipeline {
+   public:
+      EnginePipeline(EngineDevice &device, const std::string &vertFilePath, const std::string &fragFilePath, const PipelineConfigInfo &configInfo);
+      ~EnginePipeline();
 
-        void bind(VkCommandBuffer VkCommandBuffer);
+      EnginePipeline(const EnginePipeline &) = delete;
+      EnginePipeline &operator=(const EnginePipeline &) = delete;
 
-        static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
+      void bind(VkCommandBuffer VkCommandBuffer);
 
-    private:
-        static std::vector<char> readFile(const std::string& filePath);
-        void createGraphicsPipeline(const std::string &vertFilePath, const std::string &fragFilePath, const PipelineConfigInfo& configInfo);
+      static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo);
 
-        void createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule);
+   private:
+      static std::vector<char> readFile(const std::string &filePath);
+      void createGraphicsPipeline(const std::string &vertFilePath, const std::string &fragFilePath, const PipelineConfigInfo &configInfo);
 
-        EngineDevice &engineDevice;
-        VkPipeline graphicsPipeline;
-        VkShaderModule vertShaderModule;
-        VkShaderModule fragShaderModule;
-    };
-}
+      void createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule);
+
+      EngineDevice &engineDevice;
+      VkPipeline graphicsPipeline;
+      VkShaderModule vertShaderModule;
+      VkShaderModule fragShaderModule;
+   };
+} // namespace gears

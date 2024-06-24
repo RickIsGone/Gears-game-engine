@@ -1,34 +1,31 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "enginePipeline.hpp"
 #include "engineDevice.hpp"
 #include "engineGameObject.hpp"
 #include "engineCamera.hpp"
 
-#include <memory>
-#include <vector>
+namespace gears {
 
-namespace gears{
+   class EngineRenderSystem {
+   public:
+      EngineRenderSystem(EngineDevice &device, VkRenderPass renderPass);
+      ~EngineRenderSystem();
 
-    class EngineRenderSystem{
-    public:
+      EngineRenderSystem(const EngineRenderSystem &) = delete;
+      EngineRenderSystem &operator=(const EngineRenderSystem &) = delete;
 
-        EngineRenderSystem(EngineDevice& device, VkRenderPass renderPass);
-        ~EngineRenderSystem();
+      void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject> &gameObjects, const EngineCamera &camera);
 
-        EngineRenderSystem(const EngineRenderSystem &)= delete;
-        EngineRenderSystem &operator=(const EngineRenderSystem &)= delete;
+   private:
+      void createPipelineLayout();
+      void createPipeline(VkRenderPass renderPass);
 
-        void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera);
-
-    private:
-
-        void createPipelineLayout();
-        void createPipeline(VkRenderPass renderPass);
-
-        EngineDevice &engineDevice;
-        std::unique_ptr<EnginePipeline> enginePipeline;
-        VkPipelineLayout pipelineLayout;
-
-    };
-}
+      EngineDevice &engineDevice;
+      std::unique_ptr<EnginePipeline> enginePipeline;
+      VkPipelineLayout pipelineLayout;
+   };
+} // namespace gears

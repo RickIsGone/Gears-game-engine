@@ -75,6 +75,8 @@
         "shared_mutex": "cpp",
         "source_location": "cpp",
         "stop_token": "cpp",
-        "thread": "cpp"
-    }
+        "thread": "cpp",
+        "*.ipp": "cpp"
+    },
+    "editor.autoClosingBrackets": "always"
 }
