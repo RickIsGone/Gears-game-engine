@@ -13,7 +13,7 @@
 
 </details>  
 
-<h1>Libraries</h1>  
+# Libraries
 
 * [GLFW](https://github.com/glfw/glfw)
 * [VULKAN](https://www.lunarg.com/vulkan-sdk/)
