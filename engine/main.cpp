@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
       GRS_LOG_EXIT("terminating engine because of exception: " + std::string(e.what()), e.where());
 
    } catch (const std::exception& e) {
-      GRS_EXIT("paused on unhandled exception: " + std::string(e.what()));
+      GRS_LOG_EXIT("paused on unhandled exception: " + std::string(e.what()), std::source_location::current());
    }
 
    gears::Logger::log("engine successfully terminated");

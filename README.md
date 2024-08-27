@@ -3,7 +3,7 @@
 
 # Building
 
-first of all you need to clone the repo using *git*, to do so go to the desired location you want the project to be in and paste this line in your terminal:
+first of all you need to clone the repo using `git`, to do so go to the desired location you want the project to be in and paste this line in your terminal:
 
 ```bash
 git clone https://github.com/RickIsGone/Gears-game-engine

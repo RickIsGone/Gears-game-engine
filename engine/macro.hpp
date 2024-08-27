@@ -1,6 +1,7 @@
 #pragma once
 
 #ifdef GRS_DEBUG
+   #include <iostream>
 
    #if defined(_WIN32)
       #define GRS_PAUSE system("pause")
@@ -9,12 +10,18 @@
       #define GRS_PAUSE                             \
          std::cout << "press enter to continue..."; \
          std::cin.get()
+
    #endif
 
+   #define GRS_EXIT(x) \
+      std::cerr << x;  \
+      GRS_PAUSE;       \
+      exit(EXIT_FAILURE)
 
 #else
 
    #define GRS_PAUSE
+   #define GRS_EXIT(x)
 
    #if defined(_WIN32)
       #include <Windows.h>
@@ -31,12 +38,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 #endif
 
-#include <iostream>
-
-#define GRS_EXIT(x) \
-   std::cerr << x;  \
-   GRS_PAUSE;       \
-   exit(EXIT_FAILURE)
 
 #define GRS_LOG_EXIT(x, y)     \
    gears::Logger::error(x, y); \

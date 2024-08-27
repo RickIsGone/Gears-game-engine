@@ -1,15 +1,16 @@
 #pragma once
 
 #include <source_location>
+#include <stdexcept>
 #include <string>
 
 namespace gears::Logger {
-   class loggerException : public std::exception {
+   class loggerException : public std::runtime_error {
    private:
       std::source_location loc;
 
    public:
-      using baseClass = exception;
+      using baseClass = runtime_error;
 
       loggerException(const std::string& message, const std::source_location& location = std::source_location::current())
           : loc{location}, baseClass{message.c_str()} {};
