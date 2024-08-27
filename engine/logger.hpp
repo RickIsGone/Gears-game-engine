@@ -4,14 +4,18 @@
 #include <string>
 
 namespace gears::Logger {
-
    class loggerException : public std::exception {
    private:
       std::source_location loc;
 
    public:
+      using baseClass = exception;
+
       loggerException(const std::string& message, const std::source_location& location = std::source_location::current())
-          : loc{location}, exception{message.c_str()} {};
+          : loc{location}, baseClass{message.c_str()} {};
+
+      loggerException(const char* message, const std::source_location& location = std::source_location::current())
+          : loc{location}, baseClass{message} {};
 
       std::source_location where() const { return loc; }
    };
