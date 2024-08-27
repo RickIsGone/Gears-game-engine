@@ -1,7 +1,4 @@
-#include <stdexcept>
-#include <array>
 #include <chrono>
-#include <iostream>
 
 #include "Application.hpp"
 #include "engineRenderSystem.hpp"
@@ -22,14 +19,10 @@ namespace gears {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             if (glfwRawMouseMotionSupported())
                glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-
-            Logger::log("Pressed RMB");
          } else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             if (glfwRawMouseMotionSupported())
                glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
-
-            Logger::log("Released RMB");
          }
       }
    }
@@ -60,7 +53,7 @@ namespace gears {
          float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
          currentTime = newTime;
 
-         glfwSetMouseButtonCallback(engineWindow.getWindow(), mouseCallback); // checks if the RMB is pressed to then either use camera mode or the mouse
+         glfwSetMouseButtonCallback(engineWindow.getWindow(), mouseCallback); // checks if the RMB is pressed to then either use the camera or the mouse
          if (glfwGetMouseButton(engineWindow.getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
             cameraController.moveInPlaneYXZ(engineWindow.getWindow(), cursor, deltaTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
@@ -80,7 +73,6 @@ namespace gears {
       glfwDestroyCursor(cursor);
       vkDeviceWaitIdle(engineDevice.device());
    }
-
 
    void Application::loadGameObjects() {
       std::shared_ptr<EngineModel> engineModel = EngineModel::createModelFromFile(engineDevice, "fish.obj");

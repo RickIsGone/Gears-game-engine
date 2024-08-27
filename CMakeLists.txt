@@ -7,7 +7,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE})
 
 file(GLOB SOURCES "engine/*.cpp")
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi")    #debug
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") # debug
 
 # compiling shaders
 file(GLOB VERT_SHADERS "engine/shaders/*.vert")
@@ -41,9 +41,10 @@ endforeach(shader)
 
 if(${CMAKE_SYSTEM} MATCHES Windows)
     if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES MinSizeRel)
-        add_executable(Gears WIN32 ${SOURCES})
+        add_executable(Gears WIN32 ${SOURCES} script.rc)
     else()
-        add_executable(Gears ${SOURCES})
+        add_executable(Gears ${SOURCES} script.rc)
+        add_definitions(-DGRS_DEBUG)
     endif()
 else()
     add_executable(Gears ${SOURCES})

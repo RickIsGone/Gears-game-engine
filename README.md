@@ -21,7 +21,7 @@ after doing this follow the instruction for the targeted OS
 
   **WORK IN PROGRESS**  
 
-  if you dont have a c++ installer on your machine you can get it by pasting this line in the terminal:
+  if you dont have a c++ compiler installed on your machine you can get it by pasting this line in the terminal:
 
   ```bash
   sudo apt install clang

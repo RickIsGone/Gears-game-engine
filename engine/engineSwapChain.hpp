@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <vector>
 #include <memory>
 
@@ -15,12 +14,12 @@ namespace gears {
    public:
       static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-      EngineSwapChain(EngineDevice &deviceRef, VkExtent2D windowExtent);
-      EngineSwapChain(EngineDevice &deviceRef, VkExtent2D windowExtent, std::shared_ptr<EngineSwapChain> previous);
+      EngineSwapChain(EngineDevice& deviceRef, VkExtent2D windowExtent);
+      EngineSwapChain(EngineDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<EngineSwapChain> previous);
       ~EngineSwapChain();
 
-      EngineSwapChain(const EngineSwapChain &) = delete;
-      EngineSwapChain &operator=(const EngineSwapChain &) = delete;
+      EngineSwapChain(const EngineSwapChain&) = delete;
+      EngineSwapChain& operator=(const EngineSwapChain&) = delete;
 
       VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
       VkRenderPass getRenderPass() { return renderPass; }
@@ -36,10 +35,10 @@ namespace gears {
       }
       VkFormat findDepthFormat();
 
-      VkResult acquireNextImage(uint32_t *imageIndex);
-      VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
+      VkResult acquireNextImage(uint32_t* imageIndex);
+      VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
-      bool compareSwapFormats(const EngineSwapChain &swapChain) const { return swapChain.swapChainDepthFormat == swapChainDepthFormat && swapChain.swapChainImageFormat == swapChainImageFormat; }
+      bool compareSwapFormats(const EngineSwapChain& swapChain) const { return swapChain.swapChainDepthFormat == swapChainDepthFormat && swapChain.swapChainImageFormat == swapChainImageFormat; }
 
    private:
       void init();
@@ -52,10 +51,10 @@ namespace gears {
 
       // Helper functions
       VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-          const std::vector<VkSurfaceFormatKHR> &availableFormats);
+          const std::vector<VkSurfaceFormatKHR>& availableFormats);
       VkPresentModeKHR chooseSwapPresentMode(
-          const std::vector<VkPresentModeKHR> &availablePresentModes);
-      VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+          const std::vector<VkPresentModeKHR>& availablePresentModes);
+      VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
       VkFormat swapChainImageFormat;
       VkFormat swapChainDepthFormat;
@@ -70,7 +69,7 @@ namespace gears {
       std::vector<VkImage> swapChainImages;
       std::vector<VkImageView> swapChainImageViews;
 
-      EngineDevice &device;
+      EngineDevice& device;
       VkExtent2D windowExtent;
 
       VkSwapchainKHR swapChain;

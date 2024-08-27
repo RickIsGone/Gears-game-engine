@@ -1,7 +1,5 @@
-#include <stdexcept>
-#include <array>
-
 #include "engineRenderSystem.hpp"
+#include "logger.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -14,7 +12,7 @@ namespace gears {
       alignas(16) glm::vec3 color;
    };
 
-   EngineRenderSystem::EngineRenderSystem(EngineDevice &device, VkRenderPass renderPass) : engineDevice{device} {
+   EngineRenderSystem::EngineRenderSystem(EngineDevice& device, VkRenderPass renderPass) : engineDevice{device} {
       createPipelineLayout();
       createPipeline(renderPass);
    }
@@ -35,7 +33,7 @@ namespace gears {
       pipelineLayoutInfo.pSetLayouts = nullptr;
       pipelineLayoutInfo.pushConstantRangeCount = 1;
       pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
-      if (vkCreatePipelineLayout(engineDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) throw std::runtime_error("failed to create a pipeline layout");
+      if (vkCreatePipelineLayout(engineDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) throw Logger::loggerException("failed to create a pipeline layout");
    }
 
    void EngineRenderSystem::createPipeline(VkRenderPass renderPass) {
@@ -48,12 +46,12 @@ namespace gears {
       enginePipeline = std::make_unique<EnginePipeline>(engineDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
    }
 
-   void EngineRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject> &gameObjects, const EngineCamera &camera) {
+   void EngineRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera) {
       enginePipeline->bind(commandBuffer);
 
       auto projectionView = camera.getProjection() * camera.getView();
 
-      for (auto &obj : gameObjects) {
+      for (auto& obj : gameObjects) {
          // obj.transform.rotation.y = glm::mod<float>(obj.transform.rotation.y + 0.01f, 2.0f * glm::pi<float>());
          // obj.transform.rotation.x = glm::mod<float>(obj.transform.rotation.y + 0.001f, 2.0f * glm::pi<float>());
 

@@ -1,5 +1,3 @@
-#include <stdexcept>
-
 #include "engineWindow.hpp"
 #include "logger.hpp"
 
@@ -26,7 +24,7 @@ namespace gears {
 
    void EngineWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
       if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS)
-         throw std::runtime_error("failed to create window surface");
+         throw Logger::loggerException("failed to create window surface");
    }
 
    void EngineWindow::frameBufferResizedCallback(GLFWwindow* window, int width, int height) {

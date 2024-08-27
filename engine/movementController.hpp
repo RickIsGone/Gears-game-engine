@@ -1,7 +1,6 @@
 #pragma once
 
 #include "engineGameObject.hpp"
-#include "engineWindow.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE

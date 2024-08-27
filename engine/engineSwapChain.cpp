@@ -1,23 +1,21 @@
 #include <array>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <limits>
-#include <set>
-#include <stdexcept>
 
 #include "engineSwapChain.hpp"
+#include "logger.hpp"
 
 namespace gears {
 
-   EngineSwapChain::EngineSwapChain(EngineDevice &deviceRef, VkExtent2D extent, std::shared_ptr<EngineSwapChain> previous)
+   EngineSwapChain::EngineSwapChain(EngineDevice& deviceRef, VkExtent2D extent, std::shared_ptr<EngineSwapChain> previous)
        : device{deviceRef}, windowExtent{extent}, oldSwapChain{previous} {
       init();
 
       oldSwapChain = nullptr;
    }
 
-   EngineSwapChain::EngineSwapChain(EngineDevice &deviceRef, VkExtent2D extent)
+   EngineSwapChain::EngineSwapChain(EngineDevice& deviceRef, VkExtent2D extent)
        : device{deviceRef}, windowExtent{extent} {
       init();
    }
@@ -62,7 +60,7 @@ namespace gears {
       }
    }
 
-   VkResult EngineSwapChain::acquireNextImage(uint32_t *imageIndex) {
+   VkResult EngineSwapChain::acquireNextImage(uint32_t* imageIndex) {
       vkWaitForFences(
           device.device(),
           1,
@@ -82,7 +80,7 @@ namespace gears {
    }
 
    VkResult EngineSwapChain::submitCommandBuffers(
-       const VkCommandBuffer *buffers, uint32_t *imageIndex) {
+       const VkCommandBuffer* buffers, uint32_t* imageIndex) {
       if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
          vkWaitForFences(device.device(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
       }
@@ -105,9 +103,8 @@ namespace gears {
       submitInfo.pSignalSemaphores = signalSemaphores;
 
       vkResetFences(device.device(), 1, &inFlightFences[currentFrame]);
-      if (vkQueueSubmit(device.graphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) !=
-          VK_SUCCESS) {
-         throw std::runtime_error("failed to submit draw command buffer!");
+      if (vkQueueSubmit(device.graphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
+         throw Logger::loggerException("failed to submit draw command buffer!");
       }
 
       VkPresentInfoKHR presentInfo = {};
@@ -162,7 +159,7 @@ namespace gears {
          createInfo.pQueueFamilyIndices = queueFamilyIndices;
       } else {
          createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-         createInfo.queueFamilyIndexCount = 0;     // Optional
+         createInfo.queueFamilyIndexCount = 0; // Optional
          createInfo.pQueueFamilyIndices = nullptr; // Optional
       }
 
@@ -175,7 +172,7 @@ namespace gears {
       createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
       if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-         throw std::runtime_error("failed to create swap chain!");
+         throw Logger::loggerException("failed to create swap chain!");
       }
 
       // we only specified a minimum number of images in the swap chain, so the implementation is
@@ -206,7 +203,7 @@ namespace gears {
 
          if (vkCreateImageView(device.device(), &viewInfo, nullptr, &swapChainImageViews[i]) !=
              VK_SUCCESS) {
-            throw std::runtime_error("failed to create texture image view!");
+            throw Logger::loggerException("failed to create texture image view!");
          }
       }
    }
@@ -268,7 +265,7 @@ namespace gears {
       renderPassInfo.pDependencies = &dependency;
 
       if (vkCreateRenderPass(device.device(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
-         throw std::runtime_error("failed to create render pass!");
+         throw Logger::loggerException("failed to create render pass!");
       }
    }
 
@@ -292,7 +289,7 @@ namespace gears {
                  &framebufferInfo,
                  nullptr,
                  &swapChainFramebuffers[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create framebuffer!");
+            throw Logger::loggerException("failed to create framebuffer!");
          }
       }
    }
@@ -341,7 +338,7 @@ namespace gears {
          viewInfo.subresourceRange.layerCount = 1;
 
          if (vkCreateImageView(device.device(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create texture image view!");
+            throw Logger::loggerException("failed to create texture image view!");
          }
       }
    }
@@ -365,14 +362,14 @@ namespace gears {
              vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) !=
                  VK_SUCCESS ||
              vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create synchronization objects for a frame!");
+            throw Logger::loggerException("failed to create synchronization objects for a frame!");
          }
       }
    }
 
    VkSurfaceFormatKHR EngineSwapChain::chooseSwapSurfaceFormat(
-       const std::vector<VkSurfaceFormatKHR> &availableFormats) {
-      for (const auto &availableFormat : availableFormats) {
+       const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+      for (const auto& availableFormat : availableFormats) {
          if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
              availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return availableFormat;
@@ -383,26 +380,26 @@ namespace gears {
    }
 
    VkPresentModeKHR EngineSwapChain::chooseSwapPresentMode(
-       const std::vector<VkPresentModeKHR> &availablePresentModes) {
-      for (const auto &availablePresentMode : availablePresentModes) {
+       const std::vector<VkPresentModeKHR>& availablePresentModes) {
+      for (const auto& availablePresentMode : availablePresentModes) {
          if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-            std::cout << "Present mode: Mailbox" << std::endl;
+            Logger::log("Present mode: Mailbox");
             return availablePresentMode;
          }
       }
 
       // for (const auto &availablePresentMode : availablePresentModes) {
       //   if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-      //     std::cout << "Present mode: Immediate" << std::endl;
+      //      Logger::log("Present mode: Immediate");
       //     return availablePresentMode;
       //   }
       // }
 
-      std::cout << "Present mode: V-Sync" << std::endl;
+      Logger::log("Present mode: V-Sync");
       return VK_PRESENT_MODE_FIFO_KHR;
    }
 
-   VkExtent2D EngineSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
+   VkExtent2D EngineSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
       if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
          return capabilities.currentExtent;
       } else {

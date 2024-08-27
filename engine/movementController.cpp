@@ -1,8 +1,4 @@
-#include <iostream>
-
 #include "movementController.hpp"
-#include "engineWindow.hpp"
-#include "logger.hpp"
 
 namespace gears {
 
@@ -11,8 +7,6 @@ namespace gears {
       glfwGetCursorPos(window, &posY, &posX);
       float deltaY = posY - prevPosY;
       float deltaX = posX - prevPosX;
-
-      if (deltaX != 0 && deltaY != 0) Logger::log("deltaX: " + std::to_string(deltaX) + ", deltaY: " + std::to_string(deltaY));
 
       gameObject.transform.rotation = glm::angleAxis(-deltaY * mouseSense, glm::vec3(0.f, -1.f, 0.f)) * gameObject.transform.rotation;
       gameObject.transform.rotation = gameObject.transform.rotation * glm::angleAxis(deltaX * mouseSense, glm::vec3(-1.f, 0.f, 0.f));

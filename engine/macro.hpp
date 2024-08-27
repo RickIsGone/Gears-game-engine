@@ -1,26 +1,31 @@
 #pragma once
 
+#ifdef GRS_DEBUG
+   #include <iostream>
 
-#define GEARS_ASSERT assert
+   #define GRS_EXIT(x) \
+      std::cerr << x;  \
+      GRS_PAUSE;       \
+      exit(EXIT_FAILURE)
+
+   #if defined(_WIN32)
+      #define GRS_PAUSE system("pause")
+
+   #elif defined(_LINUX_)
+      #define GRS_PAUSE                             \
+         std::cout << "press enter to continue..."; \
+         std::cin.get()
+   #endif
 
 
-#ifdef DEBINFO
-
-#ifdef _WIN32
-#define GEARS_DEBUG_WAIT system("pause")
 #else
-#define GEARS_DEBUG_WAIT                      \
-   std::cout << "press enter to continue..."; \
-   std::cin.get()
-#endif
 
-#else
+   #define GRS_PAUSE
+   #define GRS_EXIT(x)
 
-#define GEARS_DEBUG_WAIT
-
-#ifdef _WIN32
-#include <Windows.h>
-int main(int, char **);
+   #if defined(_WIN32)
+      #include <Windows.h>
+int main(int, char**);
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
    (void)hInstance;
    (void)hPrevInstance;
@@ -29,6 +34,12 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
    return main(__argc, __argv);
 }
-#endif
+   #endif
 
 #endif
+
+// #if defined(_WIN32)
+
+// #elif defined(_LINUX_)
+
+// #endif

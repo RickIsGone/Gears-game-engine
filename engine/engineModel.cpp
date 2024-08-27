@@ -1,10 +1,10 @@
 #include <cassert>
 #include <cstring>
-#include <iostream>
 #include <unordered_map>
 
 #include "engineModel.hpp"
 #include "engineUtils.hpp"
+#include "logger.hpp"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -12,9 +12,9 @@
 #include <glm/gtx/hash.hpp>
 
 namespace std {
-   template<>
+   template <>
    struct hash<gears::EngineModel::Vertex> {
-      size_t operator()(gears::EngineModel::Vertex const &vertex) const {
+      size_t operator()(gears::EngineModel::Vertex const& vertex) const {
          size_t seed = 0;
          gears::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
          return seed;
@@ -24,7 +24,7 @@ namespace std {
 
 namespace gears {
 
-   EngineModel::EngineModel(EngineDevice &device, const EngineModel::Data &data) : engineDevice(device) {
+   EngineModel::EngineModel(EngineDevice& device, const EngineModel::Data& data) : engineDevice(device) {
       createVertexBuffers(data.vertices);
       createIndexBuffer(data.indices);
    }
@@ -39,14 +39,14 @@ namespace gears {
       }
    }
 
-   std::unique_ptr<EngineModel> EngineModel::createModelFromFile(EngineDevice &device, const std::string &filepath) {
+   std::unique_ptr<EngineModel> EngineModel::createModelFromFile(EngineDevice& device, const std::string& filepath) {
       Data data{};
       data.loadModel(filepath);
-      std::cout << "vertex count: " << data.vertices.size() << '\n';
+      Logger::log("vertex count: " + std::to_string(data.vertices.size()));
       return std::make_unique<EngineModel>(device, data);
    }
 
-   void EngineModel::createVertexBuffers(const std::vector<Vertex> &vertices) {
+   void EngineModel::createVertexBuffers(const std::vector<Vertex>& vertices) {
       vertexCount = static_cast<uint32_t>(vertices.size());
       assert(vertexCount >= 3 && "Vertex count must be at least 3");
 
@@ -62,7 +62,7 @@ namespace gears {
           stagingBuffer,
           stagingBufferMemory);
 
-      void *data;
+      void* data;
       vkMapMemory(engineDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
       memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
       vkUnmapMemory(engineDevice.device(), stagingBufferMemory);
@@ -80,7 +80,7 @@ namespace gears {
       vkFreeMemory(engineDevice.device(), stagingBufferMemory, nullptr);
    }
 
-   void EngineModel::createIndexBuffer(const std::vector<uint32_t> &indices) {
+   void EngineModel::createIndexBuffer(const std::vector<uint32_t>& indices) {
       indexCount = static_cast<uint32_t>(indices.size());
       hasIndexBuffer = indexCount > 0;
       if (!hasIndexBuffer) return;
@@ -97,7 +97,7 @@ namespace gears {
           stagingBuffer,
           stagingBufferMemory);
 
-      void *data;
+      void* data;
       vkMapMemory(engineDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
       memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
       vkUnmapMemory(engineDevice.device(), stagingBufferMemory);
@@ -152,21 +152,21 @@ namespace gears {
       return attributeDescriptions;
    }
 
-   void EngineModel::Data::loadModel(const std::string &filepath) {
+   void EngineModel::Data::loadModel(const std::string& filepath) {
       tinyobj::attrib_t attrib;
       std::vector<tinyobj::shape_t> shapes;
       std::vector<tinyobj::material_t> materials;
       std::string warn, err;
 
-      if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) throw std::runtime_error(warn + err);
+      if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) throw Logger::loggerException(warn + err);
 
       vertices.clear();
       indices.clear();
 
       std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
-      for (const auto &shape : shapes) {
-         for (const auto &index : shape.mesh.indices) {
+      for (const auto& shape : shapes) {
+         for (const auto& index : shape.mesh.indices) {
             Vertex vertex{};
 
             if (index.vertex_index >= 0) {
