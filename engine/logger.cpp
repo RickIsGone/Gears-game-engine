@@ -63,7 +63,6 @@ namespace gears::Logger {
    void check() {
       logFile.exceptions(std::ios::failbit);
       logFile.open("logFile.log");
-      if (!logFile) exit(EXIT_FAILURE);
 #if defined(_WIN32)
       gears::Logger::logNoTrace("windows build running");
 #elif defined(_LINUX_)
