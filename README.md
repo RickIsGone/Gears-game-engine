@@ -36,9 +36,6 @@ after doing this follow the instruction for the targeted OS
   ```bash
   sudo apt update
   sudo apt upgrade
-  sudo apt install libglfw3-dev
-  sudo apt install libtinyobjloader-dev
-  sudo apt install libglm-dev
   sudo apt install libvulkan-dev
   ```  
 

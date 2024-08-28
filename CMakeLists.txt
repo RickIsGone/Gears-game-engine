@@ -51,12 +51,14 @@ else()
 endif()
 
 # adding extern libs
-find_package(glfw3 REQUIRED)
-find_package(Vulkan REQUIRED)
-find_package(glm REQUIRED)
-find_package(tinyobjloader REQUIRED)
+add_subdirectory(engine/vendor/glfw EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor/glm EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor/tinyobjloader EXCLUDE_FROM_ALL)
 
-target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader::tinyobjloader)
+find_package(Vulkan REQUIRED)
+
+target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader)
+target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
