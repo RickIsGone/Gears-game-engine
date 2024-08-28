@@ -31,15 +31,15 @@ after doing this follow the instruction for the targeted OS
   sudo apt install clang
   ```
 
-  To build the engine you'll first need to install the required libs, to do so you'll have to paste these lines in the terminal:  
+  To build the engine you'll first need to install the required packages, to do so you'll have to paste these lines in the terminal:  
 
   ```bash
   sudo apt update
   sudo apt upgrade
-  sudo apt install libvulkan-dev
+  sudo apt install libwayland-dev libvulkan-dev libxkbcommon-dev xorg-dev
   ```  
 
-  after installing the libs you'll need to install glslc to compile the shaders, paste this in the terminal:
+  after installing the packages you'll need to install glslc to compile the shaders, paste this in the terminal:
 
   ```bash
   sudo apt install glslc

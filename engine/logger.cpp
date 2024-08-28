@@ -66,7 +66,7 @@ namespace gears::Logger {
 #if defined(_WIN32)
       gears::Logger::logNoTrace("windows build running");
 #elif defined(__linux__)
-      gears::Logger::logNoTrace("linux build running")
+      gears::Logger::logNoTrace("linux build running");
 #endif
    }
 
