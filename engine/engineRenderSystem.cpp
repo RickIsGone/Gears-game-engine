@@ -43,7 +43,7 @@ namespace gears {
       EnginePipeline::defaultPipelineConfigInfo(pipelineConfig);
       pipelineConfig.renderPass = renderPass;
       pipelineConfig.pipelineLayout = pipelineLayout;
-      enginePipeline = std::make_unique<EnginePipeline>(engineDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
+      enginePipeline = std::make_unique<EnginePipeline>(engineDevice, "shaders/shader.vert.spv", "shaders/shader.frag.spv", pipelineConfig);
    }
 
    void EngineRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera) {
