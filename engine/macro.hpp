@@ -6,7 +6,7 @@
    #if defined(_WIN32)
       #define GRS_PAUSE system("pause")
 
-   #elif defined(__linux__) || defined(_LINUX_)
+   #elif defined(__linux__)
       #define GRS_PAUSE                             \
          std::cout << "press enter to continue..."; \
          std::cin.get()
@@ -47,6 +47,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 // #if defined(_WIN32)
 
-// #elif defined(__linux__) || defined(_LINUX_)
+// #elif defined(__linux__)
 
 // #endif

@@ -1,9 +1,9 @@
-[submodule "vendor/glfw"]
-	path = vendor/glfw
+[submodule "engine/vendor/glfw"]
+	path = engine/vendor/glfw
 	url = https://github.com/glfw/glfw
-[submodule "vendor/tinyobjloader"]
-	path = vendor/tinyobjloader
+[submodule "engine/vendor/tinyobjloader"]
+	path = engine/vendor/tinyobjloader
 	url = https://github.com/tinyobjloader/tinyobjloader
-[submodule "vendor/glm"]
-	path = vendor/glm
+[submodule "engine/vendor/glm"]
+	path = engine/vendor/glm
 	url = https://github.com/g-truc/glm
