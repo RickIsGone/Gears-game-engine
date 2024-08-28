@@ -5,8 +5,8 @@
 
 first of all you need to clone the repo using `git`, to do so go to the desired location you want the project to be in and paste this line in your terminal:
 
-```bash
-git clone https://github.com/RickIsGone/Gears-game-engine
+```cmd
+git clone --recursive https://github.com/RickIsGone/Gears-game-engine
 ```
 
 after doing this follow the instruction for the targeted OS
@@ -14,6 +14,10 @@ after doing this follow the instruction for the targeted OS
 <details><summary><big>WINDOWS</big></summary><p>
 
   **WORK IN PROGRESS**  
+
+  <!-- To build the engine you'll first need to install the required libs 
+  
+  after you've installed the libs you'll need to install glslc, which is part of the vulkan SDK, which you can download [here](https://vulkan.lunarg.com/sdk/home#windows)   -->
 
 </details>
 
@@ -27,7 +31,7 @@ after doing this follow the instruction for the targeted OS
   sudo apt install clang
   ```
 
-  To build the engine you first need to install the required libs, to do so you'll have to paste these lines in the terminal:  
+  To build the engine you'll first need to install the required libs, to do so you'll have to paste these lines in the terminal:  
 
   ```bash
   sudo apt update
