@@ -64,9 +64,17 @@ namespace gears::Logger {
       logFile.exceptions(std::ios::failbit);
       logFile.open("logFile.log");
 #if defined(_WIN32)
-      gears::Logger::logNoTrace("windows build running");
+   #ifdef GRS_DEBUG
+      gears::Logger::logNoTrace("windows build running in debug mode");
+   #else
+      gears::Logger::logNoTrace("linux build running in release mode");
+   #endif
 #elif defined(__linux__)
-      gears::Logger::logNoTrace("linux build running");
+   #ifdef GRS_DEBUG
+      gears::Logger::logNoTrace("linux build running in debug mode");
+   #else
+      gears::Logger::logNoTrace("linux build running in release mode");
+   #endif
 #endif
    }
 
