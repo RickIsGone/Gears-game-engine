@@ -45,7 +45,7 @@ after doing this follow the instruction for the targeted OS
   sudo apt install glslc
   ```
 
-  after you are done installing the libs and glslc if you dont have cmake installed get it by pasting this line in the terminal:
+  after you are done installing the packages and glslc if you dont have cmake installed get it by pasting this line in the terminal:
 
   ```bash
   sudo apt install cmake

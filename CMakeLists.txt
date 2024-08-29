@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 20)
 include(CTest)
 enable_testing()
 
-if(NOT DEFINED ${CMAKE_BUILD_TYPE})
+if(${CMAKE_BUILD_TYPE} STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
@@ -37,7 +37,7 @@ foreach(shader IN LISTS SHADERS)
 endforeach(shader)
 
 # copying compiled shaders and removing the console if the application is in release mode
-message("copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders")
+message("Copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders")
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders)
 
 foreach(shader IN LISTS SHADERS)
