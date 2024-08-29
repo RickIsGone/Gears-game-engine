@@ -4,11 +4,14 @@ set(CMAKE_CXX_STANDARD 20)
 include(CTest)
 enable_testing()
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "")
-    set(CMAKE_BUILD_TYPE "Release")
-endif()
+if(NOT MSVC_IDE)
+    # setting the build type to Release as a fallback when no type is provided during generation
+    if(CMAKE_BUILD_TYPE STREQUAL "" OR NOT DEFINED CMAKE_BUILD_TYPE)
+        set(CMAKE_BUILD_TYPE "Release")
+    endif()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE})
+endif()
 
 file(GLOB SOURCES "engine/*.cpp")
 
