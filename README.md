@@ -24,11 +24,11 @@ after doing this follow the instruction for the targeted OS
 
   <ins> **3. Compiling the project:** </ins>  
 
-  after you are done installing the Vulkan SDK go in the engine root and make a new directory called `build`  
+  after you are done installing the Vulkan SDK go in the engine root and make a new directory called *build*  
 
-  open a terminal in the directory and type `cmake..`
+  open a terminal in that directory and type `cmake..`
 
-  after you've compiled the engine with Visual studio make sure to move the `shaders` directory in the same directory as the executable or it wont work  
+  after you've compiled the engine with Visual studio make sure to move the *shaders* directory in the same directory as the executable or it wont work  
 
   congratulation! the engine is now compiled and ready to be used
 
@@ -54,7 +54,7 @@ after doing this follow the instruction for the targeted OS
 
   <ins> **3. Compiling the project:** </ins>  
 
-  after installing cmake open the terminal and travel to the root of the engine and paste this in the terminal:
+  after installing glslc open the terminal and travel to the root of the engine directory and paste this in the terminal:
 
   ```bash
   mkdir build
