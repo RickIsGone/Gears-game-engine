@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.23.0)
 project(Gears VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
-include(CTest)
-enable_testing()
 
 if(NOT MSVC_IDE)
     # setting the build type to Release as a fallback when no type is provided during generation
@@ -67,7 +65,3 @@ find_package(Vulkan REQUIRED)
 
 target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader)
 target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader)
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
