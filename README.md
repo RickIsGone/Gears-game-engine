@@ -36,7 +36,7 @@ after doing this follow the instruction for the targeted OS
 
 <details><summary><big>LINUX</big></summary><p>  
 
-  <ins> **2. Downloading the required packages:** </ins>  
+  <ins> **2. Downloading the required packages: (Currently debian based only)** </ins>  
 
   To build the engine you'll first need to install the required packages, to do so you'll have to paste these lines in the terminal:  
 
