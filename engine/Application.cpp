@@ -27,6 +27,7 @@ namespace gears {
       }
    }
 
+
    Application::Application() {
       loadGameObjects();
    }
@@ -44,19 +45,19 @@ namespace gears {
       GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
       glfwGetCursorPos(engineWindow.getWindow(), &cameraController.prevPosX, &cameraController.prevPosY);
 
-      auto currentTime = std::chrono::high_resolution_clock::now();
+      auto prevTime = std::chrono::high_resolution_clock::now();
 
       while (!engineWindow.shouldClose()) {
          glfwPollEvents();
 
-         auto newTime = std::chrono::high_resolution_clock::now();
-         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
-         currentTime = newTime;
+         auto currentTime = std::chrono::high_resolution_clock::now();
+         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - prevTime).count();
+         prevTime = currentTime;
 
          glfwSetMouseButtonCallback(engineWindow.getWindow(), mouseCallback); // checks if the RMB is pressed to then either use the camera or the mouse
          if (glfwGetMouseButton(engineWindow.getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
             cameraController.moveInPlaneYXZ(engineWindow.getWindow(), cursor, deltaTime, viewerObject);
-            camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+            camera.setViewYXZ(viewerObject.transform.position, viewerObject.transform.rotation);
          }
 
          float aspect = engineRenderer.getAspectRatio();
@@ -79,7 +80,7 @@ namespace gears {
 
       auto gameObject = EngineGameObject::createGameObject();
       gameObject.model = engineModel;
-      gameObject.transform.translation = {0.f, 0.f, 2.f};
+      gameObject.transform.position = {0.f, 0.f, 2.f};
       gameObject.transform.scale = {0.5f, 0.5f, 0.5f};
 
       gameObjects.push_back(std::move(gameObject));

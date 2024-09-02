@@ -12,9 +12,9 @@
 namespace gears {
 
    struct TransformComponent {
-      glm::vec3 translation{};
+      glm::vec3 position{};
       glm::vec3 scale{1.f, 1.f, 1.f};
-      glm::vec3 rotation;
+      glm::quat rotation;
 
       glm::mat4 mat4() {
          const float c3 = glm::cos(rotation.z);
@@ -42,7 +42,7 @@ namespace gears {
                  scale.z * (c1 * c2),
                  0.f,
              },
-             {translation.x, translation.y, translation.z, 1.f}};
+             {position.x, position.y, position.z, 1.f}};
       }
    };
 
@@ -55,10 +55,10 @@ namespace gears {
          return EngineGameObject{currentId++};
       }
 
-      EngineGameObject(const EngineGameObject &) = delete;
-      EngineGameObject &operator=(const EngineGameObject &) = delete;
-      EngineGameObject(EngineGameObject &&) = default;
-      EngineGameObject &operator=(EngineGameObject &&) = default;
+      EngineGameObject(const EngineGameObject&) = delete;
+      EngineGameObject& operator=(const EngineGameObject&) = delete;
+      EngineGameObject(EngineGameObject&&) = default;
+      EngineGameObject& operator=(EngineGameObject&&) = default;
 
       id_t getId() { return id; };
 

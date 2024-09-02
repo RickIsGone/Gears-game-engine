@@ -63,6 +63,7 @@ namespace gears::Logger {
    void check() {
       logFile.exceptions(std::ios::failbit);
       logFile.open("logFile.log");
+
 #if defined(_WIN32)
    #ifdef GRS_DEBUG
       gears::Logger::logNoTrace("windows build running in debug mode");
