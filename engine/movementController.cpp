@@ -21,10 +21,6 @@ namespace gears {
       gameObject.transform.rotation = gameObject.transform.rotation * glm::angleAxis(deltaY * mouseSense, glm::vec3(-1.f, 0.f, 0.f));
       gameObject.transform.rotation = glm::normalize(gameObject.transform.rotation);
 
-      // auto forwardDir = glm::vec3(0.f, 0.f, 1.f);
-      // auto rightDir = glm::vec3(1.f, 0.f, 0.f);
-      // auto upDir = glm::vec3(0.f, 1.f, 0.f);
-
       glm::vec3 translate{0.0f};
       if (glfwGetKey(window, keys.moveForward) == GLFW_PRESS) translate += glm::vec3(0.f, 0.f, 1.f);
       if (glfwGetKey(window, keys.moveBackward) == GLFW_PRESS) translate -= glm::vec3(0.f, 0.f, 1.f);
