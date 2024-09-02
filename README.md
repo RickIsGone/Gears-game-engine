@@ -3,54 +3,58 @@
 
 # Building
 
-first of all you need to clone the repo using *git*, to do so go to the desired location you want the project to be in and paste this line in your terminal:
+**WORK IN PROGRESS**  
 
-```bash
-git clone https://github.com/RickIsGone/Gears-game-engine
-```
+## Prerequisites
+
+* cmake  
+* git  
+* Visual studio (Windows)
+
+<ins> **1. Cloning the repo:** </ins>  
+Start by cloning the repo with `git clone --recursive https://github.com/RickIsGone/Gears-game-engine`
 
 after doing this follow the instruction for the targeted OS
 
 <details><summary><big>WINDOWS</big></summary><p>
 
-  **WORK IN PROGRESS**  
+  <ins> **2. Downloading the required packages:** </ins>  
+
+  To build the engine you'll need to install the Vulkan SDK, which you can download [here](https://vulkan.lunarg.com/sdk/home#windows)
+
+  <ins> **3. Compiling the project:** </ins>  
+
+  after you are done installing the Vulkan SDK go in the engine root and make a new directory called *build*  
+
+  open a terminal in that directory and type `cmake..`
+
+  after you've compiled the engine with Visual studio make sure to move the *shaders* directory in the same directory as the executable or it wont work  
+
+  congratulation! the engine is now compiled and ready to be used
 
 </details>
 
 <details><summary><big>LINUX</big></summary><p>  
 
-  **WORK IN PROGRESS**  
+  <ins> **2. Downloading the required packages: (Currently debian based only)** </ins>  
 
-  if you dont have a c++ installer on your machine you can get it by pasting this line in the terminal:
-
-  ```bash
-  sudo apt install clang
-  ```
-
-  To build the engine you first need to install the required libs, to do so you'll have to paste these lines in the terminal:  
+  To build the engine you'll first need to install the required packages, to do so you'll have to paste these lines in the terminal:  
 
   ```bash
   sudo apt update
   sudo apt upgrade
-  sudo apt install libglfw3-dev
-  sudo apt install libtinyobjloader-dev
-  sudo apt install libglm-dev
-  sudo apt install libvulkan-dev
+  sudo apt install libwayland-dev libvulkan-dev libxkbcommon-dev xorg-dev
   ```  
 
-  after installing the libs you'll need to install glslc to compile the shaders, paste this in the terminal:
+  after installing the packages you'll need to install glslc to compile the shaders, paste this in the terminal:
 
   ```bash
   sudo apt install glslc
   ```
 
-  after you are done installing the libs and glslc if you dont have cmake installed get it by pasting this line in the terminal:
+  <ins> **3. Compiling the project:** </ins>  
 
-  ```bash
-  sudo apt install cmake
-  ```
-
-  after installing cmake open the terminal and travel to the root of the engine and paste this in the terminal:
+  after installing glslc open the terminal and travel to the root of the engine directory and paste this in the terminal:
 
   ```bash
   mkdir build

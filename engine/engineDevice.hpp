@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <vector>
 
 #include "engineWindow.hpp"
@@ -29,14 +28,14 @@ namespace gears {
       const bool enableValidationLayers = true;
 #endif
 
-      EngineDevice(EngineWindow &window);
+      EngineDevice(EngineWindow& window);
       ~EngineDevice();
 
       // Not copyable or movable
-      EngineDevice(const EngineDevice &) = delete;
-      EngineDevice &operator=(const EngineDevice &) = delete;
-      EngineDevice(EngineDevice &&) = delete;
-      EngineDevice &operator=(EngineDevice &&) = delete;
+      EngineDevice(const EngineDevice&) = delete;
+      EngineDevice& operator=(const EngineDevice&) = delete;
+      EngineDevice(EngineDevice&&) = delete;
+      EngineDevice& operator=(EngineDevice&&) = delete;
 
       VkCommandPool getCommandPool() { return commandPool; }
       VkDevice device() { return device_; }
@@ -47,15 +46,15 @@ namespace gears {
       SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(physicalDevice); }
       uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
       QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(physicalDevice); }
-      VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+      VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
       // Buffer Helper Functions
       void createBuffer(
           VkDeviceSize size,
           VkBufferUsageFlags usage,
           VkMemoryPropertyFlags properties,
-          VkBuffer &buffer,
-          VkDeviceMemory &bufferMemory);
+          VkBuffer& buffer,
+          VkDeviceMemory& bufferMemory);
       VkCommandBuffer beginSingleTimeCommands();
       void endSingleTimeCommands(VkCommandBuffer commandBuffer);
       void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
@@ -63,10 +62,10 @@ namespace gears {
           VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
 
       void createImageWithInfo(
-          const VkImageCreateInfo &imageInfo,
+          const VkImageCreateInfo& imageInfo,
           VkMemoryPropertyFlags properties,
-          VkImage &image,
-          VkDeviceMemory &imageMemory);
+          VkImage& image,
+          VkDeviceMemory& imageMemory);
 
       VkPhysicalDeviceProperties properties;
 
@@ -80,10 +79,10 @@ namespace gears {
 
       // helper functions
       bool isDeviceSuitable(VkPhysicalDevice device);
-      std::vector<const char *> getRequiredExtensions();
+      std::vector<const char*> getRequiredExtensions();
       bool checkValidationLayerSupport();
       QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-      void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+      void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
       void hasGflwRequiredInstanceExtensions();
       bool checkDeviceExtensionSupport(VkPhysicalDevice device);
       SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
@@ -91,7 +90,7 @@ namespace gears {
       VkInstance instance;
       VkDebugUtilsMessengerEXT debugMessenger;
       VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-      EngineWindow &window;
+      EngineWindow& window;
       VkCommandPool commandPool;
 
       VkDevice device_;
@@ -99,8 +98,8 @@ namespace gears {
       VkQueue graphicsQueue_;
       VkQueue presentQueue_;
 
-      const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
-      const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+      const std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
+      const std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
    };
 
 } // namespace gears

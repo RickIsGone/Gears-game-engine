@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 3.23.0)
 project(Gears VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
-include(CTest)
-enable_testing()
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE})
+
+if(NOT MSVC_IDE)
+    # setting the build type to Release as a fallback when no type is provided during generation
+    if(CMAKE_BUILD_TYPE STREQUAL "" OR NOT DEFINED CMAKE_BUILD_TYPE)
+        set(CMAKE_BUILD_TYPE "Release")
+    endif()
+
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE})
+endif()
 
 file(GLOB SOURCES "engine/*.cpp")
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi")    #debug
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") # debug
 
 # compiling shaders
 file(GLOB VERT_SHADERS "engine/shaders/*.vert")
@@ -32,7 +38,7 @@ foreach(shader IN LISTS SHADERS)
 endforeach(shader)
 
 # copying compiled shaders and removing the console if the application is in release mode
-message("copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders")
+message("Copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders")
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders)
 
 foreach(shader IN LISTS SHADERS)
@@ -41,22 +47,21 @@ endforeach(shader)
 
 if(${CMAKE_SYSTEM} MATCHES Windows)
     if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES MinSizeRel)
-        add_executable(Gears WIN32 ${SOURCES})
+        add_executable(Gears WIN32 ${SOURCES} script.rc)
     else()
-        add_executable(Gears ${SOURCES})
+        add_executable(Gears ${SOURCES} script.rc)
+        add_definitions(-DGRS_DEBUG)
     endif()
 else()
     add_executable(Gears ${SOURCES})
 endif()
 
 # adding extern libs
-find_package(glfw3 REQUIRED)
+add_subdirectory(engine/vendor/glfw EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor/glm EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor/tinyobjloader EXCLUDE_FROM_ALL)
+
 find_package(Vulkan REQUIRED)
-find_package(glm REQUIRED)
-find_package(tinyobjloader REQUIRED)
 
-target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader::tinyobjloader)
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader)
+target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader)

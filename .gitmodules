@@ -1,0 +1,12 @@
+[submodule "engine/vendor/glfw"]
+	path = engine/vendor/glfw
+	url = https://github.com/glfw/glfw
+[submodule "engine/vendor/tinyobjloader"]
+	path = engine/vendor/tinyobjloader
+	url = https://github.com/tinyobjloader/tinyobjloader
+[submodule "engine/vendor/glm"]
+	path = engine/vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "engine/vendor/imgui"]
+	path = engine/vendor/imgui
+	url = https://github.com/ocornut/imgui
