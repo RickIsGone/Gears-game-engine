@@ -16,8 +16,8 @@ namespace gears {
          int moveRight = GLFW_KEY_D;
          int moveForward = GLFW_KEY_W;
          int moveBackward = GLFW_KEY_S;
-         int tiltRight = GLFW_KEY_E;
-         int tiltLeft = GLFW_KEY_Q;
+         int moveUp = GLFW_KEY_E;
+         int moveDown = GLFW_KEY_Q;
       };
 
       void moveInPlaneYXZ(GLFWwindow* window, GLFWcursor* cursor, float dt, EngineGameObject& gameObject);

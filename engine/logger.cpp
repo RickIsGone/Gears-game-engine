@@ -68,7 +68,7 @@ namespace gears::Logger {
    #ifdef GRS_DEBUG
       gears::Logger::logNoTrace("windows build running in debug mode");
    #else
-      gears::Logger::logNoTrace("linux build running in release mode");
+      gears::Logger::logNoTrace("windows build running in release mode");
    #endif
 #elif defined(__linux__)
    #ifdef GRS_DEBUG

@@ -18,7 +18,10 @@ namespace gears {
       float deltaX = posX - prevPosX;
 
       gameObject.transform.rotation = glm::angleAxis(-deltaX * mouseSense, glm::vec3(0.f, -1.f, 0.f)) * gameObject.transform.rotation;
-      gameObject.transform.rotation = gameObject.transform.rotation * glm::angleAxis(deltaY * mouseSense, glm::vec3(-1.f, 0.f, 0.f));
+      auto pitched_rot = gameObject.transform.rotation * glm::angleAxis(deltaY * mouseSense, glm::vec3(-1.f, 0.f, 0.f));
+      if (glm::dot(pitched_rot * glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 1.f, 0.f)) >= 0.f) {
+         gameObject.transform.rotation = pitched_rot;
+      }
       gameObject.transform.rotation = glm::normalize(gameObject.transform.rotation);
 
       glm::vec3 translate{0.0f};
@@ -26,8 +29,9 @@ namespace gears {
       if (glfwGetKey(window, keys.moveBackward) == GLFW_PRESS) translate -= glm::vec3(0.f, 0.f, 1.f);
       if (glfwGetKey(window, keys.moveRight) == GLFW_PRESS) translate += glm::vec3(1.f, 0.f, 0.f);
       if (glfwGetKey(window, keys.moveLeft) == GLFW_PRESS) translate -= glm::vec3(1.f, 0.f, 0.f);
-      // if (glfwGetKey(window, keys.tiltRight) == GLFW_PRESS) translate += glm::vec3(0.f, 1.f, 0.f);
-      // if (glfwGetKey(window, keys.tiltLeft) == GLFW_PRESS) translate -= glm::vec3(0.f, 1.f, 0.f);
+
+      if (glfwGetKey(window, keys.moveUp) == GLFW_PRESS) gameObject.transform.position -= glm::vec3(0.f, 1.f, 0.f) * moveSpeed * dt;
+      if (glfwGetKey(window, keys.moveDown) == GLFW_PRESS) gameObject.transform.position += glm::vec3(0.f, 1.f, 0.f) * moveSpeed * dt;
 
       if (translate.x || translate.y || translate.z)
          gameObject.transform.position += gameObject.transform.rotation * (glm::normalize(translate) * moveSpeed * dt);
