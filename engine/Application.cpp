@@ -42,13 +42,14 @@ namespace gears {
       auto viewerObject = EngineGameObject::createGameObject();
 
       MovementController cameraController{};
-      GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
-      glfwGetCursorPos(engineWindow.getWindow(), &cameraController.prevPosX, &cameraController.prevPosY);
+      Mouse mouse{engineWindow.getWindow()};
+      mouse.update();
 
       auto prevTime = std::chrono::high_resolution_clock::now();
 
       while (!engineWindow.shouldClose()) {
          glfwPollEvents();
+         mouse.update();
 
          auto currentTime = std::chrono::high_resolution_clock::now();
          float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - prevTime).count();
@@ -56,7 +57,7 @@ namespace gears {
 
          glfwSetMouseButtonCallback(engineWindow.getWindow(), mouseCallback); // checks if the RMB is pressed to then either use the camera or the mouse
          if (glfwGetMouseButton(engineWindow.getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-            cameraController.moveInPlaneYXZ(engineWindow.getWindow(), cursor, deltaTime, viewerObject);
+            cameraController.moveInPlaneYXZ(engineWindow.getWindow(), mouse, deltaTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.position, viewerObject.transform.rotation);
          }
 
@@ -71,7 +72,6 @@ namespace gears {
          }
       }
 
-      glfwDestroyCursor(cursor);
       vkDeviceWaitIdle(engineDevice.device());
    }
 

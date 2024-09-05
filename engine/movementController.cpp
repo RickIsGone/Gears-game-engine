@@ -11,14 +11,9 @@ namespace gears {
    //       ++s_moveSpeed;
    // }
 
-   void MovementController::moveInPlaneYXZ(GLFWwindow* window, GLFWcursor* cursor, float dt, EngineGameObject& gameObject) {
-      double posX, posY;
-      glfwGetCursorPos(window, &posX, &posY);
-      float deltaY = posY - prevPosY;
-      float deltaX = posX - prevPosX;
-
-      gameObject.transform.rotation = glm::angleAxis(-deltaX * mouseSense, glm::vec3(0.f, -1.f, 0.f)) * gameObject.transform.rotation;
-      auto pitched_rot = gameObject.transform.rotation * glm::angleAxis(deltaY * mouseSense, glm::vec3(-1.f, 0.f, 0.f));
+   void MovementController::moveInPlaneYXZ(GLFWwindow* window, Mouse& mouse, float dt, EngineGameObject& gameObject) {
+      gameObject.transform.rotation = glm::angleAxis(-mouse.deltaX() * mouse.sens(), glm::vec3(0.f, -1.f, 0.f)) * gameObject.transform.rotation;
+      auto pitched_rot = gameObject.transform.rotation * glm::angleAxis(mouse.deltaY() * mouse.sens(), glm::vec3(-1.f, 0.f, 0.f));
       if (glm::dot(pitched_rot * glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 1.f, 0.f)) >= 0.f) {
          gameObject.transform.rotation = pitched_rot;
       }
@@ -35,9 +30,19 @@ namespace gears {
 
       if (translate.x || translate.y || translate.z)
          gameObject.transform.position += gameObject.transform.rotation * (glm::normalize(translate) * moveSpeed * dt);
+   }
+
+   Mouse::Mouse(GLFWwindow* window) : window{window} {}
+   Mouse::~Mouse() {
+      glfwDestroyCursor(cursor);
+   }
+
+   void Mouse::update() {
+      glfwGetCursorPos(window, &posX, &posY);
+      posDeltaY = posY - prevPosY;
+      posDeltaX = posX - prevPosX;
 
       prevPosX = posX;
       prevPosY = posY;
    }
-
 } // namespace gears
