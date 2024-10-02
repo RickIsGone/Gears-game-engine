@@ -12,19 +12,19 @@ namespace gears {
 
    class EngineRenderSystem {
    public:
-      EngineRenderSystem(EngineDevice &device, VkRenderPass renderPass);
+      EngineRenderSystem(EngineDevice& device, VkRenderPass renderPass);
       ~EngineRenderSystem();
 
-      EngineRenderSystem(const EngineRenderSystem &) = delete;
-      EngineRenderSystem &operator=(const EngineRenderSystem &) = delete;
+      EngineRenderSystem(const EngineRenderSystem&) = delete;
+      EngineRenderSystem& operator=(const EngineRenderSystem&) = delete;
 
-      void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject> &gameObjects, const EngineCamera &camera);
+      void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera);
 
    private:
       void createPipelineLayout();
       void createPipeline(VkRenderPass renderPass);
 
-      EngineDevice &engineDevice;
+      EngineDevice& engineDevice;
       std::unique_ptr<EnginePipeline> enginePipeline;
       VkPipelineLayout pipelineLayout;
    };

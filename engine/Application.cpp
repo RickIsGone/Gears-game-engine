@@ -62,7 +62,7 @@ namespace gears {
          }
 
          float aspect = engineRenderer.getAspectRatio();
-         camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
+         camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 50.f);
 
          if (auto commandBuffer = engineRenderer.beginFrame()) {
             engineRenderer.beginSwapChainRenderPass(commandBuffer);

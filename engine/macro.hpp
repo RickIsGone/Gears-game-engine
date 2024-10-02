@@ -21,7 +21,8 @@
 #else
 
    #define GRS_PAUSE
-   #define GRS_EXIT(x)
+   #define GRS_EXIT(x) exit(EXIT_FAILURE)
+
 
    #if defined(_WIN32)
       #include <Windows.h>

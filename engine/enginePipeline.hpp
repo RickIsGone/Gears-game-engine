@@ -9,8 +9,8 @@ namespace gears {
 
    struct PipelineConfigInfo {
       PipelineConfigInfo() = default;
-      PipelineConfigInfo(const PipelineConfigInfo &) = delete;
-      PipelineConfigInfo &operator=(const PipelineConfigInfo &) = delete;
+      PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+      PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
       VkPipelineViewportStateCreateInfo viewportInfo;
       VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
@@ -28,23 +28,23 @@ namespace gears {
 
    class EnginePipeline {
    public:
-      EnginePipeline(EngineDevice &device, const std::string &vertFilePath, const std::string &fragFilePath, const PipelineConfigInfo &configInfo);
+      EnginePipeline(EngineDevice& device, const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo);
       ~EnginePipeline();
 
-      EnginePipeline(const EnginePipeline &) = delete;
-      EnginePipeline &operator=(const EnginePipeline &) = delete;
+      EnginePipeline(const EnginePipeline&) = delete;
+      EnginePipeline& operator=(const EnginePipeline&) = delete;
 
       void bind(VkCommandBuffer VkCommandBuffer);
 
-      static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo);
+      static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
 
    private:
-      static std::vector<char> readFile(const std::string &filePath);
-      void createGraphicsPipeline(const std::string &vertFilePath, const std::string &fragFilePath, const PipelineConfigInfo &configInfo);
+      static std::vector<char> readFile(const std::string& filePath);
+      void createGraphicsPipeline(const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo);
 
-      void createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule);
+      void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
-      EngineDevice &engineDevice;
+      EngineDevice& engineDevice;
       VkPipeline graphicsPipeline;
       VkShaderModule vertShaderModule;
       VkShaderModule fragShaderModule;
