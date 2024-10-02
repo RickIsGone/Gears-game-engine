@@ -12,20 +12,20 @@ namespace gears {
       EngineWindow(int width, int height, std::string windowName);
       ~EngineWindow();
 
-      EngineWindow(const EngineWindow &) = delete;
-      EngineWindow &operator=(const EngineWindow &) = delete;
+      EngineWindow(const EngineWindow&) = delete;
+      EngineWindow& operator=(const EngineWindow&) = delete;
 
 
       bool shouldClose() { return glfwWindowShouldClose(window); }
       VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
       bool wasWindowResized() { return frameBufferResized; }
       void resetWindowResizeFlag() { frameBufferResized = false; }
-      GLFWwindow *getWindow() const { return window; }
+      GLFWwindow* getWindow() const { return window; }
 
-      void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
+      void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
    private:
-      static void frameBufferResizedCallback(GLFWwindow *window, int width, int height);
+      static void frameBufferResizedCallback(GLFWwindow* window, int width, int height);
       void initWindow();
 
       int width;
@@ -33,6 +33,6 @@ namespace gears {
       bool frameBufferResized = false;
 
       std::string windowName;
-      GLFWwindow *window;
+      GLFWwindow* window;
    };
 } // namespace gears

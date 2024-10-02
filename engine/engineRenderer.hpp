@@ -12,11 +12,11 @@ namespace gears {
 
    class EngineRenderer {
    public:
-      EngineRenderer(EngineWindow &engineWindow, EngineDevice &engineDevice);
+      EngineRenderer(EngineWindow& engineWindow, EngineDevice& engineDevice);
       ~EngineRenderer();
 
-      EngineRenderer(const EngineRenderer &) = delete;
-      EngineRenderer &operator=(const EngineRenderer &) = delete;
+      EngineRenderer(const EngineRenderer&) = delete;
+      EngineRenderer& operator=(const EngineRenderer&) = delete;
 
       bool isFrameInProgress() const { return isFrameStarted; }
 
@@ -43,8 +43,8 @@ namespace gears {
       void freeCommandBuffers();
       void recreateSwapChain();
 
-      EngineWindow &engineWindow;
-      EngineDevice &engineDevice;
+      EngineWindow& engineWindow;
+      EngineDevice& engineDevice;
       std::unique_ptr<EngineSwapChain> engineSwapChain;
       std::vector<VkCommandBuffer> commandBuffers;
 

@@ -22,7 +22,7 @@ namespace gears {
          static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
          static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 
-         bool operator==(const Vertex &other) const {
+         bool operator==(const Vertex& other) const {
             return position == other.position && color == other.color && normal == other.normal && uv == other.uv;
          }
       };
@@ -31,33 +31,33 @@ namespace gears {
          std::vector<Vertex> vertices{};
          std::vector<uint32_t> indices{};
 
-         void loadModel(const std::string &filepath);
+         void loadModel(const std::string& filepath);
       };
 
-      EngineModel(EngineDevice &device, const EngineModel::Data &data);
+      EngineModel(EngineDevice& device, const EngineModel::Data& data);
       ~EngineModel();
 
-      EngineModel(const EngineModel &) = delete;
-      EngineModel &operator=(const EngineModel &) = delete;
+      EngineModel(const EngineModel&) = delete;
+      EngineModel& operator=(const EngineModel&) = delete;
 
-      static std::unique_ptr<EngineModel> createModelFromFile(EngineDevice &device, const std::string &filepath);
+      static std::unique_ptr<EngineModel> createModelFromFile(EngineDevice& device, const std::string& filepath);
 
       void bind(VkCommandBuffer commandBuffer);
       void draw(VkCommandBuffer commandBuffer);
 
    private:
-      EngineDevice &engineDevice;
+      EngineDevice& engineDevice;
 
       VkBuffer vertexBuffer;
       VkDeviceMemory vertexBufferMemory;
       uint32_t vertexCount;
-      void createVertexBuffers(const std::vector<Vertex> &vertices);
+      void createVertexBuffers(const std::vector<Vertex>& vertices);
 
       bool hasIndexBuffer = false;
       VkBuffer indexBuffer;
       VkDeviceMemory indexBufferMemory;
       uint32_t indexCount;
-      void createIndexBuffer(const std::vector<uint32_t> &indices);
+      void createIndexBuffer(const std::vector<uint32_t>& indices);
    };
 
 } // namespace gears

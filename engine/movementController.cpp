@@ -11,7 +11,7 @@ namespace gears {
    //       ++s_moveSpeed;
    // }
 
-   void MovementController::moveInPlaneYXZ(GLFWwindow* window, Mouse& mouse, float dt, EngineGameObject& gameObject) {
+   void MovementController::moveInPlaneYXZ(GLFWwindow* window, const Mouse& mouse, float dt, EngineGameObject& gameObject) {
       gameObject.transform.rotation = glm::angleAxis(-mouse.deltaX() * mouse.sens(), glm::vec3(0.f, -1.f, 0.f)) * gameObject.transform.rotation;
       auto pitched_rot = gameObject.transform.rotation * glm::angleAxis(mouse.deltaY() * mouse.sens(), glm::vec3(-1.f, 0.f, 0.f));
       if (glm::dot(pitched_rot * glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 1.f, 0.f)) >= 0.f) {

@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 
 namespace gears {
-
+   // da passare solo come ref o pointer
    class Mouse {
    public:
       Mouse(GLFWwindow* window);
@@ -48,8 +48,7 @@ namespace gears {
          int moveDown = GLFW_KEY_Q;
       };
 
-      void moveInPlaneYXZ(GLFWwindow* window, Mouse& mouse, float dt, EngineGameObject& gameObject);
-
+      void moveInPlaneYXZ(GLFWwindow* window, const Mouse& mouse, float dt, EngineGameObject& gameObject);
 
       KeyMappings keys{};
 

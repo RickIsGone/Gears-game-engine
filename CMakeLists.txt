@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.23.0)
 project(Gears VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED)
 
 if(NOT MSVC_IDE)
     # setting the build type to Release as a fallback when no type is provided during generation
@@ -60,8 +61,9 @@ endif()
 add_subdirectory(engine/vendor/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(engine/vendor/glm EXCLUDE_FROM_ALL)
 add_subdirectory(engine/vendor/tinyobjloader EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor EXCLUDE_FROM_ALL)
 
 find_package(Vulkan REQUIRED)
 
-target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader)
-target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader)
+target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui)
+target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader imgui)
