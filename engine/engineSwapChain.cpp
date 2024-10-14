@@ -104,7 +104,7 @@ namespace gears {
 
       vkResetFences(device.device(), 1, &inFlightFences[currentFrame]);
       if (vkQueueSubmit(device.graphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to submit draw command buffer!");
+         throw Logger::Exception("failed to submit draw command buffer!");
       }
 
       VkPresentInfoKHR presentInfo = {};
@@ -172,7 +172,7 @@ namespace gears {
       createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
       if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to create swap chain!");
+         throw Logger::Exception("failed to create swap chain!");
       }
 
       // we only specified a minimum number of images in the swap chain, so the implementation is
@@ -203,7 +203,7 @@ namespace gears {
 
          if (vkCreateImageView(device.device(), &viewInfo, nullptr, &swapChainImageViews[i]) !=
              VK_SUCCESS) {
-            throw Logger::loggerException("failed to create texture image view!");
+            throw Logger::Exception("failed to create texture image view!");
          }
       }
    }
@@ -265,7 +265,7 @@ namespace gears {
       renderPassInfo.pDependencies = &dependency;
 
       if (vkCreateRenderPass(device.device(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to create render pass!");
+         throw Logger::Exception("failed to create render pass!");
       }
    }
 
@@ -289,7 +289,7 @@ namespace gears {
                  &framebufferInfo,
                  nullptr,
                  &swapChainFramebuffers[i]) != VK_SUCCESS) {
-            throw Logger::loggerException("failed to create framebuffer!");
+            throw Logger::Exception("failed to create framebuffer!");
          }
       }
    }
@@ -338,7 +338,7 @@ namespace gears {
          viewInfo.subresourceRange.layerCount = 1;
 
          if (vkCreateImageView(device.device(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS) {
-            throw Logger::loggerException("failed to create texture image view!");
+            throw Logger::Exception("failed to create texture image view!");
          }
       }
    }
@@ -362,7 +362,7 @@ namespace gears {
              vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) !=
                  VK_SUCCESS ||
              vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
-            throw Logger::loggerException("failed to create synchronization objects for a frame!");
+            throw Logger::Exception("failed to create synchronization objects for a frame!");
          }
       }
    }
@@ -383,19 +383,19 @@ namespace gears {
        const std::vector<VkPresentModeKHR>& availablePresentModes) {
       for (const auto& availablePresentMode : availablePresentModes) {
          if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-            Logger::log("Present mode: Mailbox");
+            logger->log("Present mode: Mailbox");
             return availablePresentMode;
          }
       }
 
       // for (const auto &availablePresentMode : availablePresentModes) {
       //   if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-      //      Logger::log("Present mode: Immediate");
+      //      logger->log("Present mode: Immediate");
       //     return availablePresentMode;
       //   }
       // }
 
-      Logger::log("Present mode: V-Sync");
+      logger->log("Present mode: V-Sync");
       return VK_PRESENT_MODE_FIFO_KHR;
    }
 

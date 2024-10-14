@@ -85,7 +85,7 @@ namespace gears {
 
       gameObjects.push_back(std::move(gameObject));
 
-      Logger::log("Loaded model \"fish.obj\"");
+      logger->log("Loaded model \"fish.obj\"");
    }
 
 } // namespace gears

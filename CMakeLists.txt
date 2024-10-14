@@ -61,7 +61,7 @@ endif()
 add_subdirectory(engine/vendor/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(engine/vendor/glm EXCLUDE_FROM_ALL)
 add_subdirectory(engine/vendor/tinyobjloader EXCLUDE_FROM_ALL)
-add_subdirectory(engine/vendor EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor EXCLUDE_FROM_ALL) # imgui
 
 find_package(Vulkan REQUIRED)
 

@@ -42,7 +42,7 @@ namespace gears {
    std::unique_ptr<EngineModel> EngineModel::createModelFromFile(EngineDevice& device, const std::string& filepath) {
       Data data{};
       data.loadModel(filepath);
-      Logger::log("vertex count: " + std::to_string(data.vertices.size()));
+      logger->log("vertex count: " + std::to_string(data.vertices.size()));
       return std::make_unique<EngineModel>(device, data);
    }
 
@@ -158,7 +158,7 @@ namespace gears {
       std::vector<tinyobj::material_t> materials;
       std::string warn, err;
 
-      if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) throw Logger::loggerException(warn + err);
+      if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) throw Logger::Exception(warn + err);
 
       vertices.clear();
       indices.clear();

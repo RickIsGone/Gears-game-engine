@@ -33,7 +33,7 @@ namespace gears {
       pipelineLayoutInfo.pSetLayouts = nullptr;
       pipelineLayoutInfo.pushConstantRangeCount = 1;
       pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
-      if (vkCreatePipelineLayout(engineDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) throw Logger::loggerException("failed to create a pipeline layout");
+      if (vkCreatePipelineLayout(engineDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) throw Logger::Exception("failed to create a pipeline layout");
    }
 
    void EngineRenderSystem::createPipeline(VkRenderPass renderPass) {

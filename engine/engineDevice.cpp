@@ -13,7 +13,7 @@ namespace gears {
        VkDebugUtilsMessageTypeFlagsEXT messageType,
        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
        void* pUserData) {
-      Logger::warn("validation layer: " + std::string(pCallbackData->pMessage));
+      logger->warn("validation layer: " + (std::string)pCallbackData->pMessage);
 
       return VK_FALSE;
    }
@@ -69,7 +69,7 @@ namespace gears {
 
    void EngineDevice::createInstance() {
       if (enableValidationLayers && !checkValidationLayerSupport()) {
-         throw Logger::loggerException("validation layers requested, but not available!");
+         throw Logger::Exception("validation layers requested, but not available!");
       }
 
       VkApplicationInfo appInfo = {};
@@ -101,7 +101,7 @@ namespace gears {
       }
 
       if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to create instance!");
+         throw Logger::Exception("failed to create instance!");
       }
 
       hasGflwRequiredInstanceExtensions();
@@ -111,9 +111,9 @@ namespace gears {
       uint32_t deviceCount = 0;
       vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
       if (deviceCount == 0) {
-         throw Logger::loggerException("failed to find GPUs with Vulkan support!");
+         throw Logger::Exception("failed to find GPUs with Vulkan support!");
       }
-      Logger::log("Device count: " + std::to_string(deviceCount));
+      logger->log("Device count: " + std::to_string(deviceCount));
       std::vector<VkPhysicalDevice> devices(deviceCount);
       vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
@@ -125,11 +125,11 @@ namespace gears {
       }
 
       if (physicalDevice == VK_NULL_HANDLE) {
-         throw Logger::loggerException("failed to find a suitable GPU!");
+         throw Logger::Exception("failed to find a suitable GPU!");
       }
 
       vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-      Logger::log("physical device: " + std::string(properties.deviceName));
+      logger->log("physical device: " + (std::string)properties.deviceName);
    }
 
    void EngineDevice::createLogicalDevice() {
@@ -171,7 +171,7 @@ namespace gears {
       }
 
       if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to create logical device!");
+         throw Logger::Exception("failed to create logical device!");
       }
 
       vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
@@ -188,7 +188,7 @@ namespace gears {
           VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
       if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to create command pool!");
+         throw Logger::Exception("failed to create command pool!");
       }
    }
 
@@ -230,7 +230,7 @@ namespace gears {
       VkDebugUtilsMessengerCreateInfoEXT createInfo;
       populateDebugMessengerCreateInfo(createInfo);
       if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to set up debug messenger!");
+         throw Logger::Exception("failed to set up debug messenger!");
       }
    }
 
@@ -279,19 +279,19 @@ namespace gears {
       std::vector<VkExtensionProperties> extensions(extensionCount);
       vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
 
-      Logger::log("available extensions:");
+      logger->log("available extensions:");
       std::unordered_set<std::string> available;
       for (const auto& extension : extensions) {
-         Logger::logNoTrace("\t" + std::string(extension.extensionName));
+         logger->logNoTrace("\t" + (std::string)extension.extensionName);
          available.insert(extension.extensionName);
       }
 
-      Logger::log("required extensions:");
+      logger->log("required extensions:");
       auto requiredExtensions = getRequiredExtensions();
       for (const auto& required : requiredExtensions) {
-         Logger::logNoTrace("\t" + std::string(required));
+         logger->logNoTrace("\t" + (std::string)required);
          if (available.find(required) == available.end()) {
-            throw Logger::loggerException("Missing required glfw extension");
+            throw Logger::Exception("Missing required glfw extension");
          }
       }
    }
@@ -386,7 +386,7 @@ namespace gears {
             return format;
          }
       }
-      throw Logger::loggerException("failed to find supported format!");
+      throw Logger::Exception("failed to find supported format!");
    }
 
    uint32_t EngineDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
@@ -399,7 +399,7 @@ namespace gears {
          }
       }
 
-      throw Logger::loggerException("failed to find suitable memory type!");
+      throw Logger::Exception("failed to find suitable memory type!");
    }
 
    void EngineDevice::createBuffer(
@@ -415,7 +415,7 @@ namespace gears {
       bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
       if (vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to create vertex buffer!");
+         throw Logger::Exception("failed to create vertex buffer!");
       }
 
       VkMemoryRequirements memRequirements;
@@ -427,7 +427,7 @@ namespace gears {
       allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
       if (vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to allocate vertex buffer memory!");
+         throw Logger::Exception("failed to allocate vertex buffer memory!");
       }
 
       vkBindBufferMemory(device_, buffer, bufferMemory, 0);
@@ -510,7 +510,7 @@ namespace gears {
        VkImage& image,
        VkDeviceMemory& imageMemory) {
       if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to create image!");
+         throw Logger::Exception("failed to create image!");
       }
 
       VkMemoryRequirements memRequirements;
@@ -522,11 +522,11 @@ namespace gears {
       allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
       if (vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to allocate image memory!");
+         throw Logger::Exception("failed to allocate image memory!");
       }
 
       if (vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) {
-         throw Logger::loggerException("failed to bind image memory!");
+         throw Logger::Exception("failed to bind image memory!");
       }
    }
 
