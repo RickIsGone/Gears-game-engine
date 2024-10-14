@@ -22,11 +22,11 @@ namespace gears {
 
    class EngineDevice {
    public:
-#ifdef NDEBUG
+#ifdef GRS_DEBUG
       const bool enableValidationLayers = false;
 #else
       const bool enableValidationLayers = true;
-#endif
+#endif // GRS_DEBUG
 
       EngineDevice(EngineWindow& window);
       ~EngineDevice();

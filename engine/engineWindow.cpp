@@ -24,7 +24,7 @@ namespace gears {
 
    void EngineWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
       if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS)
-         throw Logger::loggerException("failed to create window surface");
+         throw Logger::Exception("failed to create window surface");
    }
 
    void EngineWindow::frameBufferResizedCallback(GLFWwindow* window, int width, int height) {
@@ -32,7 +32,7 @@ namespace gears {
       engineWindow->frameBufferResized = true;
       engineWindow->width = width;
       engineWindow->height = height;
-      Logger::log("Window resized to " + std::to_string(width) + "x" + std::to_string(height));
+      logger->log("Window resized to " + std::to_string(width) + "x" + std::to_string(height));
    }
 
 } // namespace gears

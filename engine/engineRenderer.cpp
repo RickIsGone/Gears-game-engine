@@ -25,7 +25,7 @@ namespace gears {
       else {
          std::shared_ptr<EngineSwapChain> oldSwapChain = std::move(engineSwapChain);
          engineSwapChain = std::make_unique<EngineSwapChain>(engineDevice, extent, oldSwapChain);
-         if (!oldSwapChain->compareSwapFormats(*engineSwapChain.get())) throw Logger::loggerException("swapChain image format has changed");
+         if (!oldSwapChain->compareSwapFormats(*engineSwapChain.get())) throw Logger::Exception("swapChain image format has changed");
       }
 
       // se renderpass compatibile non fare nulla
@@ -41,7 +41,7 @@ namespace gears {
       allocInfo.commandPool = engineDevice.getCommandPool();
       allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
-      if (vkAllocateCommandBuffers(engineDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) throw Logger::loggerException("failed to allocate command buffers");
+      if (vkAllocateCommandBuffers(engineDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) throw Logger::Exception("failed to allocate command buffers");
    }
 
    void EngineRenderer::freeCommandBuffers() {
@@ -59,7 +59,7 @@ namespace gears {
          return nullptr;
       }
 
-      if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) throw Logger::loggerException("failed to acquire next swap chain image");
+      if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) throw Logger::Exception("failed to acquire next swap chain image");
 
       isFrameStarted = true;
 
@@ -68,7 +68,7 @@ namespace gears {
       VkCommandBufferBeginInfo beginInfo{};
       beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-      if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) throw Logger::loggerException("failed to begin recording command buffer");
+      if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) throw Logger::Exception("failed to begin recording command buffer");
 
       return commandBuffer;
    }
@@ -78,14 +78,14 @@ namespace gears {
 
       auto commandBuffer = getCurrentCommandBuffer();
 
-      if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) throw Logger::loggerException("failed to record command buffer");
+      if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) throw Logger::Exception("failed to record command buffer");
 
       auto result = engineSwapChain->submitCommandBuffers(&commandBuffer, &currentImageIndex);
       if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || engineWindow.wasWindowResized()) {
          engineWindow.resetWindowResizeFlag();
          recreateSwapChain();
       } else if (result != VK_SUCCESS)
-         throw Logger::loggerException("failed to present swap chain image");
+         throw Logger::Exception("failed to present swap chain image");
 
       isFrameStarted = false;
       currentFrameIndex = (currentFrameIndex + 1) % EngineSwapChain::MAX_FRAMES_IN_FLIGHT;

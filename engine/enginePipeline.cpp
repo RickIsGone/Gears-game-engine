@@ -10,13 +10,13 @@ namespace gears {
 
    std::vector<char> EnginePipeline::readFile(const std::string& filePath) {
       std::ifstream file(filePath, std::ios::ate | std::ios::binary);
-      if (!file.is_open()) throw Logger::loggerException("failed to open file \"" + filePath + '\"');
+      if (!file) throw Logger::Exception("failed to open file \"" + filePath + '\"');
 
       size_t fileSize = static_cast<size_t>(file.tellg());
       std::vector<char> buffer(fileSize);
 
       file.seekg(0);
-      file.read(buffer.data(), fileSize);
+      if (!file.read(buffer.data(), fileSize)) throw Logger::Exception("failed to read file: \"" + filePath + '\"');
 
       file.close();
 
@@ -83,7 +83,7 @@ namespace gears {
       pipelineInfo.basePipelineIndex = -1;
       pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-      if (vkCreateGraphicsPipelines(engineDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) throw Logger::loggerException("failed to create graphics pipeline");
+      if (vkCreateGraphicsPipelines(engineDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) throw Logger::Exception("failed to create graphics pipeline");
    }
 
    EnginePipeline::EnginePipeline(EngineDevice& device, const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo) : engineDevice(device) {
@@ -102,7 +102,7 @@ namespace gears {
       createInfo.codeSize = code.size();
       createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-      if (vkCreateShaderModule(engineDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) throw Logger::loggerException("failed to create shader moudule");
+      if (vkCreateShaderModule(engineDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) throw Logger::Exception("failed to create shader moudule");
    }
 
    void EnginePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo) {
