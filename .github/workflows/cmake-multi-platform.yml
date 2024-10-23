@@ -51,34 +51,10 @@ jobs:
     - name: Install dependencies on Ubuntu
       if: matrix.os == 'ubuntu-latest'
       run: |
-        apt-get update && apt-get install -y \
-        libwayland-dev \
-        libvulkan-dev \
-        libxkbcommon-dev \
-        xorg-dev
+        sudo apt-get install libwayland-dev libxkbcommon-dev xorg-dev
 
-    - name: Install Vulkan SDK on Windows
-      if: matrix.os == 'windows-latest'
-      run: |
-        $response = Invoke-WebRequest -Uri "https://vulkan-loader.github.io/sdk-downloads.html"
-        $content = $response.Content
-        $versionMatch = [regex]::Match($content, '<strong>Vulkan SDK (?<version>\d+\.\d+\.\d+)</strong>')
-    
-        if ($versionMatch.Success) {
-          $sdkVersion = $versionMatch.Groups['version'].Value
-          Write-Host "Detected Vulkan SDK version: $sdkVersion"
-        
-          $downloadUrl = "https://vulkan-loader.github.io/downloads/$sdkVersion/VulkanSDK-$sdkVersion-Installer.exe"
-          Invoke-WebRequest -Uri $downloadUrl -OutFile VulkanSDK-$sdkVersion-Installer.exe
-        
-          .\VulkanSDK-$sdkVersion-Installer.exe /VERYSILENT /DIR=C:\VulkanSDK
-          $env:Path += ";C:\VulkanSDK\Bin"
-        }
-        else {
-          throw "Unable to detect Vulkan SDK version"
-        }
-
-        Remove-Item VulkanSDK-$sdkVersion-Installer.exe
+    - name: Setup Vulkan
+      uses: ./.github/actions/vulkan
     
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
