@@ -60,14 +60,25 @@ jobs:
     - name: Install Vulkan SDK on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        curl -L https://vulkan-loader.github.io/sdk-downloads.html | sed -n '/Vulkan SDK/,/</p>/p' > vulkan_sdk_info.txt
-        sdk_version=$(grep -m 1 "Vulkan SDK" vulkan_sdk_info.txt | awk '{print $3}')
-        curl -L https://vulkan-loader.github.io/sdk-downloads.html | sed -n "/${sdk_version}/,/</p>/p" > vulkan_sdk_${sdk_version}.txt
-        sdk_url=$(grep -m 1 "Download" vulkan_sdk_${sdk_version}.txt | awk '{print $2}')
-        curl -L ${sdk_url} -o vulkan_sdk.zip
-        unzip vulkan_sdk.zip -d vulkan_sdk
-        rm vulkan_sdk.zip
-        echo 'export PATH=$PATH:"C:\Program Files\Vulkan SDK\bin"' >> $GITHUB_ENV
+        $response = Invoke-WebRequest -Uri "https://vulkan-loader.github.io/sdk-downloads.html"
+        $content = $response.Content
+        $versionMatch = [regex]::Match($content, '<strong>Vulkan SDK (?<version>\d+\.\d+\.\d+)</strong>')
+    
+        if ($versionMatch.Success) {
+          $sdkVersion = $versionMatch.Groups['version'].Value
+          Write-Host "Detected Vulkan SDK version: $sdkVersion"
+        
+          $downloadUrl = "https://vulkan-loader.github.io/downloads/$sdkVersion/VulkanSDK-$sdkVersion-Installer.exe"
+          Invoke-WebRequest -Uri $downloadUrl -OutFile VulkanSDK-$sdkVersion-Installer.exe
+        
+          .\VulkanSDK-$sdkVersion-Installer.exe /VERYSILENT /DIR=C:\VulkanSDK
+          $env:Path += ";C:\VulkanSDK\Bin"
+        }
+        else {
+          throw "Unable to detect Vulkan SDK version"
+        }
+
+        Remove-Item VulkanSDK-$sdkVersion-Installer.exe
     
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
