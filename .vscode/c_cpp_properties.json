@@ -4,10 +4,12 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/vcpkg/vcpkg/installed/x64-windows/include",
-                "C:/vcpkg/vcpkg/installed/x64-windows/include/Vulkan",
-                "C:/vcpkg/vcpkg/installed/x64-windows/include/vulkan/utility",
-                "C:/vcpkg/vcpkg/installed/x64-windows/include/GLFW"
+                "${workspaceFolder}/engine/vendor/GLFW/src",
+                "${workspaceFolder}/engine/vendor/glm/glm",
+                "${workspaceFolder}/engine/vendor/imgui",
+                "${workspaceFolder}/engine/vendor/tinyobjloader",
+                "${workspaceFolder}/engine/vendor/stb_image",
+                "C:/VulkanSDK/1.3.280.0/Include"
             ],
             "defines": [
                 "_DEBUG",
@@ -15,7 +17,7 @@
                 "_UNICODE"
             ],
             "cStandard": "c23",
-            "cppStandard": "c++20",
+            "cppStandard": "c++23",
             "intelliSenseMode": "windows-msvc-x64"
         }
     ],
