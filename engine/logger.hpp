@@ -9,14 +9,14 @@ namespace gears {
 
    class Logger {
    public:
-      enum class levels {
-         error,
-         warning,
-         noTrace,
-         info
+      enum class Levels {
+         Error,
+         Warning,
+         NoTrace,
+         Info
       };
 
-      Logger(const levels level = levels::info, const std::string& filename = "logFile.log");
+      Logger(const Levels level = Levels::Info, const std::string& filename = "logFile.log");
       ~Logger();
 
       void log(const std::string& message, const std::source_location& location = std::source_location::current());
@@ -24,7 +24,7 @@ namespace gears {
       void warn(const std::string& message, const std::source_location& location = std::source_location::current());
       void error(const std::string& message, const std::source_location& location = std::source_location::current());
 
-      void setLevel(const levels level) { logLevel = level; }
+      void setLevel(const Levels level) { logLevel = level; }
 
       class Exception : public std::runtime_error {
       private:
@@ -43,10 +43,10 @@ namespace gears {
       };
 
    private:
-      levels logLevel;
+      Levels logLevel;
       std::ofstream logFile;
 
-      void _log(const levels level, const std::string& message, const std::source_location& location);
+      void _log(const Levels level, const std::string& message, const std::source_location& location);
    };
 
 

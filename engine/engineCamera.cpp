@@ -1,5 +1,3 @@
-#include <limits>
-
 #include <glm/gtc/matrix_inverse.hpp>
 
 #include "engineCamera.hpp"

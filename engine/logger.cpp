@@ -8,7 +8,7 @@ namespace gears {
    static constexpr const char* COLOR_YELLOW = "\x1B[93m";
    static constexpr const char* COLOR_DEFAULT = "\x1B[0m";
 
-   Logger::Logger(const levels level, const std::string& filename) : logLevel{level} {
+   Logger::Logger(const Levels level, const std::string& filename) : logLevel{level} {
       logger = this;
       logFile.exceptions(std::ios::failbit | std::ios::badbit);
       logFile.open(filename);
@@ -31,7 +31,7 @@ namespace gears {
       logger = nullptr;
    }
 
-   void Logger::_log(const levels level, const std::string& message, const std::source_location& location) {
+   void Logger::_log(const Levels level, const std::string& message, const std::source_location& location) {
       if (logLevel >= level) {
          auto now = std::chrono::system_clock::now();
          auto in_time_t = std::chrono::system_clock::to_time_t(now);
@@ -41,22 +41,22 @@ namespace gears {
          std::ostringstream timestamp;
          timestamp << std::put_time(&tm, "%H:%M:%S.") << std::setfill('0') << std::setw(2) << milliseconds;
 
-         if (level != levels::noTrace) {
+         if (level != Levels::NoTrace) {
             std::clog << '[' << timestamp.str() << "] ";
             logFile << '[' << timestamp.str() << "][" << location.file_name() << ":" << location.line() << "] ";
          }
          switch (level) {
-            case levels::info:
+            case Levels::Info:
                std::clog << "INFO: ";
                logFile << "INFO: ";
                break;
 
-            case levels::warning:
+            case Levels::Warning:
                std::clog << COLOR_YELLOW << "WARNING: ";
                logFile << "WARNING: ";
                break;
 
-            case levels::error:
+            case Levels::Error:
                std::cerr << COLOR_RED << "ERROR: ";
                logFile << "ERROR: ";
                break;
@@ -70,19 +70,19 @@ namespace gears {
    }
 
    void Logger::log(const std::string& message, const std::source_location& location) {
-      _log(levels::info, message, location);
+      _log(Levels::Info, message, location);
    }
 
    void Logger::logNoTrace(const std::string& message, const std::source_location& location) {
-      _log(levels::noTrace, message, location);
+      _log(Levels::NoTrace, message, location);
    }
 
    void Logger::warn(const std::string& message, const std::source_location& location) {
-      _log(levels::warning, message, location);
+      _log(Levels::Warning, message, location);
    }
 
    void Logger::error(const std::string& message, const std::source_location& location) {
-      _log(levels::error, message, location);
+      _log(Levels::Error, message, location);
    }
 
 } // namespace gears

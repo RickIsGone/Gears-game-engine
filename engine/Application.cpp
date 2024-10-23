@@ -13,7 +13,7 @@
 
 namespace gears {
 
-   void mouseCallback(GLFWwindow* window, int button, int action, int mods) {
+   static void mouseCallback(GLFWwindow* window, int button, int action, int mods) {
       if (button == GLFW_MOUSE_BUTTON_RIGHT) {
          if (action == GLFW_PRESS) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -32,12 +32,9 @@ namespace gears {
       loadGameObjects();
    }
 
-   Application::~Application() {}
-
    void Application::run() {
       EngineRenderSystem engineRenderSystem{engineDevice, engineRenderer.getSwapChainRenderPass()};
       EngineCamera camera{};
-      camera.setViewTarget(glm::vec3{-1.f, -2.f, 2.f}, glm::vec3{0.f, 0.f, 2.f});
 
       auto viewerObject = EngineGameObject::createGameObject();
 

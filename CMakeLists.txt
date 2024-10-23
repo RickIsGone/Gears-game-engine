@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.23.0)
-project(Gears VERSION 0.1.0 LANGUAGES C CXX)
+cmake_minimum_required(VERSION 3.25.0)
+project(Gears-engine VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED)
+
 
 if(NOT MSVC_IDE)
     # setting the build type to Release as a fallback when no type is provided during generation
@@ -61,9 +62,24 @@ endif()
 add_subdirectory(engine/vendor/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(engine/vendor/glm EXCLUDE_FROM_ALL)
 add_subdirectory(engine/vendor/tinyobjloader EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor/stb_image EXCLUDE_FROM_ALL)
 add_subdirectory(engine/vendor EXCLUDE_FROM_ALL) # imgui
 
 find_package(Vulkan REQUIRED)
 
-target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui)
-target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader imgui)
+target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui )
+target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader imgui stb_image)
+
+
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
+file(COPY media/gears-icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
+file(COPY media/gears-w.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
+
+install(DIRECTORY "build/${CMAKE_BUILD_TYPE}/" DESTINATION .)
+if(${CMAKE_SYSTEM} MATCHES Windows)
+    set(CPACK_GENERATOR "NSIS;ZIP;7Z;NuGet;WIX")
+endif()
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_NAME "Gears game engine")
+include(CPack)

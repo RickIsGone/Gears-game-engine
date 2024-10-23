@@ -1,6 +1,8 @@
 #include "engineWindow.hpp"
 #include "logger.hpp"
 
+#include "vendor/stb_image/stb_image.h"
+
 namespace gears {
 
    EngineWindow::EngineWindow(int w, int h, std::string name) : width{w}, height{h}, windowName{name} {
@@ -20,6 +22,11 @@ namespace gears {
       window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
       glfwSetWindowUserPointer(window, this);
       glfwSetFramebufferSizeCallback(window, frameBufferResizedCallback);
+
+      GLFWimage images[1];
+      images[0].pixels = stbi_load("assets/icons/gears-icon.png", &images[0].width, &images[0].height, 0, 4);
+      glfwSetWindowIcon(window, 1, images);
+      stbi_image_free(images[0].pixels);
    }
 
    void EngineWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {

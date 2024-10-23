@@ -76,7 +76,10 @@
         "source_location": "cpp",
         "stop_token": "cpp",
         "thread": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "cwctype": "cpp",
+        "expected": "cpp",
+        "random": "cpp"
     },
     "editor.autoClosingBrackets": "always"
 }

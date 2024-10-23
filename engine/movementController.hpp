@@ -8,11 +8,15 @@
 #include <glm/glm.hpp>
 
 namespace gears {
-   // da passare solo come ref o pointer
+
    class Mouse {
    public:
       Mouse(GLFWwindow* window);
       ~Mouse();
+
+      Mouse(const Mouse&) = delete;
+      Mouse operator=(const Mouse&) = delete;
+
       void update();
 
       float sens() const { return mouseSense; }
@@ -26,12 +30,9 @@ namespace gears {
       GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
       GLFWwindow* window;
 
-      double posX;
-      double posY;
-      double prevPosX = 0;
-      double prevPosY = 0;
-      float posDeltaX = 0;
-      float posDeltaY = 0;
+      double posX, posY;
+      double prevPosX, prevPosY;
+      float posDeltaX, posDeltaY;
 
       float mouseSense = 0.0025f;
    };

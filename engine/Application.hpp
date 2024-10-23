@@ -8,19 +8,18 @@
 #include "engineRenderer.hpp"
 
 namespace gears {
+   static constexpr int WIDTH = 1280;
+   static constexpr int HEIGHT = 720;
 
    class Application {
    public:
-      static constexpr int WIDTH = 1280;
-      static constexpr int HEIGHT = 720;
-
       Application();
-      ~Application();
+      virtual ~Application() = default;
 
       Application(const Application&) = delete;
       Application& operator=(const Application&) = delete;
 
-      void run();
+      virtual void run();
 
    private:
       void loadGameObjects();
