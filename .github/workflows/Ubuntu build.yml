@@ -45,7 +45,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: true
-        
+
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
@@ -56,6 +56,10 @@ jobs:
     - name: Setup Vulkan
       uses: ./.github/actions/vulkan
 
+    - name: Download dependencies
+      run: |
+        sudo apt-get install libwayland-dev libvulkan-dev libxkbcommon-dev xorg-dev
+        
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
