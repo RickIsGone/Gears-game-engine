@@ -18,26 +18,26 @@ file(GLOB SOURCES "engine/*.cpp")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") # debug
 
 # compiling shaders
-file(GLOB VERT_SHADERS "engine/shaders/*.vert")
-file(GLOB FRAG_SHADERS "engine/shaders/*.frag")
-list(APPEND SHADERS ${VERT_SHADERS} ${FRAG_SHADERS})
+# file(GLOB VERT_SHADERS "engine/shaders/*.vert")
+# file(GLOB FRAG_SHADERS "engine/shaders/*.frag")
+# list(APPEND SHADERS ${VERT_SHADERS} ${FRAG_SHADERS})
 
-find_program(GLSL_EXECUTABLE NAMES glslc DOC "Path to glslc compiler")
+# find_program(GLSL_EXECUTABLE NAMES glslc DOC "Path to glslc compiler")
 
-if(NOT GLSL_EXECUTABLE)
-    message(FATAL_ERROR "glslc not found. Please install the Vulkan SDK.")
-endif()
+# if(NOT GLSL_EXECUTABLE)
+#     message(FATAL_ERROR "glslc not found. Please install the Vulkan SDK.")
+# endif()
 
-foreach(shader IN LISTS SHADERS)
-    execute_process(
-        COMMAND ${GLSL_EXECUTABLE} ${shader} -o ${shader}.spv
-        RESULT_VARIABLE result_vert
-    )
+# foreach(shader IN LISTS SHADERS)
+#     execute_process(
+#         COMMAND ${GLSL_EXECUTABLE} ${shader} -o ${shader}.spv
+#         RESULT_VARIABLE result_vert
+#     )
 
-    if(result_vert)
-        message(FATAL_ERROR "Failed to compile shader: ${shader}")
-    endif()
-endforeach(shader)
+#     if(result_vert)
+#         message(FATAL_ERROR "Failed to compile shader: ${shader}")
+#     endif()
+# endforeach(shader)
 
 # copying compiled shaders and removing the console if the application is in release mode
 message("Copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders")
