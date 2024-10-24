@@ -27,17 +27,27 @@ jobs:
         build_type: [Release]
         c_compiler: [clang, cl]
         cpp_compiler: [clang++, cl]
+        include:
+          - c_compiler: clang
+            cpp_compiler: clang++
+          - c_compiler: cl
+            cpp_compiler: cl
+        exclude:
+          - c_compiler: clang
+            cpp_compiler: cl
+          - c_compiler: cl
+            cpp_compiler: clang++
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Setup Vulkan
+      uses: ./.github/actions/vulkan
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Setup Vulkan
-      uses: ./.github/actions/vulkan
     
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -67,4 +77,4 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
 
     - name: Pack
-      run: cpack -C Release
+      run: cpack -C ${{ steps.strings.outputs.build-output-dir }}
