@@ -75,5 +75,5 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --build-config ${{ matrix.build_type }}
 
-    - name: Pack
-      run: cpack -C ${{ steps.strings.outputs.build-output-dir }}
+    # - name: Pack
+    #   run: cpack -C ${{ steps.strings.outputs.build-output-dir }}
