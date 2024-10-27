@@ -28,7 +28,7 @@ namespace gears {
 
    class EnginePipeline {
    public:
-      EnginePipeline(EngineDevice& device, const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo);
+      EnginePipeline(PhysicalDevice& device, const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo);
       ~EnginePipeline();
 
       EnginePipeline(const EnginePipeline&) = delete;
@@ -44,9 +44,9 @@ namespace gears {
 
       void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
-      EngineDevice& engineDevice;
-      VkPipeline graphicsPipeline;
-      VkShaderModule vertShaderModule;
-      VkShaderModule fragShaderModule;
+      PhysicalDevice& _device;
+      VkPipeline _graphicsPipeline;
+      VkShaderModule _vertShaderModule;
+      VkShaderModule _fragShaderModule;
    };
 } // namespace gears

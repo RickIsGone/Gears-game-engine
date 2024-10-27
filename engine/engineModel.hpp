@@ -34,30 +34,30 @@ namespace gears {
          void loadModel(const std::string& filepath);
       };
 
-      EngineModel(EngineDevice& device, const EngineModel::Data& data);
+      EngineModel(PhysicalDevice& device, const EngineModel::Data& data);
       ~EngineModel();
 
       EngineModel(const EngineModel&) = delete;
       EngineModel& operator=(const EngineModel&) = delete;
 
-      static std::unique_ptr<EngineModel> createModelFromFile(EngineDevice& device, const std::string& filepath);
+      static std::unique_ptr<EngineModel> createModelFromFile(PhysicalDevice& device, const std::string& filepath);
 
       void bind(VkCommandBuffer commandBuffer);
       void draw(VkCommandBuffer commandBuffer);
 
    private:
-      EngineDevice& engineDevice;
+      PhysicalDevice& _device;
 
-      VkBuffer vertexBuffer;
-      VkDeviceMemory vertexBufferMemory;
-      uint32_t vertexCount;
-      void createVertexBuffers(const std::vector<Vertex>& vertices);
+      VkBuffer _vertexBuffer;
+      VkDeviceMemory _vertexBufferMemory;
+      uint32_t _vertexCount;
+      void _createVertexBuffers(const std::vector<Vertex>& vertices);
 
-      bool hasIndexBuffer = false;
-      VkBuffer indexBuffer;
-      VkDeviceMemory indexBufferMemory;
-      uint32_t indexCount;
-      void createIndexBuffer(const std::vector<uint32_t>& indices);
+      bool _hasIndexBuffer = false;
+      VkBuffer _indexBuffer;
+      VkDeviceMemory _indexBufferMemory;
+      uint32_t _indexCount;
+      void _createIndexBuffer(const std::vector<uint32_t>& indices);
    };
 
 } // namespace gears

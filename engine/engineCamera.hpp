@@ -19,14 +19,14 @@ namespace gears {
       void setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up = glm::vec3{0.0f, -1.0f, 0.0f});
       void setViewYXZ(glm::vec3 position, glm::quat rotation);
 
-      const glm::mat4 &getProjection() const { return projectionMatrix; }
-      const glm::mat4 &getView() const { return viewMatrix; }
+      const glm::mat4& getProjection() const { return _projectionMatrix; }
+      const glm::mat4& getView() const { return _viewMatrix; }
 
-      EngineGameObject& object() { return obj; }
+      EngineGameObject& object() { return _object; }
 
    private:
-      EngineGameObject obj = EngineGameObject::createGameObject();
-      glm::mat4 projectionMatrix{1.0f};
-      glm::mat4 viewMatrix{1.0f};
+      EngineGameObject _object = EngineGameObject::createGameObject();
+      glm::mat4 _projectionMatrix{1.0f};
+      glm::mat4 _viewMatrix{1.0f};
    };
 } // namespace gears

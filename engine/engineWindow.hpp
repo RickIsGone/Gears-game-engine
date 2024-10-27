@@ -7,32 +7,32 @@
 
 namespace gears {
 
-   class EngineWindow {
+   class Window {
    public:
-      EngineWindow(int width, int height, std::string windowName);
-      ~EngineWindow();
+      Window(int width, int height, const std::string& windowName);
+      ~Window();
 
-      EngineWindow(const EngineWindow&) = delete;
-      EngineWindow& operator=(const EngineWindow&) = delete;
+      Window(const Window&) = delete;
+      Window& operator=(const Window&) = delete;
 
 
-      bool shouldClose() { return glfwWindowShouldClose(window); }
-      VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
-      bool wasWindowResized() { return frameBufferResized; }
-      void resetWindowResizeFlag() { frameBufferResized = false; }
-      GLFWwindow* getWindow() const { return window; }
+      bool shouldClose() { return glfwWindowShouldClose(_window); }
+      VkExtent2D getExtent() { return {static_cast<uint32_t>(_width), static_cast<uint32_t>(_height)}; }
+      bool wasWindowResized() { return _frameBufferResized; }
+      void resetWindowResizeFlag() { _frameBufferResized = false; }
+      GLFWwindow* getWindow() const { return _window; }
 
       void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
    private:
-      static void frameBufferResizedCallback(GLFWwindow* window, int width, int height);
+      static void frameBufferResizedCallback(GLFWwindow* _window, int width, int height);
       void initWindow();
 
-      int width;
-      int height;
-      bool frameBufferResized = false;
+      int _width;
+      int _height;
+      bool _frameBufferResized = false;
 
-      std::string windowName;
-      GLFWwindow* window;
+      std::string _windowName;
+      GLFWwindow* _window;
    };
 } // namespace gears

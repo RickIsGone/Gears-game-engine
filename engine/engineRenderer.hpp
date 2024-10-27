@@ -10,27 +10,27 @@
 
 namespace gears {
 
-   class EngineRenderer {
+   class Renderer {
    public:
-      EngineRenderer(EngineWindow& engineWindow, EngineDevice& engineDevice);
-      ~EngineRenderer();
+      Renderer(Window& _window, PhysicalDevice& _device);
+      ~Renderer();
 
-      EngineRenderer(const EngineRenderer&) = delete;
-      EngineRenderer& operator=(const EngineRenderer&) = delete;
+      Renderer(const Renderer&) = delete;
+      Renderer& operator=(const Renderer&) = delete;
 
-      bool isFrameInProgress() const { return isFrameStarted; }
+      bool isFrameInProgress() const { return _isFrameStarted; }
 
-      float getAspectRatio() const { return engineSwapChain->extentAspectRatio(); }
+      float getAspectRatio() const { return _engineSwapChain->extentAspectRatio(); }
 
-      VkRenderPass getSwapChainRenderPass() const { return engineSwapChain->getRenderPass(); }
+      VkRenderPass getSwapChainRenderPass() const { return _engineSwapChain->getRenderPass(); }
       VkCommandBuffer getCurrentCommandBuffer() const {
-         assert(isFrameStarted && "cannot get command buffer when frame not in progress");
-         return commandBuffers[currentFrameIndex];
+         assert(_isFrameStarted && "cannot get command buffer when frame not in progress");
+         return _commandBuffers[_currentFrameIndex];
       }
 
       int getFrameIndex() const {
-         assert(isFrameStarted && "cannot get frame index when frame not in progress");
-         return currentFrameIndex;
+         assert(_isFrameStarted && "cannot get frame index when frame not in progress");
+         return _currentFrameIndex;
       }
 
       VkCommandBuffer beginFrame();
@@ -39,17 +39,17 @@ namespace gears {
       void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
    private:
-      void createCommandBuffers();
-      void freeCommandBuffers();
-      void recreateSwapChain();
+      void _createCommandBuffers();
+      void _freeCommandBuffers();
+      void _recreateSwapChain();
 
-      EngineWindow& engineWindow;
-      EngineDevice& engineDevice;
-      std::unique_ptr<EngineSwapChain> engineSwapChain;
-      std::vector<VkCommandBuffer> commandBuffers;
+      Window& _window;
+      PhysicalDevice& _device;
+      std::unique_ptr<EngineSwapChain> _engineSwapChain;
+      std::vector<VkCommandBuffer> _commandBuffers;
 
-      uint32_t currentImageIndex;
-      int currentFrameIndex{0};
-      bool isFrameStarted{false};
+      uint32_t _currentImageIndex;
+      int _currentFrameIndex{0};
+      bool _isFrameStarted{false};
    };
 } // namespace gears

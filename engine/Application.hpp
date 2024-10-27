@@ -24,9 +24,9 @@ namespace gears {
    private:
       void loadGameObjects();
 
-      EngineWindow engineWindow{WIDTH, HEIGHT, "Gears engine goes brrrrrrrrrrrr"};
-      EngineDevice engineDevice{engineWindow};
-      EngineRenderer engineRenderer{engineWindow, engineDevice};
-      std::vector<EngineGameObject> gameObjects;
+      Window _window{WIDTH, HEIGHT, "Gears engine goes brrrrrrrrrrrr"};
+      PhysicalDevice _device{_window};
+      Renderer _renderer{_window, _device};
+      std::vector<EngineGameObject> _gameObjects;
    };
 } // namespace gears
