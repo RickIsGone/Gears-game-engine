@@ -12,16 +12,16 @@ namespace gears {
       alignas(16) glm::vec3 color;
    };
 
-   EngineRenderSystem::EngineRenderSystem(EngineDevice& device, VkRenderPass renderPass) : engineDevice{device} {
-      createPipelineLayout();
-      createPipeline(renderPass);
+   EngineRenderSystem::EngineRenderSystem(PhysicalDevice& device, VkRenderPass renderPass) : _device{device} {
+      _createPipelineLayout();
+      _createPipeline(renderPass);
    }
 
    EngineRenderSystem::~EngineRenderSystem() {
-      vkDestroyPipelineLayout(engineDevice.device(), pipelineLayout, nullptr);
+      vkDestroyPipelineLayout(_device.device(), _pipelineLayout, nullptr);
    }
 
-   void EngineRenderSystem::createPipelineLayout() {
+   void EngineRenderSystem::_createPipelineLayout() {
       VkPushConstantRange pushConstantRange{};
       pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
       pushConstantRange.offset = 0;
@@ -33,21 +33,21 @@ namespace gears {
       pipelineLayoutInfo.pSetLayouts = nullptr;
       pipelineLayoutInfo.pushConstantRangeCount = 1;
       pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
-      if (vkCreatePipelineLayout(engineDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) throw Logger::Exception("failed to create a pipeline layout");
+      if (vkCreatePipelineLayout(_device.device(), &pipelineLayoutInfo, nullptr, &_pipelineLayout) != VK_SUCCESS) throw Logger::Exception("failed to create a pipeline layout");
    }
 
-   void EngineRenderSystem::createPipeline(VkRenderPass renderPass) {
-      assert(pipelineLayout != nullptr && "cannot create pipeline before pipeline layout");
+   void EngineRenderSystem::_createPipeline(VkRenderPass renderPass) {
+      assert(_pipelineLayout != nullptr && "cannot create pipeline before pipeline layout");
 
       PipelineConfigInfo pipelineConfig{};
       EnginePipeline::defaultPipelineConfigInfo(pipelineConfig);
       pipelineConfig.renderPass = renderPass;
-      pipelineConfig.pipelineLayout = pipelineLayout;
-      enginePipeline = std::make_unique<EnginePipeline>(engineDevice, "shaders/shader.vert.spv", "shaders/shader.frag.spv", pipelineConfig);
+      pipelineConfig.pipelineLayout = _pipelineLayout;
+      _enginePipeline = std::make_unique<EnginePipeline>(_device, "shaders/shader.vert.spv", "shaders/shader.frag.spv", pipelineConfig);
    }
 
    void EngineRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera) {
-      enginePipeline->bind(commandBuffer);
+      _enginePipeline->bind(commandBuffer);
 
       auto projectionView = camera.getProjection() * camera.getView();
 
@@ -61,7 +61,7 @@ namespace gears {
 
          vkCmdPushConstants(
              commandBuffer,
-             pipelineLayout,
+             _pipelineLayout,
              VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
              0,
              sizeof(SimplePushConstantData),

@@ -8,22 +8,22 @@ namespace gears {
    static constexpr const char* COLOR_YELLOW = "\x1B[93m";
    static constexpr const char* COLOR_DEFAULT = "\x1B[0m";
 
-   Logger::Logger(const Levels level, const std::string& filename) : logLevel{level} {
+   Logger::Logger(const Levels level, const std::string& filename) : _logLevel{level} {
       logger = this;
-      logFile.exceptions(std::ios::failbit | std::ios::badbit);
-      logFile.open(filename);
+      _logFile.exceptions(std::ios::failbit | std::ios::badbit);
+      _logFile.open(filename);
 
 #if defined(_WIN32)
 #ifdef GRS_DEBUG
-      logFile << "windows build running in debug mode\n";
+      _logFile << "windows build running in debug mode\n";
 #else
-      logFile << "windows build running in release mode\n";
+      _logFile << "windows build running in release mode\n";
 #endif // GRS_DEBUG
 #elif defined(__linux__)
 #ifdef GRS_DEBUG
-      logFile << "linux build running in debug mode\n";
+      _logFile << "linux build running in debug mode\n";
 #else
-      logFile << "linux build running in release mode\n";
+      _logFile << "linux build running in release mode\n";
 #endif // GRS_DEBUG
 #endif // defined(_WIN32)
    }
@@ -32,7 +32,7 @@ namespace gears {
    }
 
    void Logger::_log(const Levels level, const std::string& message, const std::source_location& location) {
-      if (logLevel >= level) {
+      if (_logLevel >= level) {
          auto now = std::chrono::system_clock::now();
          auto in_time_t = std::chrono::system_clock::to_time_t(now);
          auto tm = *std::localtime(&in_time_t);
@@ -43,29 +43,29 @@ namespace gears {
 
          if (level != Levels::NoTrace) {
             std::clog << '[' << timestamp.str() << "] ";
-            logFile << '[' << timestamp.str() << "][" << location.file_name() << ":" << location.line() << "] ";
+            _logFile << '[' << timestamp.str() << "][" << location.file_name() << ":" << location.line() << "] ";
          }
          switch (level) {
             case Levels::Info:
                std::clog << "INFO: ";
-               logFile << "INFO: ";
+               _logFile << "INFO: ";
                break;
 
             case Levels::Warning:
                std::clog << COLOR_YELLOW << "WARNING: ";
-               logFile << "WARNING: ";
+               _logFile << "WARNING: ";
                break;
 
             case Levels::Error:
                std::cerr << COLOR_RED << "ERROR: ";
-               logFile << "ERROR: ";
+               _logFile << "ERROR: ";
                break;
 
             default:
                break;
          }
          std::clog << message << COLOR_DEFAULT << '\n';
-         logFile << message << std::endl; /* flushing per sicurezza */
+         _logFile << message << std::endl; /* flushing per sicurezza */
       }
    }
 

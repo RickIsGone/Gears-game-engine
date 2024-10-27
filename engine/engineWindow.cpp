@@ -5,40 +5,40 @@
 
 namespace gears {
 
-   EngineWindow::EngineWindow(int w, int h, std::string name) : width{w}, height{h}, windowName{name} {
+   Window::Window(int w, int h, const std::string& name) {
       initWindow();
    }
 
-   EngineWindow::~EngineWindow() {
-      glfwDestroyWindow(window);
+   Window::~Window() {
+      glfwDestroyWindow(_window);
       glfwTerminate();
    }
 
-   void EngineWindow::initWindow() {
+   void Window::initWindow() {
       glfwInit();
       glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
       glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-      window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
-      glfwSetWindowUserPointer(window, this);
-      glfwSetFramebufferSizeCallback(window, frameBufferResizedCallback);
+      _window = glfwCreateWindow(_width, _height, _windowName.c_str(), nullptr, nullptr);
+      glfwSetWindowUserPointer(_window, this);
+      glfwSetFramebufferSizeCallback(_window, frameBufferResizedCallback);
 
       GLFWimage images[1];
       images[0].pixels = stbi_load("assets/icons/gears-icon.png", &images[0].width, &images[0].height, 0, 4);
-      glfwSetWindowIcon(window, 1, images);
+      glfwSetWindowIcon(_window, 1, images);
       stbi_image_free(images[0].pixels);
    }
 
-   void EngineWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
-      if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS)
-         throw Logger::Exception("failed to create window surface");
+   void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
+      if (glfwCreateWindowSurface(instance, _window, nullptr, surface) != VK_SUCCESS)
+         throw Logger::Exception("failed to create _window surface");
    }
 
-   void EngineWindow::frameBufferResizedCallback(GLFWwindow* window, int width, int height) {
-      auto engineWindow = reinterpret_cast<EngineWindow*>(glfwGetWindowUserPointer(window));
-      engineWindow->frameBufferResized = true;
-      engineWindow->width = width;
-      engineWindow->height = height;
+   void Window::frameBufferResizedCallback(GLFWwindow* _window, int width, int height) {
+      auto engineWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(_window));
+      engineWindow->_frameBufferResized = true;
+      engineWindow->_width = width;
+      engineWindow->_height = height;
       logger->log("Window resized to " + std::to_string(width) + "x" + std::to_string(height));
    }
 

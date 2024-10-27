@@ -60,7 +60,7 @@ namespace gears {
       EngineGameObject(EngineGameObject&&) = default;
       EngineGameObject& operator=(EngineGameObject&&) = default;
 
-      id_t getId() { return id; };
+      id_t getId() { return _id; };
 
       std::shared_ptr<EngineModel> model{};
       glm::vec3 color{};
@@ -68,7 +68,7 @@ namespace gears {
       TransformComponent transform{};
 
    private:
-      EngineGameObject(id_t objId) : id{objId} {}
-      id_t id;
+      EngineGameObject(id_t objId) : _id{objId} {}
+      id_t _id;
    };
 } // namespace gears

@@ -33,18 +33,18 @@ namespace gears {
    }
 
    void Application::run() {
-      EngineRenderSystem engineRenderSystem{engineDevice, engineRenderer.getSwapChainRenderPass()};
+      EngineRenderSystem engineRenderSystem{_device, _renderer.getSwapChainRenderPass()};
       EngineCamera camera{};
 
       auto viewerObject = EngineGameObject::createGameObject();
 
       MovementController cameraController{};
-      Mouse mouse{engineWindow.getWindow()};
+      Mouse mouse{_window.getWindow()};
       mouse.update();
 
       auto prevTime = std::chrono::high_resolution_clock::now();
 
-      while (!engineWindow.shouldClose()) {
+      while (!_window.shouldClose()) {
          glfwPollEvents();
          mouse.update();
 
@@ -52,35 +52,35 @@ namespace gears {
          float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - prevTime).count();
          prevTime = currentTime;
 
-         glfwSetMouseButtonCallback(engineWindow.getWindow(), mouseCallback); // checks if the RMB is pressed to then either use the camera or the mouse
-         if (glfwGetMouseButton(engineWindow.getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-            cameraController.moveInPlaneYXZ(engineWindow.getWindow(), mouse, deltaTime, viewerObject);
+         glfwSetMouseButtonCallback(_window.getWindow(), mouseCallback); // checks if the RMB is pressed to then either use the camera or the mouse
+         if (glfwGetMouseButton(_window.getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+            cameraController.moveInPlaneYXZ(_window.getWindow(), mouse, deltaTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.position, viewerObject.transform.rotation);
          }
 
-         float aspect = engineRenderer.getAspectRatio();
+         float aspect = _renderer.getAspectRatio();
          camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 50.f);
 
-         if (auto commandBuffer = engineRenderer.beginFrame()) {
-            engineRenderer.beginSwapChainRenderPass(commandBuffer);
-            engineRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
-            engineRenderer.endSwapChainRenderPass(commandBuffer);
-            engineRenderer.endFrame();
+         if (auto commandBuffer = _renderer.beginFrame()) {
+            _renderer.beginSwapChainRenderPass(commandBuffer);
+            engineRenderSystem.renderGameObjects(commandBuffer, _gameObjects, camera);
+            _renderer.endSwapChainRenderPass(commandBuffer);
+            _renderer.endFrame();
          }
       }
 
-      vkDeviceWaitIdle(engineDevice.device());
+      vkDeviceWaitIdle(_device.device());
    }
 
    void Application::loadGameObjects() {
-      std::shared_ptr<EngineModel> engineModel = EngineModel::createModelFromFile(engineDevice, "fish.obj");
+      std::shared_ptr<EngineModel> engineModel = EngineModel::createModelFromFile(_device, "fish.obj");
 
       auto gameObject = EngineGameObject::createGameObject();
       gameObject.model = engineModel;
       gameObject.transform.position = {0.f, 0.f, 2.f};
       gameObject.transform.scale = {0.5f, 0.5f, 0.5f};
 
-      gameObjects.push_back(std::move(gameObject));
+      _gameObjects.push_back(std::move(gameObject));
 
       logger->log("Loaded model \"fish.obj\"");
    }

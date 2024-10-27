@@ -16,7 +16,7 @@ namespace gears {
          Info
       };
 
-      Logger(const Levels level = Levels::Info, const std::string& filename = "logFile.log");
+      Logger(const Levels level = Levels::Info, const std::string& filename = "_logFile.log");
       ~Logger();
 
       void log(const std::string& message, const std::source_location& location = std::source_location::current());
@@ -24,7 +24,7 @@ namespace gears {
       void warn(const std::string& message, const std::source_location& location = std::source_location::current());
       void error(const std::string& message, const std::source_location& location = std::source_location::current());
 
-      void setLevel(const Levels level) { logLevel = level; }
+      void setLevel(const Levels level) { _logLevel = level; }
 
       class Exception : public std::runtime_error {
       private:
@@ -43,8 +43,8 @@ namespace gears {
       };
 
    private:
-      Levels logLevel;
-      std::ofstream logFile;
+      Levels _logLevel;
+      std::ofstream _logFile;
 
       void _log(const Levels level, const std::string& message, const std::source_location& location);
    };

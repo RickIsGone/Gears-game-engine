@@ -19,22 +19,22 @@ namespace gears {
 
       void update();
 
-      float sens() const { return mouseSense; }
-      double x() const { return posX; }
-      double y() const { return posY; }
-      float deltaX() const { return posDeltaX; }
-      float deltaY() const { return posDeltaY; }
-      GLFWcursor* getCursor() { return cursor; }
+      float sens() const { return _mouseSense; }
+      double x() const { return _x; }
+      double y() const { return _y; }
+      float deltaX() const { return _deltaX; }
+      float deltaY() const { return _deltaY; }
+      GLFWcursor* getCursor() { return _cursor; }
 
    private:
-      GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
-      GLFWwindow* window;
+      GLFWcursor* _cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+      GLFWwindow* _window;
 
-      double posX, posY;
-      double prevPosX, prevPosY;
-      float posDeltaX, posDeltaY;
+      double _x, _y;
+      double _prevX, _prevY;
+      float _deltaX, _deltaY;
 
-      float mouseSense = 0.0025f;
+      float _mouseSense = 0.0025f;
    };
 
 

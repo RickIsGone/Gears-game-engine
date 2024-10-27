@@ -34,20 +34,20 @@ namespace gears {
       auto vertCode = readFile(vertFilepath);
       auto fragCode = readFile(fragFilepath);
 
-      createShaderModule(vertCode, &vertShaderModule);
-      createShaderModule(fragCode, &fragShaderModule);
+      createShaderModule(vertCode, &_vertShaderModule);
+      createShaderModule(fragCode, &_fragShaderModule);
 
       VkPipelineShaderStageCreateInfo shaderStages[2];
       shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
       shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
-      shaderStages[0].module = vertShaderModule;
+      shaderStages[0].module = _vertShaderModule;
       shaderStages[0].pName = "main";
       shaderStages[0].flags = 0;
       shaderStages[0].pNext = nullptr;
       shaderStages[0].pSpecializationInfo = nullptr;
       shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
       shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-      shaderStages[1].module = fragShaderModule;
+      shaderStages[1].module = _fragShaderModule;
       shaderStages[1].pName = "main";
       shaderStages[1].flags = 0;
       shaderStages[1].pNext = nullptr;
@@ -83,17 +83,17 @@ namespace gears {
       pipelineInfo.basePipelineIndex = -1;
       pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-      if (vkCreateGraphicsPipelines(engineDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) throw Logger::Exception("failed to create graphics pipeline");
+      if (vkCreateGraphicsPipelines(_device.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &_graphicsPipeline) != VK_SUCCESS) throw Logger::Exception("failed to create graphics pipeline");
    }
 
-   EnginePipeline::EnginePipeline(EngineDevice& device, const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo) : engineDevice(device) {
+   EnginePipeline::EnginePipeline(PhysicalDevice& device, const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo) : _device(device) {
       createGraphicsPipeline(vertFilePath, fragFilePath, configInfo);
    }
 
    EnginePipeline::~EnginePipeline() {
-      vkDestroyShaderModule(engineDevice.device(), vertShaderModule, nullptr);
-      vkDestroyShaderModule(engineDevice.device(), fragShaderModule, nullptr);
-      vkDestroyPipeline(engineDevice.device(), graphicsPipeline, nullptr);
+      vkDestroyShaderModule(_device.device(), _vertShaderModule, nullptr);
+      vkDestroyShaderModule(_device.device(), _fragShaderModule, nullptr);
+      vkDestroyPipeline(_device.device(), _graphicsPipeline, nullptr);
    }
 
    void EnginePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) {
@@ -102,7 +102,7 @@ namespace gears {
       createInfo.codeSize = code.size();
       createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-      if (vkCreateShaderModule(engineDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) throw Logger::Exception("failed to create shader moudule");
+      if (vkCreateShaderModule(_device.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) throw Logger::Exception("failed to create shader moudule");
    }
 
    void EnginePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo) {
@@ -176,7 +176,7 @@ namespace gears {
    }
 
    void EnginePipeline::bind(VkCommandBuffer commandBuffer) {
-      vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+      vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _graphicsPipeline);
    }
 
 } // namespace gears
