@@ -19,29 +19,29 @@ namespace gears {
    }
 
    VkResult CreateDebugUtilsMessengerEXT(
-       VkInstance _instance,
+       VkInstance instance,
        const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
        const VkAllocationCallbacks* pAllocator,
        VkDebugUtilsMessengerEXT* pDebugMessenger) {
       auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-          _instance,
+          instance,
           "vkCreateDebugUtilsMessengerEXT");
       if (func != nullptr) {
-         return func(_instance, pCreateInfo, pAllocator, pDebugMessenger);
+         return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
       } else {
          return VK_ERROR_EXTENSION_NOT_PRESENT;
       }
    }
 
    void DestroyDebugUtilsMessengerEXT(
-       VkInstance _instance,
+       VkInstance instance,
        VkDebugUtilsMessengerEXT _debugMessenger,
        const VkAllocationCallbacks* pAllocator) {
       auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-          _instance,
+          instance,
           "vkDestroyDebugUtilsMessengerEXT");
       if (func != nullptr) {
-         func(_instance, _debugMessenger, pAllocator);
+         func(instance, _debugMessenger, pAllocator);
       }
    }
 
