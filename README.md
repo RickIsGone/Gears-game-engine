@@ -75,3 +75,4 @@ after doing this follow the instruction for the targeted OS
 * [VULKAN](https://www.lunarg.com/vulkan-sdk/)
 * [GLM](https://github.com/g-truc/glm/)
 * [TINYOBJLOADER](https://github.com/tinyobjloader/tinyobjloader)
+* [STB IMAGE](https://github.com/nothings/stb/blob/master/stb_image.h)
