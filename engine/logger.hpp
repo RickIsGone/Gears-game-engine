@@ -28,18 +28,18 @@ namespace gears {
 
       class Exception : public std::runtime_error {
       private:
-         std::source_location loc;
+         std::source_location _location;
 
       public:
          using baseClass = runtime_error;
 
          Exception(const std::string& message, const std::source_location& location = std::source_location::current())
-             : loc{location}, baseClass{message.c_str()} {};
+             : _location{location}, baseClass{message.c_str()} {};
 
          Exception(const char* message, const std::source_location& location = std::source_location::current())
-             : loc{location}, baseClass{message} {};
+             : _location{location}, baseClass{message} {};
 
-         std::source_location where() const { return loc; }
+         std::source_location where() const { return _location; }
       };
 
    private:
