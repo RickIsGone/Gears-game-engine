@@ -1,4 +1,6 @@
-﻿#include "engine.hpp"
+﻿#include <format>
+
+#include "engine.hpp"
 #include "macro.hpp"
 #include "logger.hpp"
 

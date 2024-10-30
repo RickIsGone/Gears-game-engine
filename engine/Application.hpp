@@ -21,7 +21,6 @@ namespace gears {
    protected:
       Application(int width, int height, const std::string& windowName);
 
-      // private:
       void loadGameObjects();
 
       Window _window;
