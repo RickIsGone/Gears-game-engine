@@ -101,7 +101,7 @@ namespace gears {
       }
 
       if (vkCreateInstance(&createInfo, nullptr, &_instance) != VK_SUCCESS) {
-         throw Logger::Exception("failed to create _instance!");
+         throw Logger::Exception("failed to create instance!");
       }
 
       _hasGflwRequiredInstanceExtensions();

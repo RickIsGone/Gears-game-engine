@@ -1,6 +1,7 @@
 #include <fstream>
 #include <cassert>
 #include <iostream>
+#include <format>
 
 #include "enginePipeline.hpp"
 #include "engineModel.hpp"
@@ -10,13 +11,13 @@ namespace gears {
 
    std::vector<char> EnginePipeline::readFile(const std::string& filePath) {
       std::ifstream file(filePath, std::ios::ate | std::ios::binary);
-      if (!file) throw Logger::Exception("failed to open file \"" + filePath + '\"');
+      if (!file) throw Logger::Exception(std::format("failed to open file: \"{}\"", filePath));
 
       size_t fileSize = static_cast<size_t>(file.tellg());
       std::vector<char> buffer(fileSize);
 
       file.seekg(0);
-      if (!file.read(buffer.data(), fileSize)) throw Logger::Exception("failed to read file: \"" + filePath + '\"');
+      if (!file.read(buffer.data(), fileSize)) throw Logger::Exception(std::format("failed to read file: \"{}\"", filePath));
 
       file.close();
 

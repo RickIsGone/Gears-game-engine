@@ -1,3 +1,5 @@
+#include <format>
+
 #include "engineWindow.hpp"
 #include "logger.hpp"
 
@@ -5,7 +7,7 @@
 
 namespace gears {
 
-   Window::Window(int w, int h, const std::string& name) {
+   Window::Window(int w, int h, const std::string& name) : _width{w}, _height{h}, _windowName{name} {
       initWindow();
    }
 
@@ -31,15 +33,15 @@ namespace gears {
 
    void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
       if (glfwCreateWindowSurface(instance, _window, nullptr, surface) != VK_SUCCESS)
-         throw Logger::Exception("failed to create _window surface");
+         throw Logger::Exception("failed to create window surface");
    }
 
-   void Window::frameBufferResizedCallback(GLFWwindow* _window, int width, int height) {
-      auto engineWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(_window));
+   void Window::frameBufferResizedCallback(GLFWwindow* window, int width, int height) {
+      auto engineWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
       engineWindow->_frameBufferResized = true;
       engineWindow->_width = width;
       engineWindow->_height = height;
-      logger->log("Window resized to " + std::to_string(width) + "x" + std::to_string(height));
+      logger->log(std::format("Window resized to {}x{}", width, height));
    }
 
 } // namespace gears
