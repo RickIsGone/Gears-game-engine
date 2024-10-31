@@ -42,40 +42,44 @@ namespace gears {
          std::ostringstream timestamp;
          timestamp << std::put_time(&tm, "%H:%M:%S.") << std::setfill('0') << std::setw(2) << milliseconds;
 
-         if (level != Levels::NoTrace) {
-            std::clog << std::format("[{}] ", timestamp.str());
-            _logFile << std::format("[{}][{}:{}] ", timestamp.str(), location.file_name(), location.line());
-         }
          switch (level) {
+            case Levels::Trace:
+               std::clog << std::format("[{}]", timestamp.str());
+               _logFile << std::format("[{}][{}:{}]", timestamp.str(), location.file_name(), location.line());
+               // niente break perche' deve fare anche le robe del livello Info
             case Levels::Info:
-               std::clog << "INFO: ";
-               _logFile << "INFO: ";
+               std::clog << "[INFO] ";
+               _logFile << "[INFO] ";
                break;
 
             case Levels::Warning:
-               std::clog << COLOR_YELLOW << "WARNING: ";
-               _logFile << "WARNING: ";
+               std::clog << std::format("{}[{}][WARNING] ", COLOR_YELLOW, timestamp.str());
+               _logFile << std::format("[{}][{}:{}][WARNING] ", timestamp.str(), location.file_name(), location.line());
                break;
 
             case Levels::Error:
-               std::cerr << COLOR_RED << "ERROR: ";
-               _logFile << "ERROR: ";
+               std::clog << std::format("{}[{}][ERROR] ", COLOR_RED, timestamp.str());
+               _logFile << std::format("[{}][{}:{}][ERROR] ", timestamp.str(), location.file_name(), location.line());
                break;
 
-            default:
+            default: // Levels::NoLevel
                break;
          }
-         std::clog << message << COLOR_DEFAULT << '\n';
+         std::clog << std::format("{}{}\n", message, COLOR_DEFAULT);
          _logFile << message << std::endl; /* flushing per sicurezza */
       }
    }
 
-   void Logger::log(const std::string& message, const std::source_location& location) {
-      _log(Levels::Info, message, location);
+   void Logger::logNoLevel(const std::string& message) {
+      _log(Levels::NoLevel, message, std::source_location::current());
    }
 
-   void Logger::logNoTrace(const std::string& message, const std::source_location& location) {
-      _log(Levels::NoTrace, message, location);
+   void Logger::log(const std::string& message) {
+      _log(Levels::Info, message, std::source_location::current());
+   }
+
+   void Logger::logTrace(const std::string& message, const std::source_location& location) {
+      _log(Levels::Trace, message, location);
    }
 
    void Logger::warn(const std::string& message, const std::source_location& location) {

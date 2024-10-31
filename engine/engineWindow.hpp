@@ -24,9 +24,10 @@ namespace gears {
 
       void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
+      void setIcon(const std::string& iconPath);
+
    private:
       static void frameBufferResizedCallback(GLFWwindow* _window, int width, int height);
-      void initWindow();
 
       int _width;
       int _height;

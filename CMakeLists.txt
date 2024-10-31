@@ -15,7 +15,9 @@ endif()
 
 file(GLOB SOURCES "engine/*.cpp")
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") # debug
+# debug
+add_definitions(-DGRS_V_SYNC=1)
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") 
 
 # compiling shaders
 # file(GLOB VERT_SHADERS "engine/shaders/*.vert")
@@ -72,7 +74,7 @@ target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader i
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
-file(COPY media/gears-icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
+file(COPY media/gears_default_icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
 file(COPY media/gears-w.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
 
 # cpack

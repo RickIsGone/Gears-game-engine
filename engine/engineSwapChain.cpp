@@ -383,19 +383,19 @@ namespace gears {
        const std::vector<VkPresentModeKHR>& availablePresentModes) {
       for (const auto& availablePresentMode : availablePresentModes) {
          if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-            logger->log("Present mode: Mailbox");
+            logger->logTrace("Present mode: Mailbox");
             return availablePresentMode;
          }
       }
-
-      // for (const auto &availablePresentMode : availablePresentModes) {
-      //   if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-      //      logger->log("Present mode: Immediate");
-      //     return availablePresentMode;
-      //   }
-      // }
-
-      logger->log("Present mode: V-Sync");
+#if !GRS_V_SYNC
+      for (const auto& availablePresentMode : availablePresentModes) {
+         if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
+            logger->logTrace("Present mode: Immediate");
+            return availablePresentMode;
+         }
+      }
+#endif // !GRS_V_SYNC
+      logger->logTrace("Present mode: V-Sync");
       return VK_PRESENT_MODE_FIFO_KHR;
    }
 

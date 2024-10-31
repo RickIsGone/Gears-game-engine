@@ -8,15 +8,6 @@
 namespace gears {
 
    Window::Window(int w, int h, const std::string& name) : _width{w}, _height{h}, _windowName{name} {
-      initWindow();
-   }
-
-   Window::~Window() {
-      glfwDestroyWindow(_window);
-      glfwTerminate();
-   }
-
-   void Window::initWindow() {
       glfwInit();
       glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
       glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -24,11 +15,11 @@ namespace gears {
       _window = glfwCreateWindow(_width, _height, _windowName.c_str(), nullptr, nullptr);
       glfwSetWindowUserPointer(_window, this);
       glfwSetFramebufferSizeCallback(_window, frameBufferResizedCallback);
+   }
 
-      GLFWimage images[1];
-      images[0].pixels = stbi_load("assets/icons/gears-icon.png", &images[0].width, &images[0].height, 0, 4);
-      glfwSetWindowIcon(_window, 1, images);
-      stbi_image_free(images[0].pixels);
+   Window::~Window() {
+      glfwDestroyWindow(_window);
+      glfwTerminate();
    }
 
    void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
@@ -41,7 +32,16 @@ namespace gears {
       engineWindow->_frameBufferResized = true;
       engineWindow->_width = width;
       engineWindow->_height = height;
-      logger->log(std::format("Window resized to {}x{}", width, height));
+      logger->logTrace(std::format("Window resized to {}x{}", width, height));
    }
+
+   // suggested icon sizes: 16x16, 32x32, 48x48.
+   void Window::setIcon(const std::string& iconPath) {
+      GLFWimage images[1];
+      images[0].pixels = stbi_load(iconPath.c_str(), &images[0].width, &images[0].height, 0, 4);
+      glfwSetWindowIcon(_window, 1, images);
+      stbi_image_free(images[0].pixels);
+   }
+
 
 } // namespace gears
