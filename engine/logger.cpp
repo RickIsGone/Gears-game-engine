@@ -1,3 +1,4 @@
+#include <format>
 #include <iostream>
 #include <chrono>
 
@@ -42,8 +43,8 @@ namespace gears {
          timestamp << std::put_time(&tm, "%H:%M:%S.") << std::setfill('0') << std::setw(2) << milliseconds;
 
          if (level != Levels::NoTrace) {
-            std::clog << '[' << timestamp.str() << "] ";
-            _logFile << '[' << timestamp.str() << "][" << location.file_name() << ":" << location.line() << "] ";
+            std::clog << std::format("[{}] ", timestamp.str());
+            _logFile << std::format("[{}][{}:{}] ", timestamp.str(), location.file_name(), location.line());
          }
          switch (level) {
             case Levels::Info:

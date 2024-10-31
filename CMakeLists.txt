@@ -67,7 +67,7 @@ add_subdirectory(engine/vendor EXCLUDE_FROM_ALL) # imgui
 
 find_package(Vulkan REQUIRED)
 
-target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui )
+target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui stb_image)
 target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader imgui stb_image)
 
 
