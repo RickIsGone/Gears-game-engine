@@ -26,8 +26,7 @@
 #if defined(_WIN32)
 #include <Windows.h>
 int main(int, char**);
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                      LPSTR lpCmdLine, int nShowCmd) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
    (void)hInstance;
    (void)hPrevInstance;
    (void)lpCmdLine;

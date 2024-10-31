@@ -3,6 +3,7 @@
 #include "engine.hpp"
 #include "engineCamera.hpp"
 #include "movementController.hpp"
+#include "logger.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -10,6 +11,10 @@
 #include <glm/gtc/constants.hpp>
 
 namespace gears {
+
+   Engine::Engine(int width, int height, const std::string& windowName) : Application(width, height, windowName) {
+      _loadGameObjects();
+   }
 
    static void mouseCallback(GLFWwindow* window, int button, int action, int mods) {
       if (button == GLFW_MOUSE_BUTTON_RIGHT) {
@@ -62,5 +67,18 @@ namespace gears {
       }
 
       vkDeviceWaitIdle(_device.device());
+   }
+
+   void Engine::_loadGameObjects() {
+      std::shared_ptr<EngineModel> engineModel = EngineModel::createModelFromFile(_device, "fish.obj");
+
+      auto gameObject = EngineGameObject::createGameObject();
+      gameObject.model = engineModel;
+      gameObject.transform.position = {0.f, 0.f, 2.f};
+      gameObject.transform.scale = {0.5f, 0.5f, 0.5f};
+
+      _gameObjects.push_back(std::move(gameObject));
+
+      logger->log("Loaded model \"fish.obj\"");
    }
 } // namespace gears
