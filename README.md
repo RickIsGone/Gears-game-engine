@@ -9,9 +9,8 @@
 
 ## Prerequisites
 
-* cmake  
-* git  
-* Visual studio (Windows)
+* cmake 3.25 or newer
+* git
 
 <ins> **1. Cloning the repo:** </ins>  
 Start by cloning the repo with `git clone --recursive https://github.com/RickIsGone/Gears-game-engine`
@@ -30,7 +29,7 @@ after doing this follow the instruction for the targeted OS
 
   open a terminal in that directory and type `cmake..`
 
-  after you've compiled the engine with Visual studio make sure to move the *shaders* directory in the same directory as the executable or it wont work  
+  if you've compiled the engine using Visual Studio as the cmake generator make sure to move the *shaders* and *assets* directories in the same directory as the executable or the engine wont work  
 
   congratulation! the engine is now compiled and ready to be used
 
