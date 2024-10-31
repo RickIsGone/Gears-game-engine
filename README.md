@@ -3,9 +3,7 @@
 
 [![Windows build](https://github.com/RickIsGone/Gears-game-engine/actions/workflows/Windows%20build.yml/badge.svg)](https://github.com/RickIsGone/Gears-game-engine/actions/workflows/Windows%20build.yml) [![Ubuntu build](https://github.com/RickIsGone/Gears-game-engine/actions/workflows/Ubuntu%20build.yml/badge.svg)](https://github.com/RickIsGone/Gears-game-engine/actions/workflows/Ubuntu%20build.yml)  
 
-# Building
-
-**WORK IN PROGRESS**  
+# Building  
 
 ## Prerequisites
 

@@ -31,12 +31,15 @@ namespace gears {
    }
 
    void Engine::run() {
+      logger->log("starting engine");
+
+      _window.setIcon("assets/icons/gears_default_icon.png");
       EngineCamera camera{};
 
       auto viewerObject = EngineGameObject::createGameObject();
 
       MovementController cameraController{};
-      Mouse mouse{_window.getWindow()};
+      Mouse mouse{_window};
       mouse.update();
 
       auto prevTime = std::chrono::high_resolution_clock::now();
@@ -67,6 +70,7 @@ namespace gears {
       }
 
       vkDeviceWaitIdle(_device.device());
+      logger->log("terminating engine");
    }
 
    void Engine::_loadGameObjects() {
@@ -79,6 +83,6 @@ namespace gears {
 
       _gameObjects.push_back(std::move(gameObject));
 
-      logger->log("Loaded model \"fish.obj\"");
+      logger->logTrace("Loaded model \"fish.obj\"");
    }
 } // namespace gears

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engineGameObject.hpp"
+#include "engineWindow.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -11,7 +12,7 @@ namespace gears {
 
    class Mouse {
    public:
-      Mouse(GLFWwindow* window);
+      Mouse(Window& window);
       ~Mouse();
 
       Mouse(const Mouse&) = delete;
@@ -27,8 +28,8 @@ namespace gears {
       GLFWcursor* getCursor() { return _cursor; }
 
    private:
-      GLFWcursor* _cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
-      GLFWwindow* _window;
+      GLFWcursor* _cursor;
+      Window& _window;
 
       double _x, _y;
       double _prevX, _prevY;

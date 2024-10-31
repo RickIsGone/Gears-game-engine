@@ -15,7 +15,9 @@ endif()
 
 file(GLOB SOURCES "engine/*.cpp")
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") # debug
+# debug
+add_definitions(-DGRS_V_SYNC=1)
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") 
 
 # compiling shaders
 # file(GLOB VERT_SHADERS "engine/shaders/*.vert")
@@ -70,16 +72,16 @@ find_package(Vulkan REQUIRED)
 target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui stb_image)
 target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader imgui stb_image)
 
-
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
-file(COPY media/gears-icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
+file(COPY media/gears_default_icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
 file(COPY media/gears-w.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
 
+# cpack
 install(DIRECTORY "build/${CMAKE_BUILD_TYPE}/" DESTINATION .)
 if(${CMAKE_SYSTEM} MATCHES Windows)
     set(CPACK_GENERATOR "NSIS;ZIP;7Z;WIX")
 endif()
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
 set(CPACK_PACKAGE_NAME "Gears game engine")
 include(CPack)

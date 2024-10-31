@@ -32,13 +32,15 @@ namespace gears {
          gameObject.transform.position += gameObject.transform.rotation * (glm::normalize(translate) * moveSpeed * dt);
    }
 
-   Mouse::Mouse(GLFWwindow* window) : _window{window} {}
+   Mouse::Mouse(Window& window) : _window{window} {
+      _cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+   }
    Mouse::~Mouse() {
       glfwDestroyCursor(_cursor);
    }
 
    void Mouse::update() {
-      glfwGetCursorPos(_window, &_x, &_y);
+      glfwGetCursorPos(_window.getWindow(), &_x, &_y);
       _deltaX = _x - _prevX;
       _deltaY = _y - _prevY;
 

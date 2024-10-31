@@ -1,4 +1,5 @@
 #include <cstring>
+#include <format>
 #include <set>
 #include <unordered_set>
 
@@ -13,7 +14,7 @@ namespace gears {
        VkDebugUtilsMessageTypeFlagsEXT messageType,
        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
        void* pUserData) {
-      logger->warn("validation layer: " + (std::string)pCallbackData->pMessage);
+      logger->warn(std::format("validation layer: {}", pCallbackData->pMessage));
 
       return VK_FALSE;
    }
@@ -113,9 +114,11 @@ namespace gears {
       if (deviceCount == 0) {
          throw Logger::Exception("failed to find GPUs with Vulkan support!");
       }
-      logger->log("Device count: " + std::to_string(deviceCount));
+
+      logger->logTrace(std::format("device count: {}", deviceCount));
       std::vector<VkPhysicalDevice> devices(deviceCount);
       vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
+
 
       for (const auto& device : devices) {
          if (_isDeviceSuitable(device)) {
@@ -128,8 +131,17 @@ namespace gears {
          throw Logger::Exception("failed to find a suitable GPU!");
       }
 
+      logger->logTrace("suitable devices available:");
+      for (const auto& device : devices) {
+         if (_isDeviceSuitable(device)) {
+            VkPhysicalDeviceProperties prop;
+            vkGetPhysicalDeviceProperties(_physicalDevice, &prop);
+            logger->logNoLevel(std::format("\t{}", prop.deviceName));
+         }
+      }
+
       vkGetPhysicalDeviceProperties(_physicalDevice, &properties);
-      logger->log("physical device: " + (std::string)properties.deviceName);
+      logger->logTrace(std::format("physical device: {}", properties.deviceName));
    }
 
    void PhysicalDevice::_createLogicalDevice() {
@@ -279,17 +291,17 @@ namespace gears {
       std::vector<VkExtensionProperties> extensions(extensionCount);
       vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
 
-      logger->log("available extensions:");
+      logger->logTrace("available extensions:");
       std::unordered_set<std::string> available;
       for (const auto& extension : extensions) {
-         logger->logNoTrace("\t" + (std::string)extension.extensionName);
+         logger->logNoLevel(std::format("\t{}", extension.extensionName));
          available.insert(extension.extensionName);
       }
 
-      logger->log("required extensions:");
+      logger->logTrace("required extensions:");
       auto requiredExtensions = _getRequiredExtensions();
       for (const auto& required : requiredExtensions) {
-         logger->logNoTrace("\t" + (std::string)required);
+         logger->logNoLevel(std::format("\t{}", required));
          if (available.find(required) == available.end()) {
             throw Logger::Exception("Missing required glfw extension");
          }

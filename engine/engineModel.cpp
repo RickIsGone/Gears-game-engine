@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cstring>
+#include <format>
 #include <unordered_map>
 
 #include "engineModel.hpp"
@@ -42,7 +43,7 @@ namespace gears {
    std::unique_ptr<EngineModel> EngineModel::createModelFromFile(PhysicalDevice& device, const std::string& filepath) {
       Data data{};
       data.loadModel(filepath);
-      logger->log("vertex count: " + std::to_string(data.vertices.size()));
+      logger->logTrace(std::format("vertex count: {}", data.vertices.size()));
       return std::make_unique<EngineModel>(device, data);
    }
 
