@@ -16,7 +16,7 @@ namespace gears {
          Info
       };
 
-      Logger(const Levels level = Levels::Info, const std::string& filename = "_logFile.log");
+      Logger(const Levels level = Levels::Info, const std::string& filename = "logFile.log");
       ~Logger();
 
       void log(const std::string& message, const std::source_location& location = std::source_location::current());
