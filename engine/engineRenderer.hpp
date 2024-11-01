@@ -38,6 +38,9 @@ namespace gears {
       void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
       void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
+      void enableVSync();
+      void disableVSync();
+
    private:
       void _createCommandBuffers();
       void _freeCommandBuffers();

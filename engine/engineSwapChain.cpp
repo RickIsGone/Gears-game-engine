@@ -9,14 +9,14 @@
 namespace gears {
 
    EngineSwapChain::EngineSwapChain(PhysicalDevice& deviceRef, VkExtent2D extent, std::shared_ptr<EngineSwapChain> previous)
-       : _device{deviceRef}, _windowExtent{extent}, _oldSwapChain{previous} {
+       : _device{deviceRef}, _windowExtent{extent}, _oldSwapChain{previous}, _vSync(previous->_vSync) {
       _init();
 
       _oldSwapChain = nullptr;
    }
 
-   EngineSwapChain::EngineSwapChain(PhysicalDevice& deviceRef, VkExtent2D extent)
-       : _device{deviceRef}, _windowExtent{extent} {
+   EngineSwapChain::EngineSwapChain(PhysicalDevice& deviceRef, VkExtent2D extent, bool vSync)
+       : _device{deviceRef}, _windowExtent{extent}, _vSync(vSync) {
       _init();
    }
 
@@ -79,8 +79,7 @@ namespace gears {
       return result;
    }
 
-   VkResult EngineSwapChain::submitCommandBuffers(
-       const VkCommandBuffer* buffers, uint32_t* imageIndex) {
+   VkResult EngineSwapChain::submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex) {
       if (_imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
          vkWaitForFences(_device.device(), 1, &_imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
       }
@@ -367,8 +366,7 @@ namespace gears {
       }
    }
 
-   VkSurfaceFormatKHR EngineSwapChain::_chooseSwapSurfaceFormat(
-       const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+   VkSurfaceFormatKHR EngineSwapChain::_chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
       for (const auto& availableFormat : availableFormats) {
          if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
              availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
@@ -379,22 +377,23 @@ namespace gears {
       return availableFormats[0];
    }
 
-   VkPresentModeKHR EngineSwapChain::_chooseSwapPresentMode(
-       const std::vector<VkPresentModeKHR>& availablePresentModes) {
+   VkPresentModeKHR EngineSwapChain::_chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
       for (const auto& availablePresentMode : availablePresentModes) {
          if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
             logger->logTrace("Present mode: Mailbox");
             return availablePresentMode;
          }
       }
-#if !GRS_V_SYNC
-      for (const auto& availablePresentMode : availablePresentModes) {
-         if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-            logger->logTrace("Present mode: Immediate");
-            return availablePresentMode;
+
+      if (!_vSync) {
+         for (const auto& availablePresentMode : availablePresentModes) {
+            if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
+               logger->logTrace("Present mode: Immediate");
+               return availablePresentMode;
+            }
          }
       }
-#endif // !GRS_V_SYNC
+
       logger->logTrace("Present mode: V-Sync");
       return VK_PRESENT_MODE_FIFO_KHR;
    }

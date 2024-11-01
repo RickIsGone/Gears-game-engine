@@ -135,7 +135,7 @@ namespace gears {
       for (const auto& device : devices) {
          if (_isDeviceSuitable(device)) {
             VkPhysicalDeviceProperties prop;
-            vkGetPhysicalDeviceProperties(_physicalDevice, &prop);
+            vkGetPhysicalDeviceProperties(device, &prop);
             logger->logNoLevel(std::format("\t{}", prop.deviceName));
          }
       }

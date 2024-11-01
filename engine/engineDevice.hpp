@@ -23,9 +23,9 @@ namespace gears {
    class PhysicalDevice {
    public:
 #ifdef GRS_DEBUG
-      const bool enableValidationLayers = false;
-#else
       const bool enableValidationLayers = true;
+#else
+      const bool enableValidationLayers = false;
 #endif // GRS_DEBUG
 
       PhysicalDevice(Window& window);
