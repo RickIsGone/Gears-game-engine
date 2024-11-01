@@ -16,7 +16,6 @@ endif()
 file(GLOB SOURCES "engine/*.cpp")
 
 # debug
-add_definitions(-DGRS_V_SYNC=1)
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") 
 
 # compiling shaders

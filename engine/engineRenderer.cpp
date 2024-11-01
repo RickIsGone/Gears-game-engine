@@ -134,4 +134,14 @@ namespace gears {
       vkCmdEndRenderPass(commandBuffer);
    }
 
+   void Renderer::enableVSync() {
+      _engineSwapChain->enableVSync();
+      _recreateSwapChain();
+   }
+
+   void Renderer::disableVSync() {
+      _engineSwapChain->disableVSync();
+      _recreateSwapChain();
+   }
+
 } // namespace gears

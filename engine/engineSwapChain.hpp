@@ -14,8 +14,8 @@ namespace gears {
    public:
       static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-      EngineSwapChain(PhysicalDevice& deviceRef, VkExtent2D _windowExtent);
-      EngineSwapChain(PhysicalDevice& deviceRef, VkExtent2D _windowExtent, std::shared_ptr<EngineSwapChain> previous);
+      EngineSwapChain(PhysicalDevice& deviceRef, VkExtent2D extent, bool vSync = true);
+      EngineSwapChain(PhysicalDevice& deviceRef, VkExtent2D extent, std::shared_ptr<EngineSwapChain> previous);
       ~EngineSwapChain();
 
       EngineSwapChain(const EngineSwapChain&) = delete;
@@ -38,7 +38,11 @@ namespace gears {
       VkResult acquireNextImage(uint32_t* imageIndex);
       VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
-      bool compareSwapFormats(const EngineSwapChain& _swapChain) const { return _swapChain._swapChainDepthFormat == _swapChainDepthFormat && _swapChain._swapChainImageFormat == _swapChainImageFormat; }
+      bool compareSwapFormats(const EngineSwapChain& swapChain) const { return swapChain._swapChainDepthFormat == _swapChainDepthFormat && swapChain._swapChainImageFormat == _swapChainImageFormat; }
+
+      void enableVSync() { _vSync = true; }
+      void disableVSync() { _vSync = false; }
+      bool isVSyncEnabled() { return _vSync; }
 
    private:
       void _init();
@@ -55,6 +59,8 @@ namespace gears {
       VkPresentModeKHR _chooseSwapPresentMode(
           const std::vector<VkPresentModeKHR>& availablePresentModes);
       VkExtent2D _chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+      bool _vSync{true};
 
       VkFormat _swapChainImageFormat;
       VkFormat _swapChainDepthFormat;
