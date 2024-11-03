@@ -1,20 +1,22 @@
 #include <format>
+#include <string>
 
 #include "engineWindow.hpp"
+#include "GLFW/glfw3.h"
 #include "logger.hpp"
 
 #include "vendor/stb_image/stb_image.h"
 
 namespace gears {
 
-   Window::Window(int w, int h, const std::string& name) : _width{w}, _height{h}, _windowName{name} {
+   Window::Window(uint32_t width, uint32_t height, const std::string& name) : _width{width}, _height{height}, _windowName{name} {
       glfwInit();
       glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
       glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
       _window = glfwCreateWindow(_width, _height, _windowName.c_str(), nullptr, nullptr);
       glfwSetWindowUserPointer(_window, this);
-      glfwSetFramebufferSizeCallback(_window, frameBufferResizedCallback);
+      glfwSetFramebufferSizeCallback(_window, _frameBufferResizedCallback);
    }
 
    Window::~Window() {
@@ -27,7 +29,7 @@ namespace gears {
          throw Logger::Exception("failed to create window surface");
    }
 
-   void Window::frameBufferResizedCallback(GLFWwindow* window, int width, int height) {
+   void Window::_frameBufferResizedCallback(GLFWwindow* window, int width, int height) {
       auto engineWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
       engineWindow->_frameBufferResized = true;
       engineWindow->_width = width;
@@ -43,5 +45,9 @@ namespace gears {
       stbi_image_free(images[0].pixels);
    }
 
+   void Window::rename(const std::string& newName) {
+      _windowName = newName;
+      glfwSetWindowTitle(_window, _windowName.c_str());
+   }
 
 } // namespace gears

@@ -16,7 +16,7 @@ namespace gears {
       virtual void run() = 0;
 
    protected:
-      Application(int width, int height, const std::string& windowName)
+      Application(uint32_t width, uint32_t height, const std::string& windowName)
           : _window{width, height, windowName},
             _device{_window},
             _renderer{_window, _device},

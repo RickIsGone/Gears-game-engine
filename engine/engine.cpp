@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cstdint>
 
 #include "engine.hpp"
 #include "engineCamera.hpp"
@@ -12,7 +13,7 @@
 
 namespace gears {
 
-   Engine::Engine(int width, int height, const std::string& windowName) : Application(width, height, windowName) {
+   Engine::Engine(uint32_t width, uint32_t height, const std::string& windowName) : Application(width, height, windowName) {
       _loadGameObjects();
    }
 

@@ -9,7 +9,7 @@ namespace gears {
 
    class Window {
    public:
-      Window(int width, int height, const std::string& windowName);
+      Window(uint32_t width, uint32_t height, const std::string& name);
       ~Window();
 
       Window(const Window&) = delete;
@@ -17,7 +17,7 @@ namespace gears {
 
 
       bool shouldClose() { return glfwWindowShouldClose(_window); }
-      VkExtent2D getExtent() { return {static_cast<uint32_t>(_width), static_cast<uint32_t>(_height)}; }
+      VkExtent2D getExtent() { return VkExtent2D{_width, _height}; }
       bool wasWindowResized() { return _frameBufferResized; }
       void resetWindowResizeFlag() { _frameBufferResized = false; }
       GLFWwindow* getWindow() const { return _window; }
@@ -25,12 +25,13 @@ namespace gears {
       void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
       void setIcon(const std::string& iconPath);
+      void rename(const std::string& newName);
 
    private:
-      static void frameBufferResizedCallback(GLFWwindow* _window, int width, int height);
+      static void _frameBufferResizedCallback(GLFWwindow* _window, int width, int height);
 
-      int _width;
-      int _height;
+      uint32_t _width;
+      uint32_t _height;
       bool _frameBufferResized = false;
 
       std::string _windowName;
