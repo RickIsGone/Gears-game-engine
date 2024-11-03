@@ -9,7 +9,7 @@
                 "${workspaceFolder}/engine/vendor/imgui",
                 "${workspaceFolder}/engine/vendor/tinyobjloader",
                 "${workspaceFolder}/engine/vendor/stb_image",
-                "C:/VulkanSDK/1.3.280.0/Include"
+                "${env:VULKAN_SDK}/Include"
             ],
             "defines": [
                 "_DEBUG",
@@ -17,7 +17,7 @@
                 "_UNICODE"
             ],
             "cStandard": "c23",
-            "cppStandard": "c++23",
+            "cppStandard": "c++20",
             "intelliSenseMode": "windows-msvc-x64"
         }
     ],

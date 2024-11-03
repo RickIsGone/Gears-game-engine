@@ -18,6 +18,9 @@ int main(int argc, char** argv) {
 
       } catch (const std::exception& e) {
          GRS_LOG_EXIT(std::format("paused on unhandled exception: {}", e.what()), std::source_location::current());
+
+      } catch (...) {
+         GRS_LOG_EXIT(std::format("paused on unhandled unkown exception"), std::source_location::current());
       }
 
    } catch (const std::ios_base::failure& e) {

@@ -7,7 +7,7 @@
 namespace gears {
    class Engine : public Application {
    public:
-      Engine(int width, int height, const std::string& windowName);
+      Engine(uint32_t width, uint32_t height, const std::string& windowName);
       ~Engine() = default;
 
       void run();
