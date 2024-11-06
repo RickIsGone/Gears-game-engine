@@ -24,20 +24,9 @@ jobs:
       
       matrix:
         build_type: [Release]
-        c_compiler: [clang, gcc]
-        cpp_compiler: [clang++, g++]
+        c_compiler: [clang]
+        cpp_compiler: [clang++]
         generator: [Ninja]
-        include:
-          - c_compiler: clang
-            cpp_compiler: clang++
-          - c_compiler: gcc
-            cpp_compiler: g++
-        exclude:
-          - c_compiler: clang
-            cpp_compiler: g++
-          - c_compiler: gcc
-            cpp_compiler: clang++
-
 
     steps:
     - uses: actions/checkout@v4
