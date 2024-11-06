@@ -1,12 +1,46 @@
-#include "engineRenderSystem.hpp"
-#include "logger.hpp"
+module;
 
+#include <memory>
+#include <vector>
+
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_core.h>
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include "engineGameObject.hpp"
+
+export module engineRenderSystem;
+import enginePipeline;
+import engineDevice;
+import engineCamera;
+import logger;
+
 namespace gears {
+
+   export class EngineRenderSystem {
+   public:
+      EngineRenderSystem(PhysicalDevice& device, VkRenderPass renderPass);
+      ~EngineRenderSystem();
+
+      EngineRenderSystem(const EngineRenderSystem&) = delete;
+      EngineRenderSystem& operator=(const EngineRenderSystem&) = delete;
+
+      void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<EngineGameObject>& gameObjects, const EngineCamera& camera);
+
+   private:
+      void _createPipelineLayout();
+      void _createPipeline(VkRenderPass renderPass);
+
+      PhysicalDevice& _device;
+      std::unique_ptr<EnginePipeline> _enginePipeline;
+      VkPipelineLayout _pipelineLayout;
+   };
+
+   //  ========================================== implementation ==========================================
+
    struct SimplePushConstantData {
       glm::mat4 transform{1.0f};
       alignas(16) glm::vec3 color;
@@ -30,14 +64,14 @@ namespace gears {
       VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
       pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
       pipelineLayoutInfo.setLayoutCount = 0;
-      pipelineLayoutInfo.pSetLayouts = nullptr;
+      pipelineLayoutInfo.pSetLayouts = VK_NULL_HANDLE;
       pipelineLayoutInfo.pushConstantRangeCount = 1;
       pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
       if (vkCreatePipelineLayout(_device.device(), &pipelineLayoutInfo, nullptr, &_pipelineLayout) != VK_SUCCESS) throw Logger::Exception("failed to create a pipeline layout");
    }
 
    void EngineRenderSystem::_createPipeline(VkRenderPass renderPass) {
-      assert(_pipelineLayout != nullptr && "cannot create pipeline before pipeline layout");
+      assert(_pipelineLayout != VK_NULL_HANDLE && "cannot create pipeline before pipeline layout");
 
       PipelineConfigInfo pipelineConfig{};
       EnginePipeline::defaultPipelineConfigInfo(pipelineConfig);

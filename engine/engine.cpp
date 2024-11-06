@@ -1,15 +1,16 @@
 #include <chrono>
-#include <cstdint>
 
-#include "engine.hpp"
-#include "engineCamera.hpp"
-#include "movementController.hpp"
-#include "logger.hpp"
-
+#include <vulkan/vulkan.hpp>
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+#include <GLFW/glfw3.h>
+
+#include "engine.hpp"
+import movementController;
+import engineCamera;
+import logger;
 
 namespace gears {
 
@@ -75,10 +76,10 @@ namespace gears {
    }
 
    void Engine::_loadGameObjects() {
-      std::shared_ptr<EngineModel> engineModel = EngineModel::createModelFromFile(_device, "fish.obj");
+      std::shared_ptr<EngineModel> model = EngineModel::createModelFromFile(_device, "fish.obj");
 
       auto gameObject = EngineGameObject::createGameObject();
-      gameObject.model = engineModel;
+      gameObject.model = model;
       gameObject.transform.position = {0.f, 0.f, 2.f};
       gameObject.transform.scale = {0.5f, 0.5f, 0.5f};
 

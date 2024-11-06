@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25.0)
+cmake_minimum_required(VERSION 3.28.0)
 project(Gears-engine VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED)
@@ -19,9 +19,9 @@ file(GLOB SOURCES "engine/*.cpp")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") 
 
 # compiling shaders
-# file(GLOB VERT_SHADERS "engine/shaders/*.vert")
-# file(GLOB FRAG_SHADERS "engine/shaders/*.frag")
-# list(APPEND SHADERS ${VERT_SHADERS} ${FRAG_SHADERS})
+file(GLOB VERT_SHADERS "engine/shaders/*.vert")
+file(GLOB FRAG_SHADERS "engine/shaders/*.frag")
+list(APPEND SHADERS ${VERT_SHADERS} ${FRAG_SHADERS})
 
 # find_program(GLSL_EXECUTABLE NAMES glslc DOC "Path to glslc compiler")
 
@@ -58,6 +58,12 @@ if(${CMAKE_SYSTEM} MATCHES Windows)
 else()
     add_executable(Gears ${SOURCES})
 endif()
+
+#adding modules
+file(GLOB MODULES "engine/*.cppm")
+target_sources(Gears PUBLIC FILE_SET gears_modules TYPE CXX_MODULES FILES
+   ${MODULES}
+)
 
 # adding extern libs
 add_subdirectory(engine/vendor/glfw EXCLUDE_FROM_ALL)

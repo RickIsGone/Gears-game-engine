@@ -1,15 +1,77 @@
-#include "movementController.hpp"
-#include "GLFW/glfw3.h"
+module;
+
+#include <GLFW/glfw3.h>
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/gtc/quaternion.hpp>
+#include <glm/glm.hpp>
+
+#include "engineGameObject.hpp"
+
+export module movementController;
+import engineWindow;
 
 namespace gears {
-   // static float s_moveSpeed;
 
-   // void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-   //    if (yoffset < 0) {
-   //       --s_moveSpeed;
-   //    } else if (yoffset > 0)
-   //       ++s_moveSpeed;
-   // }
+   export class Mouse {
+   public:
+      Mouse(Window& window);
+      ~Mouse();
+
+      Mouse(const Mouse&) = delete;
+      Mouse operator=(const Mouse&) = delete;
+
+      void update();
+
+      float sens() const { return _mouseSense; }
+      double x() const { return _x; }
+      double y() const { return _y; }
+      float deltaX() const { return _deltaX; }
+      float deltaY() const { return _deltaY; }
+      GLFWcursor* getCursor() { return _cursor; }
+
+   private:
+      GLFWcursor* _cursor;
+      Window& _window;
+
+      double _x, _y;
+      double _prevX, _prevY;
+      float _deltaX, _deltaY;
+
+      float _mouseSense = 0.0025f;
+   };
+
+
+   export class MovementController {
+   public:
+      struct KeyMappings {
+         int moveLeft = GLFW_KEY_A;
+         int moveRight = GLFW_KEY_D;
+         int moveForward = GLFW_KEY_W;
+         int moveBackward = GLFW_KEY_S;
+         int moveUp = GLFW_KEY_E;
+         int moveDown = GLFW_KEY_Q;
+      };
+
+      void moveInPlaneYXZ(GLFWwindow* window, const Mouse& mouse, float dt, EngineGameObject& gameObject);
+
+      KeyMappings keys{};
+
+      float moveSpeed = 10.f;
+   };
+
+   //  ========================================== implementation ==========================================
+
+   /**
+    * float s_moveSpeed;
+    *
+    * void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    *    if (yoffset < 0) {
+    *       --s_moveSpeed;
+    *    } else if (yoffset > 0)
+    *       ++s_moveSpeed;
+    *  }
+    */
 
    void MovementController::moveInPlaneYXZ(GLFWwindow* window, const Mouse& mouse, float dt, EngineGameObject& gameObject) {
       gameObject.transform.rotation = glm::angleAxis(-mouse.deltaX() * mouse.sens(), glm::vec3(0.f, -1.f, 0.f)) * gameObject.transform.rotation;
