@@ -55,8 +55,8 @@ jobs:
       uses: ./.github/actions/vulkan
 
     - name: Download ninja build
-      run: sudo apt-get ninja-build
-      
+      run: sudo apt-get install ninja-build
+
     - name: Download dependencies
       run: |
         sudo apt-get install libwayland-dev libvulkan-dev libxkbcommon-dev xorg-dev
