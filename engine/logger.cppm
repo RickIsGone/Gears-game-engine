@@ -1,32 +1,94 @@
+#define LOGGER_IMPORT
+module;
+
+#include <source_location>
+#include <stdexcept>
+#include <fstream>
+#include <string>
 #include <format>
 #include <iostream>
 #include <chrono>
 
-#include "logger.hpp"
+#include "macro.hpp"
 
+export module logger;
 namespace gears {
-   static constexpr const char* COLOR_RED = "\x1B[91m";
-   static constexpr const char* COLOR_YELLOW = "\x1B[93m";
-   static constexpr const char* COLOR_DEFAULT = "\x1B[0m";
+
+   export class Logger {
+   public:
+      class Exception : public std::runtime_error {
+      public:
+         using baseClass = runtime_error;
+
+         Exception(const std::string& message, const std::source_location& location = std::source_location::current())
+             : _location{location}, baseClass{message.c_str()} {};
+
+         Exception(const char* message, const std::source_location& location = std::source_location::current())
+             : _location{location}, baseClass{message} {};
+
+         std::source_location where() const { return _location; }
+
+      private:
+         std::source_location _location;
+      };
+
+      enum class Levels : uint8_t {
+         Error,
+         Warning,
+         Trace,
+         Info,
+         NoLevel
+      };
+
+      Logger(const Levels level = Levels::NoLevel, const std::string& filename = "logFile.log");
+      ~Logger();
+
+      void logNoLevel(const std::string& message);
+      void log(const std::string& message);
+      void logTrace(const std::string& message, const std::source_location& location = std::source_location::current());
+      void warn(const std::string& message, const std::source_location& location = std::source_location::current());
+      void error(const std::string& message, const std::source_location& location = std::source_location::current());
+
+      void setLevel(const Levels level) { _logLevel = level; }
+
+   private:
+      Levels _logLevel;
+      std::ofstream _logFile;
+
+      void _log(const Levels level, const std::string& message, const std::source_location& location);
+   };
+
+
+   export inline Logger* logger = nullptr;
+
+   // ========================================== implementation ==========================================
+
+   constexpr const char* COLOR_RED = "\x1B[91m";
+   constexpr const char* COLOR_YELLOW = "\x1B[93m";
+   constexpr const char* COLOR_DEFAULT = "\x1B[0m";
 
    Logger::Logger(const Levels level, const std::string& filename) : _logLevel{level} {
-      logger = this;
-      _logFile.exceptions(std::ios::failbit | std::ios::badbit);
-      _logFile.open(filename);
+      try {
+         logger = this;
+         _logFile.exceptions(std::ios::failbit | std::ios::badbit);
+         _logFile.open(filename);
 
 #if defined(_WIN32)
 #ifdef GRS_DEBUG
-      _logFile << "windows build running in debug mode\n";
+         _logFile << "windows build running in debug mode\n";
 #else
-      _logFile << "windows build running in release mode\n";
+         _logFile << "windows build running in release mode\n";
 #endif // GRS_DEBUG
 #elif defined(__linux__)
 #ifdef GRS_DEBUG
-      _logFile << "linux build running in debug mode\n";
+         _logFile << "linux build running in debug mode\n";
 #else
-      _logFile << "linux build running in release mode\n";
+         _logFile << "linux build running in release mode\n";
 #endif // GRS_DEBUG
 #endif // defined(_WIN32)
+      } catch (const std::ios_base::failure& e) {
+         GRS_EXIT(std::format("failed to open the logFile: {}", e.what()));
+      }
    }
    Logger::~Logger() {
       logger = nullptr;

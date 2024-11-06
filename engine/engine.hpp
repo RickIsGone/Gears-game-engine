@@ -5,7 +5,7 @@
 #include "engineGameObject.hpp"
 
 namespace gears {
-   class Engine : public Application {
+   class Engine final : public Application {
    public:
       Engine(uint32_t width, uint32_t height, const std::string& windowName);
       ~Engine() = default;

@@ -1,13 +1,49 @@
+module;
+
 #include <format>
 #include <string>
 
-#include "engineWindow.hpp"
-#include "GLFW/glfw3.h"
-#include "logger.hpp"
-
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 #include "vendor/stb_image/stb_image.h"
 
+export module engineWindow;
+import logger;
+
 namespace gears {
+
+   export class Window {
+   public:
+      Window(uint32_t width, uint32_t height, const std::string& name);
+      ~Window();
+
+      Window(const Window&) = delete;
+      Window& operator=(const Window&) = delete;
+
+
+      bool shouldClose() { return glfwWindowShouldClose(_window); }
+      VkExtent2D getExtent() { return VkExtent2D{_width, _height}; }
+      bool wasWindowResized() { return _frameBufferResized; }
+      void resetWindowResizeFlag() { _frameBufferResized = false; }
+      GLFWwindow* getWindow() const { return _window; }
+
+      void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
+
+      void setIcon(const std::string& iconPath);
+      void rename(const std::string& newName);
+
+   private:
+      static void _frameBufferResizedCallback(GLFWwindow* _window, int width, int height);
+
+      uint32_t _width;
+      uint32_t _height;
+      bool _frameBufferResized = false;
+
+      std::string _windowName;
+      GLFWwindow* _window;
+   };
+
+   // ========================================== implementation ==========================================
 
    Window::Window(uint32_t width, uint32_t height, const std::string& name) : _width{width}, _height{height}, _windowName{name} {
       glfwInit();
@@ -49,5 +85,4 @@ namespace gears {
       _windowName = newName;
       glfwSetWindowTitle(_window, _windowName.c_str());
    }
-
 } // namespace gears

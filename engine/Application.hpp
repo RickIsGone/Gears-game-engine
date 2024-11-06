@@ -1,9 +1,9 @@
 #pragma once
 
-#include "engineWindow.hpp"
-#include "engineDevice.hpp"
-#include "engineRenderer.hpp"
-#include "engineRenderSystem.hpp"
+import engineWindow;
+import engineRenderer;
+import engineRenderSystem;
+import engineDevice;
 
 namespace gears {
    class Application {
