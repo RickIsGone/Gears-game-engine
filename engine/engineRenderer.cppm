@@ -7,11 +7,11 @@ module;
 #include <GLFW/glfw3.h>
 #include <array>
 
-export module engineRenderer;
-import logger;
-import engineWindow;
-import engineDevice;
-import engineSwapChain;
+export module engine.renderer;
+import engine.logger;
+import engine.window;
+import engine.device;
+import engine.swapChain;
 
 namespace gears {
 

@@ -7,8 +7,8 @@ module;
 #include <GLFW/glfw3.h>
 #include "vendor/stb_image/stb_image.h"
 
-export module engineWindow;
-import logger;
+export module engine.window;
+import engine.logger;
 
 namespace gears {
 

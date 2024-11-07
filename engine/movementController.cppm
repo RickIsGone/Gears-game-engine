@@ -9,7 +9,7 @@ module;
 #include "engineGameObject.hpp"
 
 export module movementController;
-import engineWindow;
+import engine.window;
 
 namespace gears {
 

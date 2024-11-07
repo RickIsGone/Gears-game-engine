@@ -18,8 +18,8 @@ module;
 #include "engineUtils.hpp"
 
 export module engineModel;
-import engineDevice;
-import logger;
+import engine.device;
+import engine.logger;
 
 namespace gears {
 

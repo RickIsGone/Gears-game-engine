@@ -8,9 +8,9 @@ module;
 
 #include <vulkan/vulkan.hpp>
 
-export module engineSwapChain;
-import engineDevice;
-import logger;
+export module engine.swapChain;
+import engine.device;
+import engine.logger;
 
 namespace gears {
 

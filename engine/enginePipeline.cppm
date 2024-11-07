@@ -10,8 +10,8 @@ module;
 
 export module enginePipeline;
 import engineModel;
-import engineDevice;
-import logger;
+import engine.device;
+import engine.logger;
 
 namespace gears {
 

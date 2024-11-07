@@ -9,8 +9,8 @@
 
 #include "engine.hpp"
 import movementController;
-import engineCamera;
-import logger;
+import engine.camera;
+import engine.logger;
 
 namespace gears {
 

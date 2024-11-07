@@ -11,7 +11,8 @@ module;
 
 #include "macro.hpp"
 
-export module logger;
+export module engine.logger;
+
 namespace gears {
 
    export class Logger {
@@ -33,6 +34,7 @@ namespace gears {
       };
 
       enum class Levels : uint8_t {
+         Disabled,
          Error,
          Warning,
          Trace,
@@ -95,6 +97,7 @@ namespace gears {
    }
 
    void Logger::_log(const Levels level, const std::string& message, const std::source_location& location) {
+      GRS_ASSERT(logger, "the logger was nullptr");
       if (_logLevel >= level) {
          auto now = std::chrono::system_clock::now();
          auto in_time_t = std::chrono::system_clock::to_time_t(now);

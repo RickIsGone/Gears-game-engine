@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28.0)
 project(Gears-engine VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 if(NOT MSVC_IDE)
@@ -16,7 +16,7 @@ endif()
 file(GLOB SOURCES "engine/*.cpp")
 
 # debug
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") 
+# set(CMAKE_CXX_FLAGS -fsanitize=address -Zi") 
 
 # compiling shaders
 file(GLOB VERT_SHADERS "engine/shaders/*.vert")
@@ -57,6 +57,9 @@ if(${CMAKE_SYSTEM} MATCHES Windows)
     endif()
 else()
     add_executable(Gears ${SOURCES})
+    if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+        add_definitions(-DGRS_DEBUG)
+    endif()
 endif()
 
 #adding modules

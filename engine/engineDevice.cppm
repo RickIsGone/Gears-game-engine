@@ -8,9 +8,9 @@ module;
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
-export module engineDevice;
-import engineWindow;
-import logger;
+export module engine.device;
+import engine.window;
+import engine.logger;
 
 namespace gears {
    export struct SwapChainSupportDetails {

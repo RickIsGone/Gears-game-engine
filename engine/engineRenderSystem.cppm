@@ -12,11 +12,11 @@ module;
 
 #include "engineGameObject.hpp"
 
-export module engineRenderSystem;
+export module engine.renderSystem;
 import enginePipeline;
-import engineDevice;
-import engineCamera;
-import logger;
+import engine.device;
+import engine.camera;
+import engine.logger;
 
 namespace gears {
 

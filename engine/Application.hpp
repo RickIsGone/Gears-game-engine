@@ -1,9 +1,11 @@
 #pragma once
 
-import engineWindow;
-import engineRenderer;
-import engineRenderSystem;
-import engineDevice;
+#include <string>             
+
+import engine.window;         
+import engine.renderer;       
+import engine.renderSystem;   
+import engine.device;         
 
 namespace gears {
    class Application {

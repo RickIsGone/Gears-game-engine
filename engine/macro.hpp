@@ -12,9 +12,9 @@
 
 #endif // defined(_WIN32)
 
-#define GRS_EXIT(x) \
-   std::cerr << x;  \
-   GRS_PAUSE;       \
+#define GRS_EXIT(err)        \
+   std::cerr << err << '\n'; \
+   GRS_PAUSE;                \
    exit(EXIT_FAILURE)
 
 #else
@@ -25,9 +25,15 @@
 #endif // GRS_DEBUG
 
 #ifndef LOGGER_IMPORT
-import logger;
+import engine.logger;
 #endif // ifndef LOGGER_IMPORT
-#define GRS_LOG_EXIT(x, y)     \
-   gears::logger->error(x, y); \
-   GRS_PAUSE;                  \
+#define GRS_LOG_EXIT(err, loc)     \
+   gears::logger->error(err, loc); \
+   GRS_PAUSE;                      \
    exit(EXIT_FAILURE)
+
+#define GRS_ASSERT(expr, err) \
+   if (!expr) { GRS_EXIT(err); }
+
+#define GRS_LOG_ASSERT(expr, err, loc) \
+   if (!expr) { GRS_LOG_EXIT(err, loc); }

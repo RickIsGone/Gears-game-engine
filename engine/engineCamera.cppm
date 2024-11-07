@@ -8,7 +8,7 @@ module;
 
 #include "engineGameObject.hpp"
 
-export module engineCamera;
+export module engine.camera;
 
 namespace gears {
 

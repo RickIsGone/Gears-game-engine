@@ -1,12 +1,14 @@
-﻿#include <format>
+﻿#include <cassert>
+#include <format>
 #include <source_location>
+#include <memory>
+#include <cstdlib>
 
 #include "engine.hpp"
 #include "main.hpp"
 #include "macro.hpp"
-import logger;
+import engine.logger;
 
-/* creato logger globale in logger.cppm */
 int main(int argc, char** argv) {
    gears::Logger logger{};
 
@@ -21,9 +23,8 @@ int main(int argc, char** argv) {
       GRS_LOG_EXIT(std::format("paused on unhandled exception: {}", e.what()), std::source_location::current());
 
    } catch (...) {
-      GRS_LOG_EXIT(std::format("paused on unhandled unkown exception"), std::source_location::current());
+      GRS_LOG_EXIT("paused on unhandled unkown exception", std::source_location::current());
    }
-
 
    return EXIT_SUCCESS;
 }
