@@ -2,12 +2,12 @@
 module;
 
 #include <source_location>
-#include <stdexcept>
 #include <fstream>
 #include <string>
 #include <format>
 #include <iostream>
 #include <chrono>
+#include <string_view>
 
 #include "macro.hpp"
 
@@ -17,15 +17,23 @@ namespace gears {
 
    export class Logger {
    public:
+      struct Message {
+         Message(const char* msg, const std::source_location& loc = std::source_location::current()) : message{msg}, location{loc} {}
+
+         std::string_view message;
+         std::source_location location;
+      };
       class Exception : public std::runtime_error {
       public:
          using baseClass = runtime_error;
 
-         Exception(const std::string& message, const std::source_location& location = std::source_location::current())
-             : _location{location}, baseClass{message.c_str()} {};
+         template <typename... Args>
+         Exception(const Message& m, Args&&... args)
+             : _location{m.location}, baseClass{std::vformat(m.message, std::make_format_args(args...))} {}
 
-         Exception(const char* message, const std::source_location& location = std::source_location::current())
-             : _location{location}, baseClass{message} {};
+         template <typename... Args>
+         Exception(const std::source_location& location, const char* message, Args&&... args)
+             : _location{location}, baseClass{std::vformat(message, std::make_format_args(args...))} {}
 
          std::source_location where() const { return _location; }
 
@@ -45,11 +53,26 @@ namespace gears {
       Logger(const Levels level = Levels::NoLevel, const std::string& filename = "logFile.log");
       ~Logger();
 
-      void logNoLevel(const std::string& message);
-      void log(const std::string& message);
-      void logTrace(const std::string& message, const std::source_location& location = std::source_location::current());
-      void warn(const std::string& message, const std::source_location& location = std::source_location::current());
-      void error(const std::string& message, const std::source_location& location = std::source_location::current());
+      template <typename... Args>
+      void logNoLevel(std::string_view message, Args&&... args);
+
+      template <typename... Args>
+      void log(std::string_view message, Args&&... args);
+
+      template <typename... Args>
+      void logTrace(const Message& m, Args&&... args);
+      template <typename... Args>
+      void logTrace(const std::source_location& location, std::string_view message, Args&&... args);
+
+      template <typename... Args>
+      void warn(const Message& m, Args&&... args);
+      template <typename... Args>
+      void warn(const std::source_location& location, std::string_view message, Args&&... args);
+
+      template <typename... Args>
+      void error(const Message& m, Args&&... args);
+      template <typename... Args>
+      void error(const std::source_location& location, std::string_view message, Args&&... args);
 
       void setLevel(const Levels level) { _logLevel = level; }
 
@@ -57,7 +80,7 @@ namespace gears {
       Levels _logLevel;
       std::ofstream _logFile;
 
-      void _log(const Levels level, const std::string& message, const std::source_location& location);
+      void _log(const Levels level, std::string_view message, const std::source_location& location);
    };
 
 
@@ -96,7 +119,8 @@ namespace gears {
       logger = nullptr;
    }
 
-   void Logger::_log(const Levels level, const std::string& message, const std::source_location& location) {
+
+   void Logger::_log(const Levels level, std::string_view message, const std::source_location& location) {
       GRS_ASSERT(logger, "the logger was nullptr");
       if (_logLevel >= level) {
          auto now = std::chrono::system_clock::now();
@@ -107,10 +131,18 @@ namespace gears {
          std::ostringstream timestamp;
          timestamp << std::put_time(&tm, "%H:%M:%S.") << std::setfill('0') << std::setw(2) << milliseconds;
 
+#if defined(_WIN32)
+#define separator '\\'
+#elif defined(__linux__)
+#define separator '/'
+#endif // defined(_WIN32)
+         std::string fileName = location.file_name();
+         fileName = fileName.substr(fileName.find_last_of(separator) + 1);
+#undef separator
          switch (level) {
             case Levels::Trace:
                std::clog << std::format("[{}]", timestamp.str());
-               _logFile << std::format("[{}][{}:{}]", timestamp.str(), location.file_name(), location.line());
+               _logFile << std::format("[{}][{}:{}]", timestamp.str(), fileName, location.line());
                // niente break perche' deve fare anche le robe del livello Info
             case Levels::Info:
                std::clog << "[INFO] ";
@@ -119,12 +151,12 @@ namespace gears {
 
             case Levels::Warning:
                std::clog << std::format("{}[{}][WARNING] ", COLOR_YELLOW, timestamp.str());
-               _logFile << std::format("[{}][{}:{}][WARNING] ", timestamp.str(), location.file_name(), location.line());
+               _logFile << std::format("[{}][{}:{}][WARNING] ", timestamp.str(), fileName, location.line());
                break;
 
             case Levels::Error:
                std::clog << std::format("{}[{}][ERROR] ", COLOR_RED, timestamp.str());
-               _logFile << std::format("[{}][{}:{}][ERROR] ", timestamp.str(), location.file_name(), location.line());
+               _logFile << std::format("[{}][{}:{}][ERROR] ", timestamp.str(), fileName, location.line());
                break;
 
             default: // Levels::NoLevel
@@ -135,24 +167,40 @@ namespace gears {
       }
    }
 
-   void Logger::logNoLevel(const std::string& message) {
-      _log(Levels::NoLevel, message, std::source_location::current());
+   template <typename... Args>
+   void Logger::logNoLevel(std::string_view message, Args&&... args) {
+      _log(Levels::NoLevel, std::vformat(message, std::make_format_args(args...)), std::source_location::current());
    }
 
-   void Logger::log(const std::string& message) {
-      _log(Levels::Info, message, std::source_location::current());
+   template <typename... Args>
+   void Logger::log(std::string_view message, Args&&... args) {
+      _log(Levels::Info, std::vformat(message, std::make_format_args(args...)), std::source_location::current());
    }
 
-   void Logger::logTrace(const std::string& message, const std::source_location& location) {
-      _log(Levels::Trace, message, location);
+   template <typename... Args>
+   void Logger::logTrace(const Message& m, Args&&... args) {
+      _log(Levels::Trace, std::vformat(m.message, std::make_format_args(args...)), m.location);
+   }
+   template <typename... Args>
+   void Logger::logTrace(const std::source_location& location, std::string_view message, Args&&... args) {
+      _log(Levels::Trace, std::vformat(message, std::make_format_args(args...)), location);
    }
 
-   void Logger::warn(const std::string& message, const std::source_location& location) {
-      _log(Levels::Warning, message, location);
+   template <typename... Args>
+   void Logger::warn(const Message& m, Args&&... args) {
+      _log(Levels::Warning, std::vformat(m.message, std::make_format_args(args...)), m.location);
+   }
+   template <typename... Args>
+   void Logger::warn(const std::source_location& location, std::string_view message, Args&&... args) {
+      _log(Levels::Warning, std::vformat(message, std::make_format_args(args...)), location);
    }
 
-   void Logger::error(const std::string& message, const std::source_location& location) {
-      _log(Levels::Error, message, location);
+   template <typename... Args>
+   void Logger::error(const Message& m, Args&&... args) {
+      _log(Levels::Error, std::vformat(m.message, std::make_format_args(args...)), m.location);
    }
-
+   template <typename... Args>
+   void Logger::error(const std::source_location& location, std::string_view message, Args&&... args) {
+      _log(Levels::Error, std::vformat(message, std::make_format_args(args...)), location);
+   }
 } // namespace gears

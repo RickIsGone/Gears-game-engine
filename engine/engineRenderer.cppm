@@ -2,10 +2,12 @@ module;
 
 #include <memory>
 #include <vector>
-#include <cassert>
+#include <array>
+
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
-#include <array>
+
+#include "macro.hpp"
 
 export module engine.renderer;
 import engine.logger;
@@ -29,12 +31,12 @@ namespace gears {
 
       VkRenderPass getSwapChainRenderPass() const { return _engineSwapChain->getRenderPass(); }
       VkCommandBuffer getCurrentCommandBuffer() const {
-         assert(_isFrameStarted && "cannot get command buffer when frame not in progress");
+         GRS_LOG_ASSERT(_isFrameStarted, "cannot get command buffer when frame not in progress");
          return _commandBuffers[_currentFrameIndex];
       }
 
       int getFrameIndex() const {
-         assert(_isFrameStarted && "cannot get frame index when frame not in progress");
+         GRS_LOG_ASSERT(_isFrameStarted, "cannot get frame index when frame not in progress");
          return _currentFrameIndex;
       }
 
@@ -108,7 +110,7 @@ namespace gears {
    }
 
    VkCommandBuffer Renderer::beginFrame() {
-      assert(!_isFrameStarted && "can't call beginFrame while already in progress");
+      GRS_LOG_ASSERT(!_isFrameStarted, "can't call beginFrame while already in progress");
 
       auto result = _engineSwapChain->acquireNextImage(&_currentImageIndex);
 
@@ -132,7 +134,7 @@ namespace gears {
    }
 
    void Renderer::endFrame() {
-      assert(_isFrameStarted && "can't call endFrame while frame not in progress");
+      GRS_LOG_ASSERT(_isFrameStarted, "can't call endFrame while frame not in progress");
 
       auto commandBuffer = getCurrentCommandBuffer();
 
@@ -150,8 +152,8 @@ namespace gears {
    }
 
    void Renderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
-      assert(_isFrameStarted && "can't call beginFrame while frame not in progress");
-      assert(commandBuffer == getCurrentCommandBuffer() && "can't begin renderPass on command buffer from diffrent frame");
+      GRS_LOG_ASSERT(_isFrameStarted, "can't call beginFrame while frame not in progress");
+      GRS_LOG_ASSERT(commandBuffer == getCurrentCommandBuffer(), "can't begin renderPass on command buffer from diffrent frame");
 
       VkCommandBufferBeginInfo beginInfo{};
       beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -186,8 +188,8 @@ namespace gears {
    }
 
    void Renderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
-      assert(_isFrameStarted && "can't call endSwapChainRenderPass while frame not in progress");
-      assert(commandBuffer == getCurrentCommandBuffer() && "can't end renderPass on command buffer from diffrent frame");
+      GRS_LOG_ASSERT(_isFrameStarted, "can't call endSwapChainRenderPass while frame not in progress");
+      GRS_LOG_ASSERT(commandBuffer == getCurrentCommandBuffer(), "can't end renderPass on command buffer from diffrent frame");
 
       vkCmdEndRenderPass(commandBuffer);
    }

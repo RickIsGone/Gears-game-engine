@@ -1,6 +1,5 @@
 module;
 
-#include <format>
 #include <set>
 #include <vector>
 #include <unordered_set>
@@ -117,7 +116,7 @@ namespace gears {
        VkDebugUtilsMessageTypeFlagsEXT messageType,
        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
        void* pUserData) {
-      logger->warn(std::format("validation layer: {}", pCallbackData->pMessage));
+      logger->warn("validation layer: {}", pCallbackData->pMessage);
 
       return VK_FALSE;
    }
@@ -218,7 +217,7 @@ namespace gears {
          throw Logger::Exception("failed to find GPUs with Vulkan support!");
       }
 
-      logger->logTrace(std::format("device count: {}", deviceCount));
+      logger->logTrace("device count: {}", deviceCount);
       std::vector<VkPhysicalDevice> devices(deviceCount);
       vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
 
@@ -239,12 +238,12 @@ namespace gears {
          if (_isDeviceSuitable(device)) {
             VkPhysicalDeviceProperties prop;
             vkGetPhysicalDeviceProperties(device, &prop);
-            logger->logNoLevel(std::format("\t{}", prop.deviceName));
+            logger->logNoLevel("\t{}", prop.deviceName);
          }
       }
 
       vkGetPhysicalDeviceProperties(_physicalDevice, &properties);
-      logger->logTrace(std::format("physical device: {}", properties.deviceName));
+      logger->logTrace("physical device: {}", properties.deviceName);
    }
 
    void PhysicalDevice::_createLogicalDevice() {
@@ -397,14 +396,14 @@ namespace gears {
       logger->logTrace("available extensions:");
       std::unordered_set<std::string> available;
       for (const auto& extension : extensions) {
-         logger->logNoLevel(std::format("\t{}", extension.extensionName));
+         logger->logNoLevel("\t{}", extension.extensionName);
          available.insert(extension.extensionName);
       }
 
       logger->logTrace("required extensions:");
       auto requiredExtensions = _getRequiredExtensions();
       for (const auto& required : requiredExtensions) {
-         logger->logNoLevel(std::format("\t{}", required));
+         logger->logNoLevel("\t{}", required);
          if (available.find(required) == available.end()) {
             throw Logger::Exception("Missing required glfw extension");
          }

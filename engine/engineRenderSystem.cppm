@@ -11,6 +11,7 @@ module;
 #include <glm/gtc/constants.hpp>
 
 #include "engineGameObject.hpp"
+#include "macro.hpp"
 
 export module engine.renderSystem;
 import enginePipeline;
@@ -71,7 +72,7 @@ namespace gears {
    }
 
    void EngineRenderSystem::_createPipeline(VkRenderPass renderPass) {
-      assert(_pipelineLayout != VK_NULL_HANDLE && "cannot create pipeline before pipeline layout");
+      GRS_LOG_ASSERT(_pipelineLayout != VK_NULL_HANDLE, "cannot create pipeline before pipeline layout");
 
       PipelineConfigInfo pipelineConfig{};
       EnginePipeline::defaultPipelineConfigInfo(pipelineConfig);

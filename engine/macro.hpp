@@ -22,18 +22,23 @@
 #define GRS_PAUSE
 #define GRS_EXIT(x) exit(EXIT_FAILURE)
 
-#endif // GRS_DEBUG
+#endif // defined(GRS_DEBUG)
 
 #ifndef LOGGER_IMPORT
 import engine.logger;
-#endif // ifndef LOGGER_IMPORT
-#define GRS_LOG_EXIT(err, loc)     \
-   gears::logger->error(err, loc); \
-   GRS_PAUSE;                      \
+#endif // !defined(LOGGER_IMPORT)
+#define GRS_LOG_EXIT(loc, err, ...)             \
+   gears::logger->error(loc, err, __VA_ARGS__); \
+   GRS_PAUSE;                                   \
    exit(EXIT_FAILURE)
 
-#define GRS_ASSERT(expr, err) \
-   if (!expr) { GRS_EXIT(err); }
 
-#define GRS_LOG_ASSERT(expr, err, loc) \
-   if (!expr) { GRS_LOG_EXIT(err, loc); }
+#define GRS_ASSERT(expr, err) \
+   if (!(expr)) { GRS_EXIT(err); }
+
+#define GRS_LOG_ASSERT(expr, err, ...)        \
+   if (!(expr)) {                             \
+      gears::logger->error(err, __VA_ARGS__); \
+      GRS_PAUSE;                              \
+      exit(EXIT_FAILURE);                     \
+   }

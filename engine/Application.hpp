@@ -1,11 +1,12 @@
 #pragma once
 
-#include <string>             
+#include <string>
 
-import engine.window;         
-import engine.renderer;       
-import engine.renderSystem;   
-import engine.device;         
+import engine.windowManager;
+import engine.window;
+import engine.renderer;
+import engine.renderSystem;
+import engine.device;
 
 namespace gears {
    class Application {
@@ -19,11 +20,12 @@ namespace gears {
 
    protected:
       Application(uint32_t width, uint32_t height, const std::string& windowName)
-          : _window{width, height, windowName},
+          : _window{windowName, width, height},
             _device{_window},
             _renderer{_window, _device},
             _renderSystem{_device, _renderer.getSwapChainRenderPass()} {}
 
+      WindowManager _windowManager;
       Window _window;
       PhysicalDevice _device;
       Renderer _renderer;

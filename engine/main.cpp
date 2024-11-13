@@ -1,7 +1,4 @@
-﻿#include <cassert>
-#include <format>
-#include <source_location>
-#include <memory>
+﻿#include <memory>
 #include <cstdlib>
 
 #include "engine.hpp"
@@ -17,13 +14,13 @@ int main(int argc, char** argv) {
       app->run();
 
    } catch (const gears::Logger::Exception& e) {
-      GRS_LOG_EXIT(std::format("terminating execution because of exception: {}", e.what()), e.where());
+      GRS_LOG_EXIT(e.where(), "terminating execution because of exception: {}", e.what());
 
    } catch (const std::exception& e) {
-      GRS_LOG_EXIT(std::format("paused on unhandled exception: {}", e.what()), std::source_location::current());
+      GRS_LOG_EXIT(std::source_location::current(), "paused on unhandled exception: {}", e.what());
 
    } catch (...) {
-      GRS_LOG_EXIT("paused on unhandled unkown exception", std::source_location::current());
+      GRS_LOG_EXIT(std::source_location::current(), "paused on unhandled unknown exception");
    }
 
    return EXIT_SUCCESS;

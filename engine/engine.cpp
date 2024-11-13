@@ -34,8 +34,7 @@ namespace gears {
 
    void Engine::run() {
       logger->log("starting engine");
-
-      _window.setIcon("assets/icons/gears_default_icon.png");
+      // _windowManager.addWindow("test", 1920, 1080);
       EngineCamera camera{};
 
       auto viewerObject = EngineGameObject::createGameObject();

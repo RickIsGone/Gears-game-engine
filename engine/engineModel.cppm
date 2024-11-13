@@ -1,7 +1,6 @@
 module;
 
 #include <cstring>
-#include <format>
 #include <unordered_map>
 #include <vector>
 #include <memory>
@@ -16,6 +15,7 @@ module;
 #include <glm/gtx/hash.hpp>
 
 #include "engineUtils.hpp"
+#include "macro.hpp"
 
 export module engineModel;
 import engine.device;
@@ -74,8 +74,8 @@ namespace gears {
 
 } // namespace gears
 
-export namespace std {
-   template <>
+namespace std {
+   export template <>
    struct hash<gears::EngineModel::Vertex> {
       size_t operator()(gears::EngineModel::Vertex const& vertex) const {
          size_t seed = 0;
@@ -105,13 +105,13 @@ namespace gears {
    std::unique_ptr<EngineModel> EngineModel::createModelFromFile(PhysicalDevice& device, const std::string& filepath) {
       Data data{};
       data.loadModel(filepath);
-      logger->logTrace(std::format("vertex count: {}", data.vertices.size()));
+      logger->logTrace("vertex count: {}", data.vertices.size());
       return std::make_unique<EngineModel>(device, data);
    }
 
    void EngineModel::_createVertexBuffers(const std::vector<Vertex>& vertices) {
       _vertexCount = static_cast<uint32_t>(vertices.size());
-      assert(_vertexCount >= 3 && "Vertex count must be at least 3");
+      GRS_LOG_ASSERT(_vertexCount >= 3, "Vertex count must be at least 3");
 
       VkDeviceSize bufferSize = sizeof(vertices[0]) * _vertexCount;
 
@@ -221,7 +221,7 @@ namespace gears {
       std::vector<tinyobj::material_t> materials;
       std::string warn, err;
 
-      if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) throw Logger::Exception(warn + err);
+      if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) throw Logger::Exception("{}{}", warn, err);
 
       vertices.clear();
       indices.clear();

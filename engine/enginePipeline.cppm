@@ -3,10 +3,10 @@ module;
 #include <string>
 #include <vector>
 #include <fstream>
-#include <cassert>
-#include <format>
 
 #include <vulkan/vulkan.hpp>
+
+#include "macro.hpp"
 
 export module enginePipeline;
 import engineModel;
@@ -62,13 +62,13 @@ namespace gears {
 
    std::vector<char> EnginePipeline::readFile(const std::string& filePath) {
       std::ifstream file(filePath, std::ios::ate | std::ios::binary);
-      if (!file) throw Logger::Exception(std::format("failed to open file: \"{}\"", filePath));
+      if (!file) throw Logger::Exception("failed to open file: \"{}\"", filePath);
 
       size_t fileSize = static_cast<size_t>(file.tellg());
       std::vector<char> buffer(fileSize);
 
       file.seekg(0);
-      if (!file.read(buffer.data(), fileSize)) throw Logger::Exception(std::format("failed to read file: \"{}\"", filePath));
+      if (!file.read(buffer.data(), fileSize)) throw Logger::Exception("failed to read file: \"{}\"", filePath);
 
       file.close();
 
@@ -80,8 +80,8 @@ namespace gears {
        const std::string& vertFilepath,
        const std::string& fragFilepath,
        const PipelineConfigInfo& configInfo) {
-      assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Cannot create graphics pipeline: no pipelineLayout provided in configInfo");
-      assert(configInfo.renderPass != VK_NULL_HANDLE && "Cannot create graphics pipeline: no renderPass provided in configInfo");
+      GRS_LOG_ASSERT(configInfo.pipelineLayout != VK_NULL_HANDLE, "Cannot create graphics pipeline: no pipelineLayout provided in configInfo");
+      GRS_LOG_ASSERT(configInfo.renderPass != VK_NULL_HANDLE, "Cannot create graphics pipeline: no renderPass provided in configInfo");
 
       auto vertCode = readFile(vertFilepath);
       auto fragCode = readFile(fragFilepath);
