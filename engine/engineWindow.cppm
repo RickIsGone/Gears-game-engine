@@ -27,6 +27,8 @@ namespace gears {
       bool wasWindowResized() { return _frameBufferResized; }
       void resetWindowResizeFlag() { _frameBufferResized = false; }
       GLFWwindow* getWindow() const { return _window; }
+      std::string title() { return _title; }
+      uint32_t id() const { return _id; }
 
       void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
@@ -36,22 +38,27 @@ namespace gears {
    private:
       static void _frameBufferResizedCallback(GLFWwindow* _window, int width, int height);
 
+      GLFWwindow* _window;
+
       uint32_t _width;
       uint32_t _height;
       bool _frameBufferResized = false;
 
-      std::string _windowName;
-      GLFWwindow* _window;
+      std::string _title;
+
+      static uint32_t _currentId;
+      uint32_t _id;
    };
 
    // ========================================== implementation ==========================================
 
-   Window::Window(std::string_view name, uint32_t width, uint32_t height, std::string_view iconPath) : _windowName{name}, _width{width}, _height{height} {
+   uint32_t Window::_currentId = 0;
+   Window::Window(std::string_view name, uint32_t width, uint32_t height, std::string_view iconPath) : _title{name}, _width{width}, _height{height}, _id{_currentId++} {
       glfwInit();
       glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
       glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-      _window = glfwCreateWindow(_width, _height, _windowName.c_str(), nullptr, nullptr);
+      _window = glfwCreateWindow(_width, _height, _title.c_str(), nullptr, nullptr);
       glfwSetWindowUserPointer(_window, this);
       glfwSetFramebufferSizeCallback(_window, _frameBufferResizedCallback);
 
@@ -84,7 +91,7 @@ namespace gears {
    }
 
    void Window::setTitle(std::string_view newTitle) {
-      _windowName = newTitle;
-      glfwSetWindowTitle(_window, _windowName.c_str());
+      _title = newTitle;
+      glfwSetWindowTitle(_window, _title.c_str());
    }
 } // namespace gears

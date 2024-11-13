@@ -1,8 +1,10 @@
 module;
 
 #include <vector>
+#include <algorithm>
 #include <source_location>
 #include <string_view>
+#include <memory>
 
 #include <GLFW/glfw3.h>
 
@@ -15,28 +17,27 @@ namespace gears {
    public:
       WindowManager() = default;
       ~WindowManager();
+
       WindowManager(const WindowManager&) = delete;
       WindowManager& operator=(const WindowManager&) = delete;
 
-      std::vector<Window*>& windows() { return _windows; }
+
+      std::vector<std::unique_ptr<Window>>& windows() { return _windows; }
       Window& window(const size_t pos, const std::source_location& location = std::source_location::current()) const;
       Window& window(const size_t pos, const std::source_location& location = std::source_location::current());
 
       void addWindow(std::string_view name, uint32_t width, uint32_t height, std::string_view iconPath = "assets/icons/gears_default_icon.png");
 
-      bool idkYet();
-      void closeWindow(Window& window) { glfwSetWindowShouldClose(window.getWindow(), true); }
+      void removeClosedWindows();
+      void closeWindow(uint32_t id, const std::source_location& location = std::source_location::current());
 
    private:
-      std::vector<Window*> _windows;
+      std::vector<std::unique_ptr<Window>> _windows;
    };
 
    // ========================================== implementation ==========================================
 
    WindowManager::~WindowManager() {
-      for (auto window : _windows) {
-         delete window;
-      }
       _windows.clear();
       glfwTerminate();
    }
@@ -54,16 +55,32 @@ namespace gears {
    }
 
    void WindowManager::addWindow(std::string_view name, uint32_t width, uint32_t height, std::string_view iconPath) {
-      logger->log("added new window to windowManager with parameters:\n\ttitle: \"{}\"\n\tsize: {}x{}", name, width, height);
-      _windows.push_back(new Window{name, width, height, iconPath});
+      _windows.push_back(std::make_unique<Window>(name, width, height, iconPath));
+      logger->log("added new window to windowManager with parameters:\n\tid: {}\n\ttitle: \"{}\"\n\tsize: {}x{}", _windows.back()->id(), name, width, height);
    }
 
-   // void WindowManager::idkYet() {
-   //    for (Window window : _windows) {
-   //       if (window.shouldClose()) {
-   //          delete window;
-   //          window = _windows.erase(window)
-   //       }
-   //    }
-   // }
+   void WindowManager::closeWindow(uint32_t id, const std::source_location& location) {
+      auto newEnd = std::remove_if(_windows.begin(), _windows.end(), [id](const std::unique_ptr<Window>& window) { return window->id() == id; });
+
+      if (newEnd != _windows.end()) {
+         _windows.erase(newEnd, _windows.end());
+         _windows.shrink_to_fit();
+         logger->log("removed window with id: {} from windowManager", id);
+
+      } else {
+         throw Logger::Exception(location, "no window id: {} found in windowManager", id);
+      }
+   }
+
+   void WindowManager::removeClosedWindows() {
+      auto newEnd = std::remove_if(_windows.begin(), _windows.end(), [](const std::unique_ptr<Window>& window) {
+         if (window->shouldClose()) {
+            logger->log("removed window with id: {} from windowManager", window->id());
+            return true;
+         }
+         return false;
+      });
+      _windows.erase(newEnd, _windows.end());
+      _windows.shrink_to_fit();
+   }
 } // namespace gears

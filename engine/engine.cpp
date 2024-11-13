@@ -34,7 +34,9 @@ namespace gears {
 
    void Engine::run() {
       logger->log("starting engine");
-      // _windowManager.addWindow("test", 1920, 1080);
+      // _windowManager.addWindow("Gears engine goes brrrrrrrrrrrr", 1280, 720);
+      // _windowManager.closeWindow(1);
+
       EngineCamera camera{};
 
       auto viewerObject = EngineGameObject::createGameObject();
