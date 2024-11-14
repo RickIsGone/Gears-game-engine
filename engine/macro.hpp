@@ -24,7 +24,7 @@
 
 #endif // defined(GRS_DEBUG)
 
-#ifndef IMPORT_LOGGER
+#ifndef LOGGER_IMPORT
 import engine.logger;
 #endif // !defined(LOGGER_IMPORT)
 #define GRS_LOG_EXIT(loc, err, ...)             \
