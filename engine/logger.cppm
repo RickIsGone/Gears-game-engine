@@ -1,4 +1,3 @@
-#define LOGGER_IMPORT
 module;
 
 #include <source_location>
@@ -9,6 +8,7 @@ module;
 #include <chrono>
 #include <string_view>
 
+#define LOGGER_IMPORT
 #include "macro.hpp"
 
 export module engine.logger;

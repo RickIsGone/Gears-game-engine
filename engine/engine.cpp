@@ -35,6 +35,8 @@ namespace gears {
    void Engine::run() {
       logger->log("starting engine");
       // _windowManager.addWindow("Gears engine goes brrrrrrrrrrrr", 1280, 720);
+      // _windowManager[0].setVisible(false);
+      // _windowManager.at(0).setVisible(true);
       // _windowManager.closeWindow(1);
 
       EngineCamera camera{};
@@ -50,6 +52,7 @@ namespace gears {
       while (!_window.shouldClose()) {
          glfwPollEvents();
          mouse.update();
+         _windowManager.removeClosedWindows();
 
          auto currentTime = std::chrono::high_resolution_clock::now();
          float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - prevTime).count();

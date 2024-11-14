@@ -23,8 +23,8 @@ namespace gears {
 
 
       std::vector<std::unique_ptr<Window>>& windows() { return _windows; }
-      Window& window(const size_t pos, const std::source_location& location = std::source_location::current()) const;
-      Window& window(const size_t pos, const std::source_location& location = std::source_location::current());
+      Window& operator[](const size_t pos);
+      Window& at(const size_t pos, const std::source_location& location = std::source_location::current()) const;
 
       void addWindow(std::string_view name, uint32_t width, uint32_t height, std::string_view iconPath = "assets/icons/gears_default_icon.png");
 
@@ -42,15 +42,15 @@ namespace gears {
       glfwTerminate();
    }
 
-   Window& WindowManager::window(size_t pos, const std::source_location& location) {
-      if (_windows.empty()) throw Logger::Exception(location, "Attempted access to empty windowManager");
-      if (_windows.size() <= pos) throw Logger::Exception(location, "Attempted access to out-of-bounds window index {}", pos);
+   Window& WindowManager::operator[](const size_t pos) {
+      if (_windows.empty()) throw Logger::Exception("Attempted access to empty windowManager");
+      if (_windows.size() <= pos) throw Logger::Exception("Attempted access to out-of-bounds window index: {}", pos);
       return *_windows[pos];
    }
 
-   Window& WindowManager::window(size_t pos, const std::source_location& location) const {
+   Window& WindowManager::at(size_t pos, const std::source_location& location) const {
       if (_windows.empty()) throw Logger::Exception(location, "Attempted access to empty windowManager");
-      if (_windows.size() <= pos) throw Logger::Exception(location, "Attempted access to out-of-bounds window index {}", pos);
+      if (_windows.size() <= pos) throw Logger::Exception(location, "Attempted access to out-of-bounds window index: {}", pos);
       return *_windows.at(pos);
    }
 
@@ -65,7 +65,7 @@ namespace gears {
       if (newEnd != _windows.end()) {
          _windows.erase(newEnd, _windows.end());
          _windows.shrink_to_fit();
-         logger->log("removed window with id: {} from windowManager", id);
+         logger->log("removed window id: {} from windowManager", id);
 
       } else {
          throw Logger::Exception(location, "no window id: {} found in windowManager", id);
@@ -75,7 +75,7 @@ namespace gears {
    void WindowManager::removeClosedWindows() {
       auto newEnd = std::remove_if(_windows.begin(), _windows.end(), [](const std::unique_ptr<Window>& window) {
          if (window->shouldClose()) {
-            logger->log("removed window with id: {} from windowManager", window->id());
+            logger->log("removed window id: {} from windowManager", window->id());
             return true;
          }
          return false;

@@ -5,9 +5,8 @@
 
 # Building  
 
-## Important
-
-  this project uses C++ modules, which are currently not supported by all compilers and CMake generators, so make sure to use both a compiler and a CMake generator that support modules  
+> [!IMPORTANT]  
+> this project uses C++ modules, which are currently not supported by all compilers and CMake generators, so make sure to use both a compiler and a CMake generator that support modules  
 
 ## Prerequisites
 

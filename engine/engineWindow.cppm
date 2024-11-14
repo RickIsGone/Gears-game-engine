@@ -32,6 +32,7 @@ namespace gears {
 
       void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
+      void setVisible(bool set);
       void setIcon(std::string_view iconPath);
       void setTitle(std::string_view newTitle);
 
@@ -43,6 +44,7 @@ namespace gears {
       uint32_t _width;
       uint32_t _height;
       bool _frameBufferResized = false;
+      bool _isVisible;
 
       std::string _title;
 
@@ -80,6 +82,17 @@ namespace gears {
       engineWindow->_width = width;
       engineWindow->_height = height;
       logger->logTrace("Window resized to {}x{}", width, height);
+   }
+
+   void Window::setVisible(bool visibility) {
+      if (visibility == _isVisible) return;
+      if (visibility) {
+         glfwShowWindow(_window);
+
+      } else {
+         glfwHideWindow(_window);
+      }
+      logger->log("window id: {} visibility set to {}", _id, visibility);
    }
 
    // suggested icon sizes: 16x16, 32x32, 48x48.
