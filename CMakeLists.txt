@@ -10,7 +10,7 @@ if(NOT MSVC_IDE)
         set(CMAKE_BUILD_TYPE "Release")
     endif()
 
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BUILD_TYPE} ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
 file(GLOB SOURCES "engine/*.cpp")
@@ -41,14 +41,14 @@ list(APPEND SHADERS ${VERT_SHADERS} ${FRAG_SHADERS})
 # endforeach(shader)
 
 # copying compiled shaders and removing the console if the application is in release mode
-message("Copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders")
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders)
+message("Copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders")
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders)
 
 foreach(shader IN LISTS SHADERS)
-    file(COPY ${shader}.spv DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders)
+    file(COPY ${shader}.spv DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders)
 endforeach(shader)
 
-if(${CMAKE_SYSTEM} MATCHES Windows)
+if(${CMAKE_SYSTEM_NAME} MATCHES Windows)
     if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES MinSizeRel)
         add_executable(Gears WIN32 ${SOURCES} script.rc)
     else()
@@ -81,13 +81,13 @@ target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui stb_imag
 target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader imgui stb_image)
 
 
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets)
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
-file(COPY media/gears_default_icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
-file(COPY media/gears-w.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/icons)
+file(COPY media/gears_default_icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/icons)
+file(COPY media/gears-w.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/icons)
 
 # cpack
-install(DIRECTORY "build/${CMAKE_BUILD_TYPE}/" DESTINATION .)
+install(DIRECTORY "build/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/" DESTINATION .)
 if(${CMAKE_SYSTEM} MATCHES Windows)
     set(CPACK_GENERATOR "NSIS;ZIP;7Z;WIX")
 endif()
