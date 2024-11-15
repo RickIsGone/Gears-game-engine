@@ -27,18 +27,18 @@
 #ifndef LOGGER_IMPORT
 import engine.logger;
 #endif // !defined(LOGGER_IMPORT)
-#define GRS_LOG_EXIT(loc, err, ...)             \
-   gears::logger->error(loc, err, __VA_ARGS__); \
-   GRS_PAUSE;                                   \
+#define GRS_LOG_EXIT(loc, err, ...)               \
+   gears::logger->error(loc, err, ##__VA_ARGS__); \
+   GRS_PAUSE;                                     \
    exit(EXIT_FAILURE)
 
 
 #define GRS_ASSERT(expr, err) \
    if (!(expr)) { GRS_EXIT(err); }
 
-#define GRS_LOG_ASSERT(expr, err, ...)        \
-   if (!(expr)) {                             \
-      gears::logger->error(err, __VA_ARGS__); \
-      GRS_PAUSE;                              \
-      exit(EXIT_FAILURE);                     \
+#define GRS_LOG_ASSERT(expr, err, ...)          \
+   if (!(expr)) {                               \
+      gears::logger->error(err, ##__VA_ARGS__); \
+      GRS_PAUSE;                                \
+      exit(EXIT_FAILURE);                       \
    }

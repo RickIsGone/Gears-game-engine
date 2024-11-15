@@ -17,7 +17,10 @@ file(GLOB SOURCES "engine/*.cpp")
 
 # debug
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+    if(${CMAKE_SYSTEM_NAME} MATCHES Windows)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Zi")
+    endif()
 endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES Windows)
