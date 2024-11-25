@@ -11,6 +11,7 @@
 import movementController;
 import engine.camera;
 import engine.logger;
+import engineModel;
 
 namespace gears {
 
