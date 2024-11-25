@@ -116,7 +116,9 @@ namespace gears {
        VkDebugUtilsMessageTypeFlagsEXT messageType,
        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
        void* pUserData) {
-      logger->warn("validation layer: {}", pCallbackData->pMessage);
+      if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+         logger->warn("validation layer: {}", pCallbackData->pMessage);
+      }
 
       return VK_FALSE;
    }
@@ -216,8 +218,8 @@ namespace gears {
       if (deviceCount == 0) {
          throw Logger::Exception("failed to find GPUs with Vulkan support!");
       }
-
       logger->logTrace("device count: {}", deviceCount);
+
       std::vector<VkPhysicalDevice> devices(deviceCount);
       vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
 
@@ -298,8 +300,7 @@ namespace gears {
       VkCommandPoolCreateInfo poolInfo = {};
       poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
       poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
-      poolInfo.flags =
-          VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+      poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
       if (vkCreateCommandPool(_device, &poolInfo, nullptr, &_commandPool) != VK_SUCCESS) {
          throw Logger::Exception("failed to create command pool!");
@@ -326,17 +327,12 @@ namespace gears {
           supportedFeatures.samplerAnisotropy;
    }
 
-   void PhysicalDevice::_populateDebugMessengerCreateInfo(
-       VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+   void PhysicalDevice::_populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
       createInfo = {};
       createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-      createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-          VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-      createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-          VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-          VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+      createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+      createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
       createInfo.pfnUserCallback = debugCallback;
-      createInfo.pUserData = nullptr; // Optional
    }
 
    void PhysicalDevice::_setupDebugMessenger() {
@@ -365,9 +361,7 @@ namespace gears {
             }
          }
 
-         if (!layerFound) {
-            return false;
-         }
+         if (!layerFound) return false;
       }
 
       return true;

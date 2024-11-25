@@ -6,9 +6,8 @@ module;
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
-#include "engineGameObject.hpp"
-
 export module engine.camera;
+import engine.gameObject;
 
 namespace gears {
 

@@ -32,7 +32,7 @@ namespace gears {
 
       void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
-      void setVisible(bool set);
+      void setVisibility(bool visibiliy);
       void setIcon(std::string_view iconPath);
       void setTitle(std::string_view newTitle);
 
@@ -48,15 +48,16 @@ namespace gears {
 
       std::string _title;
 
-      static uint32_t _currentId;
       uint32_t _id;
    };
 
    // ========================================== implementation ==========================================
 
-   uint32_t Window::_currentId = 0;
-   Window::Window(std::string_view name, uint32_t width, uint32_t height, std::string_view iconPath) : _title{name}, _width{width}, _height{height}, _id{_currentId++} {
-      glfwInit();
+
+   Window::Window(std::string_view name, uint32_t width, uint32_t height, std::string_view iconPath) : _title{name}, _width{width}, _height{height} {
+      static uint32_t currentId = 0;
+      _id = currentId++;
+
       glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
       glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
@@ -84,7 +85,7 @@ namespace gears {
       logger->logTrace("Window resized to {}x{}", width, height);
    }
 
-   void Window::setVisible(bool visibility) {
+   void Window::setVisibility(bool visibility) {
       if (visibility == _isVisible) return;
       if (visibility) {
          glfwShowWindow(_window);

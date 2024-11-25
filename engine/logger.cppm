@@ -19,6 +19,7 @@ namespace gears {
    public:
       struct Message {
          Message(const char* msg, const std::source_location& loc = std::source_location::current()) : message{msg}, location{loc} {}
+         Message(const std::string& msg, const std::source_location& loc = std::source_location::current()) : message{msg}, location{loc} {}
 
          std::string_view message;
          std::source_location location;

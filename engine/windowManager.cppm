@@ -15,7 +15,7 @@ import engine.logger;
 namespace gears {
    export class WindowManager {
    public:
-      WindowManager() = default;
+      WindowManager();
       ~WindowManager();
 
       WindowManager(const WindowManager&) = delete;
@@ -36,6 +36,9 @@ namespace gears {
    };
 
    // ========================================== implementation ==========================================
+   WindowManager::WindowManager() {
+      glfwInit();
+   }
 
    WindowManager::~WindowManager() {
       _windows.clear();
