@@ -36,6 +36,7 @@ namespace gears {
    };
 
    // ========================================== implementation ==========================================
+
    WindowManager::WindowManager() {
       glfwInit();
    }
