@@ -6,10 +6,9 @@ module;
 #include <glm/gtc/quaternion.hpp>
 #include <glm/glm.hpp>
 
-#include "engineGameObject.hpp"
-
 export module movementController;
-import engineWindow;
+import engine.window;
+import engine.gameObject;
 
 namespace gears {
 
@@ -57,7 +56,7 @@ namespace gears {
 
       KeyMappings keys{};
 
-      float moveSpeed = 10.f;
+      float moveSpeed = 5.f;
    };
 
    //  ========================================== implementation ==========================================

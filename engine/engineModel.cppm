@@ -1,7 +1,6 @@
 module;
 
 #include <cstring>
-#include <format>
 #include <unordered_map>
 #include <vector>
 #include <memory>
@@ -16,10 +15,11 @@ module;
 #include <glm/gtx/hash.hpp>
 
 #include "engineUtils.hpp"
+#include "macro.hpp"
 
 export module engineModel;
-import engineDevice;
-import logger;
+import engine.device;
+import engine.logger;
 
 namespace gears {
 
@@ -74,8 +74,8 @@ namespace gears {
 
 } // namespace gears
 
-export namespace std {
-   template <>
+namespace std {
+   export template <>
    struct hash<gears::EngineModel::Vertex> {
       size_t operator()(gears::EngineModel::Vertex const& vertex) const {
          size_t seed = 0;
@@ -105,13 +105,13 @@ namespace gears {
    std::unique_ptr<EngineModel> EngineModel::createModelFromFile(PhysicalDevice& device, const std::string& filepath) {
       Data data{};
       data.loadModel(filepath);
-      logger->logTrace(std::format("vertex count: {}", data.vertices.size()));
+      logger->logTrace("vertex count: {}", data.vertices.size());
       return std::make_unique<EngineModel>(device, data);
    }
 
    void EngineModel::_createVertexBuffers(const std::vector<Vertex>& vertices) {
       _vertexCount = static_cast<uint32_t>(vertices.size());
-      assert(_vertexCount >= 3 && "Vertex count must be at least 3");
+      GRS_LOG_ASSERT(_vertexCount >= 3, "Vertex count must be at least 3");
 
       VkDeviceSize bufferSize = sizeof(vertices[0]) * _vertexCount;
 
@@ -202,16 +202,13 @@ namespace gears {
    }
 
    std::vector<VkVertexInputAttributeDescription> EngineModel::Vertex::getAttributeDescriptions() {
-      std::vector<VkVertexInputAttributeDescription> attributeDescriptions(2);
-      attributeDescriptions[0].binding = 0;
-      attributeDescriptions[0].location = 0;
-      attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-      attributeDescriptions[0].offset = offsetof(Vertex, position);
+      std::vector<VkVertexInputAttributeDescription> attributeDescriptions{0};
 
-      attributeDescriptions[1].binding = 0;
-      attributeDescriptions[1].location = 1;
-      attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-      attributeDescriptions[1].offset = offsetof(Vertex, color);
+      attributeDescriptions.push_back({0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)});
+      attributeDescriptions.push_back({1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color)});
+      attributeDescriptions.push_back({2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)});
+      attributeDescriptions.push_back({3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv)});
+
       return attributeDescriptions;
    }
 
@@ -221,7 +218,7 @@ namespace gears {
       std::vector<tinyobj::material_t> materials;
       std::string warn, err;
 
-      if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) throw Logger::Exception(warn + err);
+      if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) throw Logger::Exception("{}{}", warn, err);
 
       vertices.clear();
       indices.clear();
@@ -238,13 +235,10 @@ namespace gears {
                    attrib.vertices[3 * index.vertex_index + 1],
                    attrib.vertices[3 * index.vertex_index + 2]};
 
-               auto colorIndex = 3 * index.vertex_index + 2;
-               if (colorIndex < attrib.colors.size()) {
-                  vertex.color = {
-                      attrib.colors[colorIndex - 2],
-                      attrib.colors[colorIndex - 1],
-                      attrib.colors[colorIndex - 0]};
-               }
+               vertex.color = {
+                   attrib.colors[3 * index.vertex_index + 0],
+                   attrib.colors[3 * index.vertex_index + 2],
+                   attrib.colors[3 * index.vertex_index + 1]};
             }
 
             if (index.normal_index >= 0) {

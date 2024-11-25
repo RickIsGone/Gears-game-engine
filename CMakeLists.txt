@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28.0)
 project(Gears-engine VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 if(NOT MSVC_IDE)
@@ -10,13 +10,51 @@ if(NOT MSVC_IDE)
         set(CMAKE_BUILD_TYPE "Release")
     endif()
 
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BUILD_TYPE} ${CMAKE_SYSTEM_NAME}")
 endif()
 
 file(GLOB SOURCES "engine/*.cpp")
 
 # debug
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -Zi") 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+    if(${CMAKE_SYSTEM_NAME} MATCHES Windows)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Zi")
+    endif()
+endif()
+
+if(${CMAKE_SYSTEM_NAME} MATCHES Windows)
+    if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES MinSizeRel)
+        add_executable(Gears WIN32 ${SOURCES} script.rc)
+    else()
+        add_executable(Gears ${SOURCES} script.rc)
+        add_definitions(-DGRS_DEBUG)
+    endif()
+else()
+    add_executable(Gears ${SOURCES})
+    if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+        add_definitions(-DGRS_DEBUG)
+    endif()
+endif()
+
+#adding modules
+file(GLOB MODULES "engine/*.cppm")
+target_sources(Gears PUBLIC FILE_SET gears_modules TYPE CXX_MODULES FILES
+   ${MODULES}
+)
+
+# adding extern libs
+add_subdirectory(engine/vendor/glfw EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor/glm EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor/tinyobjloader EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor/stb_image EXCLUDE_FROM_ALL)
+add_subdirectory(engine/vendor EXCLUDE_FROM_ALL) # imgui
+
+find_package(Vulkan REQUIRED)
+
+target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui stb_image)
+target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader imgui stb_image)
+
 
 # compiling shaders
 file(GLOB VERT_SHADERS "engine/shaders/*.vert")
@@ -41,50 +79,20 @@ list(APPEND SHADERS ${VERT_SHADERS} ${FRAG_SHADERS})
 # endforeach(shader)
 
 # copying compiled shaders and removing the console if the application is in release mode
-message("Copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders")
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders)
+message("Copying shaders in ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders")
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders)
 
 foreach(shader IN LISTS SHADERS)
-    file(COPY ${shader}.spv DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders)
+    file(COPY ${shader}.spv DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders)
 endforeach(shader)
 
-if(${CMAKE_SYSTEM} MATCHES Windows)
-    if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES MinSizeRel)
-        add_executable(Gears WIN32 ${SOURCES} script.rc)
-    else()
-        add_executable(Gears ${SOURCES} script.rc)
-        add_definitions(-DGRS_DEBUG)
-    endif()
-else()
-    add_executable(Gears ${SOURCES})
-endif()
-
-#adding modules
-file(GLOB MODULES "engine/*.cppm")
-target_sources(Gears PUBLIC FILE_SET gears_modules TYPE CXX_MODULES FILES
-   ${MODULES}
-)
-
-# adding extern libs
-add_subdirectory(engine/vendor/glfw EXCLUDE_FROM_ALL)
-add_subdirectory(engine/vendor/glm EXCLUDE_FROM_ALL)
-add_subdirectory(engine/vendor/tinyobjloader EXCLUDE_FROM_ALL)
-add_subdirectory(engine/vendor/stb_image EXCLUDE_FROM_ALL)
-add_subdirectory(engine/vendor EXCLUDE_FROM_ALL) # imgui
-
-find_package(Vulkan REQUIRED)
-
-target_link_directories(Gears PRIVATE glfw glm::glm tinyobjloader imgui stb_image)
-target_link_libraries(Gears PRIVATE Vulkan::Vulkan glfw glm::glm tinyobjloader imgui stb_image)
-
-
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets)
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
-file(COPY media/gears_default_icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
-file(COPY media/gears-w.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets/icons)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/icons)
+file(COPY media/gears_default_icon.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/icons)
+file(COPY media/gears-w.png DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/icons)
 
 # cpack
-install(DIRECTORY "build/${CMAKE_BUILD_TYPE}/" DESTINATION .)
+install(DIRECTORY "build/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/" DESTINATION .)
 if(${CMAKE_SYSTEM} MATCHES Windows)
     set(CPACK_GENERATOR "NSIS;ZIP;7Z;WIX")
 endif()

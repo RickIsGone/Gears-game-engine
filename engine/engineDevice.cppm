@@ -1,6 +1,5 @@
 module;
 
-#include <format>
 #include <set>
 #include <vector>
 #include <unordered_set>
@@ -8,9 +7,9 @@ module;
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
-export module engineDevice;
-import engineWindow;
-import logger;
+export module engine.device;
+import engine.window;
+import engine.logger;
 
 namespace gears {
    export struct SwapChainSupportDetails {
@@ -117,7 +116,9 @@ namespace gears {
        VkDebugUtilsMessageTypeFlagsEXT messageType,
        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
        void* pUserData) {
-      logger->warn(std::format("validation layer: {}", pCallbackData->pMessage));
+      if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+         logger->warn("validation layer: {}", pCallbackData->pMessage);
+      }
 
       return VK_FALSE;
    }
@@ -217,8 +218,8 @@ namespace gears {
       if (deviceCount == 0) {
          throw Logger::Exception("failed to find GPUs with Vulkan support!");
       }
+      logger->logTrace("device count: {}", deviceCount);
 
-      logger->logTrace(std::format("device count: {}", deviceCount));
       std::vector<VkPhysicalDevice> devices(deviceCount);
       vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
 
@@ -239,12 +240,12 @@ namespace gears {
          if (_isDeviceSuitable(device)) {
             VkPhysicalDeviceProperties prop;
             vkGetPhysicalDeviceProperties(device, &prop);
-            logger->logNoLevel(std::format("\t{}", prop.deviceName));
+            logger->logNoLevel("\t{}", prop.deviceName);
          }
       }
 
       vkGetPhysicalDeviceProperties(_physicalDevice, &properties);
-      logger->logTrace(std::format("physical device: {}", properties.deviceName));
+      logger->logTrace("physical device: {}", properties.deviceName);
    }
 
    void PhysicalDevice::_createLogicalDevice() {
@@ -299,8 +300,7 @@ namespace gears {
       VkCommandPoolCreateInfo poolInfo = {};
       poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
       poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
-      poolInfo.flags =
-          VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+      poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
       if (vkCreateCommandPool(_device, &poolInfo, nullptr, &_commandPool) != VK_SUCCESS) {
          throw Logger::Exception("failed to create command pool!");
@@ -327,17 +327,12 @@ namespace gears {
           supportedFeatures.samplerAnisotropy;
    }
 
-   void PhysicalDevice::_populateDebugMessengerCreateInfo(
-       VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+   void PhysicalDevice::_populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
       createInfo = {};
       createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-      createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-          VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-      createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-          VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-          VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+      createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+      createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
       createInfo.pfnUserCallback = debugCallback;
-      createInfo.pUserData = nullptr; // Optional
    }
 
    void PhysicalDevice::_setupDebugMessenger() {
@@ -366,9 +361,7 @@ namespace gears {
             }
          }
 
-         if (!layerFound) {
-            return false;
-         }
+         if (!layerFound) return false;
       }
 
       return true;
@@ -397,14 +390,14 @@ namespace gears {
       logger->logTrace("available extensions:");
       std::unordered_set<std::string> available;
       for (const auto& extension : extensions) {
-         logger->logNoLevel(std::format("\t{}", extension.extensionName));
+         logger->logNoLevel("\t{}", extension.extensionName);
          available.insert(extension.extensionName);
       }
 
       logger->logTrace("required extensions:");
       auto requiredExtensions = _getRequiredExtensions();
       for (const auto& required : requiredExtensions) {
-         logger->logNoLevel(std::format("\t{}", required));
+         logger->logNoLevel("\t{}", required);
          if (available.find(required) == available.end()) {
             throw Logger::Exception("Missing required glfw extension");
          }

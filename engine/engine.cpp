@@ -9,8 +9,8 @@
 
 #include "engine.hpp"
 import movementController;
-import engineCamera;
-import logger;
+import engine.camera;
+import engine.logger;
 
 namespace gears {
 
@@ -34,8 +34,11 @@ namespace gears {
 
    void Engine::run() {
       logger->log("starting engine");
+      // _windowManager.addWindow("Gears engine goes brrrrrrrrrrrr", 1280, 720);
+      // _windowManager[0].setVisibility(false);
+      // _windowManager.at(0).setVisibility(true);
+      // _windowManager.closeWindow(1);
 
-      _window.setIcon("assets/icons/gears_default_icon.png");
       EngineCamera camera{};
 
       auto viewerObject = EngineGameObject::createGameObject();
@@ -49,6 +52,7 @@ namespace gears {
       while (!_window.shouldClose()) {
          glfwPollEvents();
          mouse.update();
+         _windowManager.removeClosedWindows();
 
          auto currentTime = std::chrono::high_resolution_clock::now();
          float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - prevTime).count();
@@ -76,15 +80,22 @@ namespace gears {
    }
 
    void Engine::_loadGameObjects() {
-      std::shared_ptr<EngineModel> model = EngineModel::createModelFromFile(_device, "fish.obj");
+      std::shared_ptr<EngineModel> model = EngineModel::createModelFromFile(_device, "flat_vase.obj");
 
-      auto gameObject = EngineGameObject::createGameObject();
-      gameObject.model = model;
-      gameObject.transform.position = {0.f, 0.f, 2.f};
-      gameObject.transform.scale = {0.5f, 0.5f, 0.5f};
 
-      _gameObjects.push_back(std::move(gameObject));
+      auto flatVase = EngineGameObject::createGameObject();
+      flatVase.model = model;
+      flatVase.transform.position = {-.5f, .5f, 2.5f};
+      flatVase.transform.scale = {3.f, 1.5f, 3.f};
+      _gameObjects.push_back(std::move(flatVase));
+      logger->log("Loaded model \"flat_vase.obj\"");
 
-      logger->logTrace("Loaded model \"fish.obj\"");
+      model = EngineModel::createModelFromFile(_device, "smooth_vase.obj");
+      auto smoothVase = EngineGameObject::createGameObject();
+      smoothVase.model = model;
+      smoothVase.transform.position = {.5f, .5f, 2.5f};
+      smoothVase.transform.scale = {3.f, 1.5f, 3.f};
+      _gameObjects.push_back(std::move(smoothVase));
+      logger->log("Loaded model \"smooth_vase.obj\"");
    }
 } // namespace gears

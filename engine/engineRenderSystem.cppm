@@ -10,13 +10,14 @@ module;
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-#include "engineGameObject.hpp"
+#include "macro.hpp"
 
-export module engineRenderSystem;
+export module engine.renderSystem;
 import enginePipeline;
-import engineDevice;
-import engineCamera;
-import logger;
+import engine.device;
+import engine.camera;
+import engine.logger;
+import engine.gameObject;
 
 namespace gears {
 
@@ -42,8 +43,8 @@ namespace gears {
    //  ========================================== implementation ==========================================
 
    struct SimplePushConstantData {
-      glm::mat4 transform{1.0f};
-      alignas(16) glm::vec3 color;
+      glm::mat4 transform{1.f};
+      glm::mat4 normalMatrix{1.f};
    };
 
    EngineRenderSystem::EngineRenderSystem(PhysicalDevice& device, VkRenderPass renderPass) : _device{device} {
@@ -71,7 +72,7 @@ namespace gears {
    }
 
    void EngineRenderSystem::_createPipeline(VkRenderPass renderPass) {
-      assert(_pipelineLayout != VK_NULL_HANDLE && "cannot create pipeline before pipeline layout");
+      GRS_LOG_ASSERT(_pipelineLayout != VK_NULL_HANDLE, "cannot create pipeline before pipeline layout");
 
       PipelineConfigInfo pipelineConfig{};
       EnginePipeline::defaultPipelineConfigInfo(pipelineConfig);
@@ -90,8 +91,9 @@ namespace gears {
          // obj.transform.rotation.x = glm::mod<float>(obj.transform.rotation.y + 0.001f, 2.0f * glm::pi<float>());
 
          SimplePushConstantData push{};
-         push.color = obj.color;
-         push.transform = projectionView * obj.transform.mat4();
+         auto modelMatrix = obj.transform.mat4();
+         push.transform = projectionView * modelMatrix;
+         push.normalMatrix = obj.transform.normalMatrix();
 
          vkCmdPushConstants(
              commandBuffer,
