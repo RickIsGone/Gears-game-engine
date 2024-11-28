@@ -1,4 +1,4 @@
-<img align="left" src="media/gears-s.png" alt="Gears Logo" width="80px"/>
+<img align="left" src="gears/media/gears-s.png" alt="Gears Logo" width="80px"/>
 <h1>Gears Engine</h1>
 
 [![Windows build](https://github.com/RickIsGone/Gears-game-engine/actions/workflows/Windows%20build.yml/badge.svg)](https://github.com/RickIsGone/Gears-game-engine/actions/workflows/Windows%20build.yml) [![Ubuntu build](https://github.com/RickIsGone/Gears-game-engine/actions/workflows/Ubuntu%20build.yml/badge.svg)](https://github.com/RickIsGone/Gears-game-engine/actions/workflows/Ubuntu%20build.yml)  

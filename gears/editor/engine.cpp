@@ -1,6 +1,5 @@
 #include <chrono>
 
-#include <vulkan/vulkan.hpp>
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
@@ -81,22 +80,25 @@ namespace gears {
    }
 
    void Engine::_loadGameObjects() {
-      std::shared_ptr<EngineModel> model = EngineModel::createModelFromFile(_device, "flat_vase.obj");
-
-
       auto flatVase = EngineGameObject::createGameObject();
-      flatVase.model = model;
+      flatVase.model = EngineModel::createModelFromFile(_device, "flat_vase.obj");
       flatVase.transform.position = {-.5f, .5f, 2.5f};
-      flatVase.transform.scale = {3.f, 1.5f, 3.f};
+      flatVase.transform.scale = {3.f, 3.f, 3.f};
       _gameObjects.push_back(std::move(flatVase));
       logger->log("Loaded model \"flat_vase.obj\"");
 
-      model = EngineModel::createModelFromFile(_device, "smooth_vase.obj");
       auto smoothVase = EngineGameObject::createGameObject();
-      smoothVase.model = model;
+      smoothVase.model = EngineModel::createModelFromFile(_device, "smooth_vase.obj");
       smoothVase.transform.position = {.5f, .5f, 2.5f};
-      smoothVase.transform.scale = {3.f, 1.5f, 3.f};
+      smoothVase.transform.scale = {3.f, 3.f, 3.f};
       _gameObjects.push_back(std::move(smoothVase));
       logger->log("Loaded model \"smooth_vase.obj\"");
+
+      auto fish = EngineGameObject::createGameObject();
+      fish.model = EngineModel::createModelFromFile(_device, "fish.obj");
+      fish.transform.position = {.5f, 0.f, 2.5f};
+      fish.transform.scale = {1.f, 1.f, 1.f};
+      _gameObjects.push_back(std::move(fish));
+      logger->log("Loaded model \"fish.obj\"");
    }
 } // namespace gears

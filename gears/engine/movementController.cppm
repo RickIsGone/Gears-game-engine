@@ -56,7 +56,7 @@ namespace gears {
 
       KeyMappings keys{};
 
-      float moveSpeed = 5.f;
+      float moveSpeed = 10.f;
    };
 
    //  ========================================== implementation ==========================================
@@ -94,7 +94,7 @@ namespace gears {
    }
 
    Mouse::Mouse(Window& window) : _window{window} {
-      _cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+      _cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
    }
    Mouse::~Mouse() {
       glfwDestroyCursor(_cursor);

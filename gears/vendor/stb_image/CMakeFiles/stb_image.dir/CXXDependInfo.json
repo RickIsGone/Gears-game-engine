@@ -1,0 +1,30 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "MSVC",
+	"compiler-id" : "MSVC",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "C:/Users/ricca/Desktop/engine VK/gears/vendor/stb_image",
+	"dir-cur-src" : "C:/Users/ricca/Desktop/engine VK/gears/vendor/stb_image",
+	"dir-top-bld" : "C:/Users/ricca/Desktop/engine VK/build",
+	"dir-top-src" : "C:/Users/ricca/Desktop/engine VK",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"C:\\Users\\ricca\\Desktop\\engine VK\\gears\\vendor\\stb_image\\stb_image"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "C:/Users/ricca/Desktop/engine VK/gears/vendor/stb_image/CMakeFiles/stb_image.dir",
+	"sources" : 
+	{
+		"C:/Users/ricca/Desktop/engine VK/gears/vendor/stb_image/CMakeFiles/stb_image.dir/stb_image.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/ricca/Desktop/engine VK/gears/vendor/stb_image/stb_image.cpp"
+		}
+	}
+}

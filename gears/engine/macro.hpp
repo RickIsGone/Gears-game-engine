@@ -42,3 +42,10 @@ import engine.logger;
       GRS_PAUSE;                                \
       exit(EXIT_FAILURE);                       \
    }
+
+inline bool isDebugBuild() {
+#ifdef GRS_DEBUG
+   return true;
+#endif
+   return false;
+}

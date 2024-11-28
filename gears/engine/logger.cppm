@@ -100,17 +100,9 @@ namespace gears {
          _logFile.open(filename);
 
 #if defined(_WIN32)
-#ifdef GRS_DEBUG
-         _logFile << "windows build running in debug mode\n";
-#else
-         _logFile << "windows build running in release mode\n";
-#endif // GRS_DEBUG
+         _logFile << isDebugBuild() ? "windows build running in debug mode\n" : "";
 #elif defined(__linux__)
-#ifdef GRS_DEBUG
-         _logFile << "linux build running in debug mode\n";
-#else
-         _logFile << "linux build running in release mode\n";
-#endif // GRS_DEBUG
+         _logFile << isDebugBuild() ? "linux build running in debug mode\n" : "";
 #endif // defined(_WIN32)
       } catch (const std::ios_base::failure& e) {
          GRS_EXIT(std::format("failed to open the logFile: {}", e.what()));
@@ -139,7 +131,7 @@ namespace gears {
 #endif // defined(_WIN32)
          std::string fileName = location.file_name();
          fileName = fileName.substr(fileName.find_last_of(separator) + 1);
-#undef separator
+         // #undef separator
          switch (level) {
             case Levels::Trace:
                std::clog << std::format("[{}]", timestamp.str());

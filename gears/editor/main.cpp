@@ -3,8 +3,8 @@
 #include <source_location>
 
 #include "engine.hpp"
-#include "main.hpp"
-#include "macro.hpp"
+#include "../engine/main.hpp"
+#include "../engine/macro.hpp"
 import engine.logger;
 
 int main(int argc, char** argv) {

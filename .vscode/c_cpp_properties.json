@@ -4,11 +4,13 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/engine/vendor/GLFW/src",
-                "${workspaceFolder}/engine/vendor/glm/glm",
-                "${workspaceFolder}/engine/vendor/imgui",
-                "${workspaceFolder}/engine/vendor/tinyobjloader",
-                "${workspaceFolder}/engine/vendor/stb_image",
+                "${workspaceFolder}/gears/engine",
+                "${workspaceFolder}/gears/editor",
+                "${workspaceFolder}/gears/engine/vendor/GLFW/src",
+                "${workspaceFolder}/gears/engine/vendor/glm/glm",
+                "${workspaceFolder}/gears/editor/vendor/imgui",
+                "${workspaceFolder}/gears/engine/vendor/tinyobjloader",
+                "${workspaceFolder}/gears/engine/vendor/stb_image",
                 "${env:VULKAN_SDK}/Include"
             ],
             "defines": [
