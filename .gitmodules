@@ -1,12 +1,24 @@
-[submodule "engine/vendor/glfw"]
-	path = engine/vendor/glfw
+[submodule "gears/engine/vendor/glfw"]
+	path = gears/engine/vendor/glfw
 	url = https://github.com/glfw/glfw
-[submodule "engine/vendor/tinyobjloader"]
-	path = engine/vendor/tinyobjloader
+[submodule "gears/engine/vendor/tinyobjloader"]
+	path = gears/engine/vendor/tinyobjloader
 	url = https://github.com/tinyobjloader/tinyobjloader
-[submodule "engine/vendor/glm"]
-	path = engine/vendor/glm
+[submodule "gears/engine/vendor/glm"]
+	path = gears/engine/vendor/glm
 	url = https://github.com/g-truc/glm
-[submodule "engine/vendor/imgui"]
-	path = engine/vendor/imgui
+[submodule "gears/editor/vendor/imgui"]
+	path = gears/editor/vendor/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "gears/vendor/glfw"]
+	path = gears/vendor/glfw
+	url = https://github.com/glfw/glfw
+[submodule "gears/vendor/tinyobjloader"]
+	path = gears/vendor/tinyobjloader
+	url = https://github.com/tinyobjloader/tinyobjloader
+[submodule "gears/vendor/glm"]
+	path = gears/vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "gears/vendor/imgui"]
+	path = gears/vendor/imgui
 	url = https://github.com/ocornut/imgui
